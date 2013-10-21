@@ -44,7 +44,7 @@ ConnectionSettings::ConnectionSettings():
     //Second group : Specify argument
     gridTable = new QGridLayout;
 
-        //call the function which build the table
+    //call the function which build the table
     ConnectionSettings::buildTable();
 
     tableLayout = new QVBoxLayout;
@@ -72,7 +72,7 @@ ConnectionSettings::ConnectionSettings():
     boutonsLayout->addWidget(Save);
     boutonsLayout->addWidget(Cancel);
 
-        // Connexions des signaux et des slots
+    // Connexions des signaux et des slots
     connect(nbArg, SIGNAL(valueChanged(int)), this, SLOT(buildTable()));
     connect(Save, SIGNAL(clicked()), this, SLOT(testFunctionName()));
 
@@ -265,7 +265,7 @@ void ConnectionSettings::quit(){
 
     //Remove : Groupe : Table
     gridTable->~QGridLayout();
-        //Remove : en-tête
+    //Remove : en-tête
     enTeteArgNum->~QLabel();
     enTeteArgTyp->~QLabel();
     enTeteArgSuf->~QLabel();
@@ -350,8 +350,8 @@ void ConnectionSettings::exportXMLSettings(){
            writerStream.writeEndElement();
            }
 
-//add new function
-       //on ajoute la fonction courante (celle de la fenetre qui invite à renseigner un formulaire)
+		//add new function
+       	//on ajoute la fonction courante (celle de la fenetre qui invite à renseigner un formulaire)
         writerStream.writeStartElement("Function");
 
         writerStream.writeStartElement("Definition");
@@ -377,7 +377,7 @@ void ConnectionSettings::exportXMLSettings(){
 
                 writerStream.writeTextElement("ArgFacul", QString::number(tabArgfacul[k]->isChecked()));
                 writerStream.writeTextElement("ArgOutline", tabArgOutline[k]->text());
-//
+
                 if(az=="QSpinBox"){
                     int curse = curseur;
                     for(int l=curse; l<reinterpret_cast<QSpinBox*>(tabArgSuf[k])->text().toInt()+curse; l++){
@@ -1167,7 +1167,7 @@ void ConnectionSettings::setEnability(QString param){
     }
 }
 
-//SLOT :focntion qui gere la copie des prefixe de ligne d'argument
+//SLOT :fonction qui gere la copie des prefixe de ligne d'argument
 void ConnectionSettings::prefixMaj(QString text){
     int num=0;
     for(int i=0; i<(int)tabChoixPrefix.size(); i++){
@@ -1200,8 +1200,3 @@ void ConnectionSettings::prefixMaj(QString text){
         tabChoixPrefix[j]->setText(text);
     }
 }
-
-//QMessageBox::critical(this, "Error", "No");
-
-
-//MainWindow* castParent = reinterpret_cast<MainWindow*> (parent);//->openConnectionForm();

@@ -35,11 +35,6 @@ PHPtr PHIO::parse (string const& input) {
     using namespace axe;
     PHPtr res = make_shared<PH>();
 
-    // debug tool
-    /*auto coutRule = [](CCHAR i1, CCHAR i2) {
-        std::cout << std::string(i1, i2) << std::endl;
-    };*/
-
     // error
     auto error = r_fail([](CCHAR i1, CCHAR i2) {});
 

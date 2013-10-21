@@ -27,10 +27,9 @@ GAction::GAction(ActionPtr a, GVEdge e, GVEdge f, PHScene* sc) : scene(sc), acti
     arrowHeads.second 	= makeArrowHead(edges.second, color);
 }
 
-
+// Important for the destructor : do not delete scene, it's owned by a shared pointer in PH.h
 GAction::~GAction() {
     delete display;
-    //delete scene; <-- do not delete this pointer, it's owned by a shared pointer in PH.h
 }
 
 
@@ -79,15 +78,12 @@ ActionPtr GAction::getAction() {
 
 GSortPtr GAction::getSourceSort() {
     return scene->getGSort(action->getSource()->getSort()->getName());
-    //return action->getSource()->getGProcess();
 }
 
 GSortPtr GAction::getTargetSort() {
     return scene->getGSort(action->getTarget()->getSort()->getName());
-    //return action->getTarget()->getGProcess();
 }
 
 GSortPtr GAction::getResultSort() {
     return scene->getGSort(action->getResult()->getSort()->getName());
-    //return action->getResult()->getGProcess();
 }
