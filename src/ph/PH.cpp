@@ -89,7 +89,9 @@ list<ActionPtr> PH::getActions(void) { return actions; }
 GVGraphPtr PH::toGVGraph(void) {
 	
 	GVGraphPtr res = make_shared<GVGraph>(QString("PH Graph"));
-	QString s;	
+	QString s;
+	
+	GVGraphPtr skeletonGraph = make_shared<GVGraph>(QString("Skeleton Graph"));
 	
     QString posVal;
     // add Sorts and Processes (well named)
@@ -103,6 +105,8 @@ GVGraphPtr PH::toGVGraph(void) {
             posVal = QString::number(0).append(",").append(QString::number(i)).append("!");
             _agset(res->getNode(makeProcessName(e.second->getProcess(i))), "pos", posVal);
         }
+        
+        skeletonGraph->addNode(makeSkeletonNodeName(e.second->getName()));
     }
 	
     // let graphviz calculate an appropriate layout
