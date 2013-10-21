@@ -107,6 +107,10 @@ GVGraphPtr PH::toGVGraph(void) {
         }
         
         skeletonGraph->addNode(makeSkeletonNodeName(e.second->getName()));
+        vector<ProcessPtr> listProcess = e.second->getProcesses();
+        int nbProcess = listProcess.size();
+        _agset(skeletonGraph->getNode(makeSkeletonNodeName(e.second->getName())),"height",10*nbProcess);
+        
     }
 	
     // let graphviz calculate an appropriate layout
