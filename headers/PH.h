@@ -47,6 +47,13 @@ static inline QString makeProcessName (ProcessPtr p) {
 	return QString::fromStdString(p->getSort()->getName()) + QString("_%1").arg(p->getNumber());
 }
 
+/**
+  * @brief builds node name for graphviz, from Process name
+  * @param ProcessPtr pointer to the Process which name is to be adapted for graphviz node
+  */
+static inline QString makeSkeletonNodeName (string s) {
+	return QString::fromStdString("sort_"+s);
+}
 
 /**
   * @class PH

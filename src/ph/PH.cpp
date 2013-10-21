@@ -104,28 +104,6 @@ GVGraphPtr PH::toGVGraph(void) {
             _agset(res->getNode(makeProcessName(e.second->getProcess(i))), "pos", posVal);
         }
     }
-
-    // BUG FIXING ATTEMPT:
-    // to force hits' heads and bounces' tails to coincide
-    const int nbPorts(9);
-    QString ports[nbPorts] = {"n", "ne", "e", "se", "s", "sw", "w", "nw", "_"};
-    int i(0);
-
-    // add Actions (well named)
-	for (ActionPtr &a : actions) {
-
-		res->addEdge(	makeProcessName(a->getSource())
-                    , 	makeProcessName(a->getTarget()));
-		res->addEdge(	makeProcessName(a->getTarget())
-                    , 	makeProcessName(a->getResult()));
-
-        // BUG FIXING ATTEMPT:
-        // to force hits' heads and bounces' tails to coincide
-        _agset(res->getEdge(makeProcessName(a->getSource()), makeProcessName(a->getTarget())), "headport", ports[i]);
-        _agset(res->getEdge(makeProcessName(a->getTarget()), makeProcessName(a->getResult())), "tailport", ports[i]);
-        i = (i+1) % (nbPorts-1);
-
-    }
 	
     // let graphviz calculate an appropriate layout
     res->applyLayout();
