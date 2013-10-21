@@ -139,23 +139,6 @@ void GSort::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
         event->ignore();
         return;
     }
-
-    // TODO create acual context menu
-
-
-//    //build context menu
-//    QMenu menu;
-//    QAction *actionSetColor = menu.addAction("Set color...");
-//    menu.addSeparator();
-//    QAction *actionProperties = menu.addAction("Properties");
-//
-//    // manage user click
-//    QAction *a = menu.exec(event->screenPos());
-//    if (a != NULL) {
-//        QString text = a->text();
-//        qDebug("User clicked %s", qPrintable(text));
-//    }
-
 }
 
 

@@ -529,32 +529,25 @@ void MainWindow::importXMLMetadata(QString tempXML){
         Area* area = (Area*)this->getCentraleArea()->currentSubWindow()->widget();
         MyArea* myarea = ((Area*)this->getCentraleArea()->currentSubWindow()->widget())->myArea;
         area->treeArea->groupsTree->clear();
-        //QMessageBox::information(this,"zero allo?", "zero allo?");
         input.open(QFile::ReadOnly | QFile::Text);
 
-
-        //QMessageBox::information(this,"premier allo?", "premier allo?");
 
         try
         {
 
         while (!stream.atEnd())
         {
-            //QMessageBox::information(this,"deuxième allo?", "Je suis en dehors de global");
 
             while (stream.name()=="global")
             {
                 stream.readNext();
-                //QMessageBox::information(this,"allo?", "Je suis dans global");
                 while (stream.isStartElement()==false)
                 {
                     stream.readNext();
                 }
 
-                //QMessageBox::information(this,"allo0?", "Je suis toujours dans global");
                 if (stream.name() == "ph_file")
                 {
-                  //QMessageBox::information(this,"Je suis dans ph file", "Je suis dans ph file");
                   stream.readNext();
                   while (stream.isStartElement()==false)
                   {
@@ -563,10 +556,6 @@ void MainWindow::importXMLMetadata(QString tempXML){
 
                   if (stream.name()=="name")
                   {
-                      //if(tempXML == ""){
-
-                        //   QMessageBox::information(this,"Info", "Vous allez importer un fichier de preference pour le modele "+stream.readElementText());
-                      //}
                       stream.readNext();
                       while (stream.isStartElement()==false)
                       {
@@ -576,7 +565,6 @@ void MainWindow::importXMLMetadata(QString tempXML){
 
                   if (stream.name() == "path")
                   {
-                                   //QMessageBox::information(this,"allo0?", "Je suis dans le path");
                                    QString PATH = stream.readElementText();
                                    if (PATH!=area->path)
                                    {
@@ -595,7 +583,6 @@ void MainWindow::importXMLMetadata(QString tempXML){
 
                  if (stream.name()=="styles")
                  {
-                               //QMessageBox::information(this,"allo2?", "Je suis dans styles");
                                stream.readNext();
                                while (stream.isStartElement()==false)
                                {
@@ -605,36 +592,12 @@ void MainWindow::importXMLMetadata(QString tempXML){
                                {
                                        QString color = stream.readElementText();
                                        myarea->getPHPtr()->getGraphicsScene()->setBackgroundBrush(QBrush(QColor(color)));
-                                       //QMessageBox::information(this,"Salut","Je suis dans bg color");
                                        stream.readNext();
                                        while (stream.isStartElement()==false)
                                        {
                                            stream.readNext();
                                        }
                                }
-
-                               /*if(stream.name() == "sort_color")
-                               {
-                                        QString color = stream.readElementText();
-                                        // get the map of all the gsorts in the myArea, related to the name of the sorts
-                                        map<string, GSortPtr> sortList = myarea->getPHPtr()->getGraphicsScene()->getGSorts();
-                                        map<string, GSortPtr>::iterator it;
-                                        if (!QColor(color).isValid()) {
-                                            return ;
-                                        } else {
-                                                for(it=sortList.begin(); it!=sortList.end(); it++) {
-                                                // for all the GSort in the map, set the brush
-                                                it->second->getRect()->setBrush(QBrush(QColor(color)));
-                                                QMessageBox::information(this,"ça va ?", "Je suis sur le point de changer la couleur de la sorte en"+ color);
-                                            }
-                                        }
-                                        QMessageBox::information(this,"ça va ?", "Je suis dans sort color");
-                                        stream.readNext();
-                                        while (stream.isStartElement()==false)
-                                        {
-                                            stream.readNext();
-                                        }
-                                }*/
                                 stream.readNext();
 
                                 while (stream.isStartElement()==false)
@@ -643,25 +606,12 @@ void MainWindow::importXMLMetadata(QString tempXML){
                                 }
 
                   }
-
-
-
-                 /* while(stream.isStartElement()==false)
-                       if(stream.atEnd()==true){
-                           break;
-                           }else{
-                   stream.readNext();
-                       }
-                  */
-
-
             }
 
 
 
             while (stream.name()=="sorts")
             {
-                //QMessageBox::information(this,"Salut","Je suis dans sorts");
                 stream.readNext();
                 while (stream.isStartElement()==false)
                 {
@@ -672,7 +622,6 @@ void MainWindow::importXMLMetadata(QString tempXML){
                 while (stream.name()=="sort")
                 {
                     std::string sortname = stream.attributes().first().value().toString().toStdString();
-                    //QMessageBox::information(this,"Salut","Je suis dans le sort "+stream.attributes().first().value().toString());
                     stream.readNext();
                     while (stream.isStartElement()==false)
                     {
@@ -682,8 +631,6 @@ void MainWindow::importXMLMetadata(QString tempXML){
 
                     if (stream.name()=="pos")
                     {
-                        //QMessageBox::information(this,"Salut","Je suis dans pos");
-
                         // Getting x coordinate of the top left corner of the sort
                         qreal posx = stream.attributes().first().value().toString().toDouble();
                         // Setting the x coordinate to the new value
@@ -710,12 +657,8 @@ void MainWindow::importXMLMetadata(QString tempXML){
                             stream.readNext();
                         }
                     }
-
-                    //QMessageBox::information(this,"Salut","Je suis sorti de pos");
-
                     if (stream.name()=="size")
                     {
-                        //QMessageBox::information(this,"Salut","Je suis dans size");
                         stream.readNext();
                         while (stream.isStartElement()==false)
                         {
@@ -736,7 +679,6 @@ void MainWindow::importXMLMetadata(QString tempXML){
 
                     while (stream.name()=="label")
                     {
-                        //QMessageBox::information(this,"Salut","Je suis dans label");
                         stream.readNext();
                         while (stream.isStartElement()==false)
                         {
@@ -761,11 +703,9 @@ void MainWindow::importXMLMetadata(QString tempXML){
                             }
                         }
                      }
-                    //QMessageBox::information(this,"Salut","Je suis sorti du label ");
 
                     while (stream.name()=="processes")
                     {
-                        //QMessageBox::information(this,"Salut","Je suis dans processes");
                         stream.readNext();
                         while (stream.isStartElement()==false)
                         {
@@ -774,8 +714,7 @@ void MainWindow::importXMLMetadata(QString tempXML){
 
                         while (stream.name()=="process")
                         {
-                            //QMessageBox::information(this,"Salut","Je suis dans le process "+stream.attributes().first().value().toString());
-                            int noprocess = stream.attributes().first().value().toString().toInt();
+                        	int noprocess = stream.attributes().first().value().toString().toInt();
                             stream.readNext();
                             while (stream.isStartElement()==false)
                             {
@@ -784,7 +723,6 @@ void MainWindow::importXMLMetadata(QString tempXML){
 
                             if (stream.name()=="pos")
                             {
-                                //QMessageBox::information(this,"Salut","Je suis dans process pos");
                                 int nodeX = stream.attributes().first().value().toString().toInt();
                                 int nodeY = stream.attributes().last().value().toString().toInt();
 
@@ -808,7 +746,6 @@ void MainWindow::importXMLMetadata(QString tempXML){
 
                             if (stream.name()=="size")
                             {
-                                //QMessageBox::information(this,"Salut","Je suis dans process size");
                                 stream.readNext();
                                 while (stream.isStartElement()==false)
                                 {
@@ -817,7 +754,6 @@ void MainWindow::importXMLMetadata(QString tempXML){
                             }
                         }
                     }
-                    //QMessageBox::information(this,"Salut","Je suis sorti de processes");
 
                     if(i == (int)myarea->getPHPtr()->getGraphicsScene()->getGSorts().size()-2){
 
@@ -836,7 +772,6 @@ void MainWindow::importXMLMetadata(QString tempXML){
 
             while (stream.name()=="sort_groups")
             {
-                //QMessageBox::information(this,"Salut","Je suis dans sort_groups");
                 stream.readNext();
                 while (stream.isStartElement()==false)
                 {
@@ -847,7 +782,6 @@ void MainWindow::importXMLMetadata(QString tempXML){
 
                 while (stream.name()=="group")
                 {
-                    //QMessageBox::information(this,"Salut","Je suis dans le group "+stream.attributes().first().value().toString());
                     // Getting the name of the group
                     QString groupname = stream.attributes().first().value().toString();
                     // Creating the group in treeArea
@@ -867,9 +801,7 @@ void MainWindow::importXMLMetadata(QString tempXML){
 
                     if (stream.name()=="color")
                     {
-                        //QMessageBox::information(this,"Salut","Je suis dans group color");
                         QString groupcolor = stream.readElementText();
-                        //QMessageBox::information(this,"Salut",groupcolor);
                         groupe->setForeground(0, QBrush(QColor(groupcolor)));
                         stream.readNext();
                         while (stream.isStartElement()==false)
@@ -880,7 +812,6 @@ void MainWindow::importXMLMetadata(QString tempXML){
 
                     while (stream.name()=="sorts_of_group")
                     {
-                        //QMessageBox::information(this,"Salut","Je suis dans sorts_of_group");
                         stream.readNext();
                         while (stream.isStartElement()==false)
                         {
@@ -889,7 +820,6 @@ void MainWindow::importXMLMetadata(QString tempXML){
 
                         while (stream.name()=="sort")
                         {
-                            //QMessageBox::information(this,"Salut","Je suis dans group sort "+ stream.attributes().first().value().toString());
                             // Getting all the sorts in the sorts Tree
                             QList<QTreeWidgetItem*> sortsFound = area->treeArea->sortsTree->findItems("", Qt::MatchContains, 0);
                             // Getting the name of the sort in the group
@@ -921,16 +851,6 @@ void MainWindow::importXMLMetadata(QString tempXML){
                     }
                 }
 
-                /*if (stream.name()=="debug")
-                {
-                    //QMessageBox::information(this,"Salut","Je suis dans debug");
-                    stream.readNext();
-                    while (stream.isStartElement()==false)
-                    {
-                        stream.readNext();
-                    }
-                }*/
-
                 stream.readNext();
                 while(stream.isStartElement()==false)
                     if(stream.atEnd()==true){
@@ -951,8 +871,6 @@ void MainWindow::importXMLMetadata(QString tempXML){
         }
 
         input.close();
-
-        //myarea->getPHPtr()->getGraphicsScene()->updateGraph();
 
     } else {
      QMessageBox::critical(this,"Error","No file opened");
@@ -1279,33 +1197,6 @@ void MainWindow::runStochasticSimulation() {
     } else {
         fileName = "";
     }
-
-    /*//ici
-    QString out1 = QString::fromUtf8(out.data());
-    QString err1 = QString::fromUtf8(err.data());
-    QMessageBox::information(this, "program", program);
-    //for (int i = 0; i < arguments.size(); ++i){
-    //QMessageBox::information(this, "test err", arguments.at(i));
-    //}
-    QMessageBox::information(this, "out", out1);
-    QMessageBox::information(this, "err", err1);
-    //QMessageBox::information(this, "state", state);
-    QString az;
-    QString ae ;
-    if (ok== false){
-         az = "false";
-    }else{
-        az= "true";
-    }
-    if (!state.isEmpty()== false){
-         ae = "false";
-    }else{
-        ae= "true";
-    }
-    QMessageBox::information(this, "!state.isEmpty()", ae);//ok =true && !state.isEmpty()
-*/
-
-    //a  la
 
     //ask the user for duration and output directory
     bool ok1 = false;

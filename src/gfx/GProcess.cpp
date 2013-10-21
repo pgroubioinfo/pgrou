@@ -31,7 +31,7 @@ GProcess::GProcess(ProcessPtr p, GVNode n, qreal graphDPI) : process(p), node(n)
                 node.width + 2*margin,
                 node.height + 2*margin,
                 display);
-    //marginRect->setBrush(QBrush(QColor(255, 0, 0, 100)));
+                
     marginRect->setBrush(Qt::NoBrush);
     marginRect->setPen(Qt::NoPen);
     marginRect->setData(marginZone, true);

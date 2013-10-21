@@ -28,7 +28,7 @@ FunctionForm::FunctionForm(QString fileName):
     pathTab =fileName;
 
     //première fenêtre
-        //combobox
+    //combobox
     choix = new QComboBox;
 
     for (int i=0; i<(int)ConnectionSettings::tabFunction.size();i++ ){
@@ -790,7 +790,7 @@ void FunctionForm::launchCompute(){
             }
             break;
             }
-                }                        //"--no-debug" << "-i" << pathTab << "a" "1" ;
+                }
         }
         }
 
@@ -1090,9 +1090,6 @@ void FunctionForm::getDirectoryNameFileNotExisting(){
         }
     reinterpret_cast<QLineEdit*>(tabLineEdit[now-1])->setText(a);
 }
-
-
-//QMessageBox::critical(this, "Error", "1");
 
 
 

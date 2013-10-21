@@ -247,13 +247,11 @@ void TreeArea::addToGroup(){
                 QTreeWidgetItem* b = new QTreeWidgetItem(this->groupsTree->currentItem());
                 b->setText(0, a->text(0));
                 b->setForeground(0, a->foreground(0));
-                //QColor* coul(this->groupsPalette->value(this->groupsTree->currentItem()));
                 QColor coul = this->groupsPalette->value(this->groupsTree->currentItem());
                 QPen* pen = new QPen();
                 pen->setColor(coul);
                 pen->setWidth(4);
                 this->myPHPtr->getGraphicsScene()->getGSort(a->text(0).toStdString())->getRect()->setPen(*pen);
-                //this->changeSortRectColor(a, this->groupsPalette->value(this->groupsTree->currentItem()));
             }
         }
         else {
