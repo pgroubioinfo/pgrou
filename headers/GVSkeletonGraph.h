@@ -40,7 +40,7 @@ class GVSkeletonGraph {
 		
 		void  setGraphAttributes();
 		
-		void  applyLayout()
+		void  applyLayout();
 		
 		QList<GVNode>  nodes();
 		
