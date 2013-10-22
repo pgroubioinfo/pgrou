@@ -34,7 +34,8 @@ HEADERS 	= 	headers/Action.h 		\
     headers/ArgumentFrame.h \
     headers/FuncFrame.h \
     headers/FunctionForm.h \
-    headers/test/ChoixLigne.h
+    headers/test/ChoixLigne.h \
+    headers/GVSkeletonGraph.h
 				
 INCLUDEPATH = headers headers/axe headers/test
 
@@ -44,6 +45,7 @@ SOURCES			= 	src/gfx/GProcess.cpp	\
 					src/gfx/PHScene.cpp		\
 					src/gviz/GVGraph.cpp	\
 					src/gviz/GVSubGraph.cpp	\
+					src/gviz/GVSkeletonGraph.cpp \
 					src/io/IO.cpp			\
 					src/io/PHIO.cpp			\
 					src/ph/Action.cpp		\
@@ -60,7 +62,7 @@ SOURCES			= 	src/gfx/GProcess.cpp	\
     src/ui/ArgumentFrame.cpp \
     src/ui/FuncFrame.cpp \
     src/ui/FunctionForm.cpp \
-    src/ui/ChoixLigne.cpp
+    src/ui/ChoixLigne.cpp \
 
 #So 2013 (needed for Axe)
 QMAKE_CXXFLAGS += -std=c++0x
