@@ -24,10 +24,6 @@ static inline QString _agget(void *object, QString attr, QString alt=QString()){
 	else return str;
 }
 
-static inline int _agset(void *object, QString attr, QString value){
-	return agsafeset(object, const_cast<char *>(qPrintable(attr)),const_cast<char *>(qPrintable(value)),const_cast<char *>(qPrintable(value)));
-}
-
 static inline Agsym_t* _agnodeattr(Agraph_t* object, QString attr, QString value){
 	return agnodeattr(object, const_cast<char *>(qPrintable(attr)),const_cast<char *>(qPrintable(value)));
 }
@@ -61,6 +57,10 @@ void GVSkeletonGraph::setGraphAttributes(){
 	
 	QString nodePtsWidth = QString("%1").arg(GVSkeletonGraph::nodeSize/_agget(_graph,"dpi", "96,0").replace(',',".").toDouble());
 	_agnodeattr(_graph, "width", nodePtsWidth.replace('.',","));
+}
+
+int GVSkeletonGraph::setGraphObjectAttributes(void *object, QString attr, QString value){
+	return agsafeset(object, const_cast<char *>(qPrintable(attr)),const_cast<char *>(qPrintable(value)),const_cast<char *>(qPrintable(value)));
 }
 
 void GVSkeletonGraph::applyLayout(){

@@ -40,6 +40,8 @@ class GVSkeletonGraph {
 		
 		void  setGraphAttributes();
 		
+		int setGraphObjectAttributes(void *object, QString attr, QString value);
+		
 		void  applyLayout();
 		
 		QList<GVNode>  nodes();
@@ -57,5 +59,9 @@ class GVSkeletonGraph {
 		qreal  getDPI();
 		
 		Agraph_t*  graph();
-
+		
+		protected:
+		
+		Agraph_t* _graph;
+		QMap<QString, Agnode_t*> _nodes;
 };
