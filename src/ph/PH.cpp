@@ -118,10 +118,10 @@ GVGraphPtr PH::toGVGraph(void) {
 GVSkeletonGraphPtr PH::createSkeletonGraph(void){
 	GVSkeletonGraphPtr gSkeleton = make_shared<GVSkeletonGraph>(QString("Skeleton Graph"));
 	QString s;
-	/*for(auto &e : sorts){
+	for(auto &e : sorts){
 		gSkeleton->addNode(makeSkeletonNodeName(e.second->getName()));
 		//_agset(skeletonGraph->getNode(makeSkeletonNodeName(e.second->getName())),"height",nbProcess);
-	}*/
+	}
 	
 	return gSkeleton;
 }
