@@ -8,6 +8,7 @@
 #include "MainWindow.h"
 
 #include <GVGraph.h>
+#include <GVSkeletonGraph.h>
 #include <QDebug>
 
 
@@ -117,6 +118,10 @@ GVGraphPtr PH::toGVGraph(void) {
     res->applyLayout();
 
 	return res;
+}
+
+GVSkeletonGraph PH::createSkeletonGraph(void){
+	
 }
 
 GVGraphPtr PH::updateGVGraph(PHScene *scene) {
