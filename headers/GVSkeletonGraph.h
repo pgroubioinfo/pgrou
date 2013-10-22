@@ -34,7 +34,7 @@ class GVSkeletonGraph {
 
         static const qreal sepValue;
 
-		GVSkeletonGraph(QString name, QFont font);
+		GVSkeletonGraph(QString name, QFont font =QFont());
 
 		virtual ~GVSkeletonGraph();
 		

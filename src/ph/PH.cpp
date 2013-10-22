@@ -92,8 +92,6 @@ GVGraphPtr PH::toGVGraph(void) {
 	GVGraphPtr res = make_shared<GVGraph>(QString("PH Graph"));
 	QString s;
 	
-	GVGraphPtr skeletonGraph = make_shared<GVGraph>(QString("Skeleton Graph"));
-	
     QString posVal;
     // add Sorts and Processes (well named)
 	for (auto &e : sorts) {
@@ -107,11 +105,8 @@ GVGraphPtr PH::toGVGraph(void) {
             _agset(res->getNode(makeProcessName(e.second->getProcess(i))), "pos", posVal);
         }
         
-        skeletonGraph->addNode(makeSkeletonNodeName(e.second->getName()));
         vector<ProcessPtr> listProcess = e.second->getProcesses();
         int nbProcess = listProcess.size();
-        _agset(skeletonGraph->getNode(makeSkeletonNodeName(e.second->getName())),"height",nbProcess);
-        
     }
 	
     // let graphviz calculate an appropriate layout
@@ -121,7 +116,12 @@ GVGraphPtr PH::toGVGraph(void) {
 }
 
 GVSkeletonGraph PH::createSkeletonGraph(void){
-	
+	GVSkeletonGraph gSkeleton = make_shared<GVSkeleton>(QString("Skeleton Graph"));
+	QString s;
+	for(auto &e : sorts){
+		gSkeleton->addNode(makeSkeletonNodeName(e.second->getName()));
+		//_agset(skeletonGraph->getNode(makeSkeletonNodeName(e.second->getName())),"height",nbProcess);
+	}
 }
 
 GVGraphPtr PH::updateGVGraph(PHScene *scene) {
