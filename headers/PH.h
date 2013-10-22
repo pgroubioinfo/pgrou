@@ -6,6 +6,7 @@
 #include <boost/make_shared.hpp>
 #include "Action.h"
 #include "GVGraph.h"
+#include "GVSkeletonGraph.h"
 #include "PHScene.h"
 #include "Process.h"
 #include "Sort.h"
