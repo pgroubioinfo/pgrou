@@ -63,7 +63,7 @@ int GVSkeletonGraph::setGraphObjectAttributes(void *object, QString attr, QStrin
 	return agsafeset(object, const_cast<char *>(qPrintable(attr)),const_cast<char *>(qPrintable(value)),const_cast<char *>(qPrintable(value)));
 }
 
-void GVSkeleton::setFont(QFont font){
+void GVSkeletonGraph::setFont(QFont font){
 	_font = font;
 	setGraphObjectAttributes(_graph,"fontname",font.family());
 }
