@@ -134,7 +134,7 @@ class PH {
           */
 		GVGraphPtr toGVGraph(void);
 		
-		GVSkeletonGraph createSkeletonGraph(void);
+		GVSkeletonGraphPtr createSkeletonGraph(void);
 
         /**
           * @brief updates the representation of the process hitting as a graph after user's customizations
