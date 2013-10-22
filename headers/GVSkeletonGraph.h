@@ -38,24 +38,24 @@ class GVSkeletonGraph {
 
 		virtual ~GVSkeletonGraph();
 		
-		void GVSkeletonGraph::setGraphAttributes();
+		void  setGraphAttributes();
 		
-		void GVSkeletonGraph::applyLayout()
+		void  applyLayout()
 		
-		QList<GVNode> GVSkeletonGraph::nodes();
+		QList<GVNode>  nodes();
 		
-		void GVSkeletonGraph::addNode(const QString& name);
+		void addNode(const QString& name);
 		
-		GVSkeletonGraph::removeNode(const QString& name);
+		void removeNode(const QString& name);
 		
-		GVSkeletonGraph::hasNode(const QString& name);
+		bool hasNode(const QString& name);
 		
-		GVSkeletonGraph::getNode(const QString& name);
+		Agnode_t* getNode(const QString& name);
 		
-		void GVSkeletonGraph::clearNodes();
+		void  clearNodes();
 		
-		qreal GVSkeletonGraph::getDPI();
+		qreal  getDPI();
 		
-		Agraph_t* GVSkeletonGraph::graph();
+		Agraph_t*  graph();
 
 };
