@@ -40,7 +40,7 @@ class GVSkeletonGraph {
 		
 		void  setGraphAttributes();
 		
-		int setGraphObjectAttributes(void *object, QString attr, QString value);
+		void setGraphObjectAttributes(void *object, QString attr, QString value);
 		
 		void setFont(QFont font);
 		
