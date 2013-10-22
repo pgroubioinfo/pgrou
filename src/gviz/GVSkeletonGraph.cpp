@@ -32,11 +32,11 @@ static inline Agsym_t* _agedgeattr(Agraph_t* object, QString attr, QString value
 	return agedgeattr(object, const_cast<char *>(qPrintable(attr)),const_cast<char *>(qPrintable(value)));
 }
 
-static inline _gvLayout(GVC_t* context, Agraph_t* graph, QString alg){
+static inline void _gvLayout(GVC_t* context, Agraph_t* graph, QString alg){
 	gvLayout(context, graph, const_cast<char *>(qPrintable(alg)));
 }
 
-GVSkeletonGraph::GVSkeletonGraph(QString name, QFont font) :{
+GVSkeletonGraph::GVSkeletonGraph(QString name, QFont font) {
 	_context = gvContext();
 	_graph = _agopen(name, AGDIGRAPHSTRICT);
 	setGraphAttributes();
@@ -60,7 +60,7 @@ void GVSkeletonGraph::setGraphAttributes(){
 }
 
 void GVSkeletonGraph::setGraphObjectAttributes(void *object, QString attr, QString value){
-	return agsafeset(object, const_cast<char *>(qPrintable(attr)),const_cast<char *>(qPrintable(value)),const_cast<char *>(qPrintable(value)));
+	agsafeset(object, const_cast<char *>(qPrintable(attr)),const_cast<char *>(qPrintable(value)),const_cast<char *>(qPrintable(value)));
 }
 
 void GVSkeletonGraph::setFont(QFont font){
