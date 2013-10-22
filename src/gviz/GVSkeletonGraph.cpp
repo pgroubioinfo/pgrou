@@ -51,9 +51,9 @@ GVSkeletonGraph::~GVSkeletonGraph(){
 
 void GVSkeletonGraph::setGraphAttributes(){
 	
-	_agset(_graph,"dpi","96,0");
-	QString strSepValue = QString::number(sepValue).prepent("+");
-	_agset(_graph, "sep", strSepValue);
+	setGraphObjectAttributes(_graph,"dpi","96,0");
+	QString strSepValue = QString::number(sepValue).prepend("+");
+	setGraphObjectAttributes(_graph, "sep", strSepValue);
 	
 	QString nodePtsWidth = QString("%1").arg(GVSkeletonGraph::nodeSize/_agget(_graph,"dpi", "96,0").replace(',',".").toDouble());
 	_agnodeattr(_graph, "width", nodePtsWidth.replace('.',","));
@@ -61,6 +61,11 @@ void GVSkeletonGraph::setGraphAttributes(){
 
 int GVSkeletonGraph::setGraphObjectAttributes(void *object, QString attr, QString value){
 	return agsafeset(object, const_cast<char *>(qPrintable(attr)),const_cast<char *>(qPrintable(value)),const_cast<char *>(qPrintable(value)));
+}
+
+void GVSkeleton::setFont(QFont font){
+	_font = font;
+	setGraphObjectAttributes(_graph,"fontname",font.family());
 }
 
 void GVSkeletonGraph::applyLayout(){
@@ -81,7 +86,7 @@ QList<GVNode> GVSkeletonGraph::nodes(){
 		
 		object.centerPos = QPoint(x,y);
 		
-		object.height = node->u.weight * dpi;
+		object.height = node->u.height * dpi;
 		object.width = node->u.width * dpi;
 		
 		list << object;
@@ -92,13 +97,13 @@ QList<GVNode> GVSkeletonGraph::nodes(){
 
 void GVSkeletonGraph::addNode(const QString& name){
 	if(_nodes.contains(name)) removeNode(name);
-	_node.insert(name, _agnode(_graph, name));
+	_nodes.insert(name, _agnode(_graph, name));
 }
 
 void GVSkeletonGraph::removeNode(const QString& name){
 	if(_nodes.contains(name)){
 		agdelete(_graph, _nodes[name]);
-		_node.remove(name);
+		_nodes.remove(name);
 	}
 }
 
@@ -108,7 +113,7 @@ bool GVSkeletonGraph::hasNode(const QString& name){
 }
 
 Agnode_t* GVSkeletonGraph::getNode(const QString& name){
-	if(_nodes.contains(name)) return _node[name];
+	if(_nodes.contains(name)) return _nodes[name];
 	return NULL;
 }
 

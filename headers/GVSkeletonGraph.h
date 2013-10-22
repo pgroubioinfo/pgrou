@@ -42,6 +42,8 @@ class GVSkeletonGraph {
 		
 		int setGraphObjectAttributes(void *object, QString attr, QString value);
 		
+		void setFont(QFont font);
+		
 		void  applyLayout();
 		
 		QList<GVNode>  nodes();
@@ -62,6 +64,8 @@ class GVSkeletonGraph {
 		
 		protected:
 		
+		QFont _font;
+		GVC_t *_context;
 		Agraph_t* _graph;
 		QMap<QString, Agnode_t*> _nodes;
 };
