@@ -87,8 +87,7 @@ QList<GVNode> GVSkeletonGraph::nodes() {
         object.width = node->u.width * dpi;
         list << object;
     }
-	for (auto &s : _subgraphs)
-		list += s->nodes();
+
     return list;
 }
 
@@ -158,12 +157,8 @@ void GVSkeletonGraph::removeNode(const QString& name) {
                 removeEdge(keys.at(i));
     }
 }
-bool GVSkeletonGraph::hasNode (const QString& name) {
-	if(_nodes.contains(name)) return true;
-	for (QMap<QString, GVSubGraphPtr>::const_iterator it = _subgraphs.begin(); it != _subgraphs.end(); ++it)
-		if (it.value()->hasNode(name)) return true;
-	return false;
-}
+
+
 Agnode_t* GVSkeletonGraph::getNode (const QString& name) {
 	if(_nodes.contains(name)) return _nodes[name];
 	for (QMap<QString, GVSubGraphPtr>::const_iterator it = _subgraphs.begin(); it != _subgraphs.end(); ++it)

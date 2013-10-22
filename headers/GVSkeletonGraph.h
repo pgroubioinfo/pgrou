@@ -5,7 +5,6 @@
 #include <QMap>
 #include <QPair>
 #include <QString>
-#include "GVCluster.h"
 #include "GVNode.h"
 #include "GVEdge.h"
 
@@ -187,15 +186,6 @@ class GVSkeletonGraph {
          * @brief Agraph_t the related Graphviz graph
          */
         Agraph_t* _graph;
-
-        /**
-          * @brief checks if the node exists
-          *
-          * @param QString the name of the node which existence is to be checked
-          * @return bool true if node exists, else fase
-          *
-          */
-		bool hasNode (const QString& name);
 
 
 
