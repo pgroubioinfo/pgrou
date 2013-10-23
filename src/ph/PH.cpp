@@ -120,7 +120,7 @@ GVSkeletonGraphPtr PH::createSkeletonGraph(void){
 	QString s;
 	for(auto &e : sorts){
 		gSkeleton->addNode(makeSkeletonNodeName(e.second->getName()));
-		//_agset(skeletonGraph->getNode(makeSkeletonNodeName(e.second->getName())),"height",nbProcess);
+		gSkeleton->setGraphObjectAttributes(skeletonGraph->getNode(makeSkeletonNodeName(e.second->getName())),"height",nbProcess);
 	}
 	
 	return gSkeleton;

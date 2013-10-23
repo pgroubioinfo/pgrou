@@ -73,6 +73,8 @@ void GVSkeletonGraph::applyLayout(){
 	_gvLayout(_context, _graph, "fdp");
 }
 
+// Node management
+
 QList<GVNode> GVSkeletonGraph::nodes(){
 	QList<GVNode> list;
 	qreal dpi = this->getDPI();
@@ -122,6 +124,27 @@ void GVSkeletonGraph::clearNodes(){
 	for(int i=0;i<keys.size();++i){
 		removeNode(keys.at(i));
 	}
+}
+
+// Edge management
+
+void GVSkeletonGraph::addEdge(const QString &source, const QString &target) {
+    if (hasNode(source) && hasNode(target)) {
+        QPair<QString, QString> key(source, target);
+        if(!_edges.contains(key))
+            _edges.insert(key, agedge(_graph, getNode(source), getNode(target)));
+    }
+}
+
+void GVSkeletonGraph::removeEdge(const QString &source, const QString &target) {
+    removeEdge(QPair<QString, QString>(source, target));
+}
+
+void GVSkeletonGraph::removeEdge(const QPair<QString, QString>& key) {
+    if(_edges.contains(key)) {
+        agdelete(_graph, _edges[key]);
+        _edges.remove(key);
+    }
 }
 
 qreal GVSkeletonGraph::getDPI(){

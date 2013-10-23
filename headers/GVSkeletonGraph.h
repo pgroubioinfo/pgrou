@@ -56,6 +56,12 @@ class GVSkeletonGraph {
 		
 		Agnode_t* getNode(const QString& name);
 		
+		void addEdge(const QString &source, const QString &target);
+		
+		void removeEdge(const QString &source, const QString &target);
+		
+		void removeEdge(const QPair<QString, QString>& key);
+		
 		void  clearNodes();
 		
 		qreal  getDPI();
@@ -68,4 +74,5 @@ class GVSkeletonGraph {
 		GVC_t *_context;
 		Agraph_t* _graph;
 		QMap<QString, Agnode_t*> _nodes;
+		QMap<QPair<QString, QString>, Agedge_t*> _edges;
 };
