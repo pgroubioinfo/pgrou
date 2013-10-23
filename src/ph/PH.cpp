@@ -123,6 +123,26 @@ GVSkeletonGraphPtr PH::createSkeletonGraph(void){
 		gSkeleton->setGraphObjectAttributes(skeletonGraph->getNode(makeSkeletonNodeName(e.second->getName())),"height",nbProcess);
 	}
 	
+	QList<QPair<QString, QString>> linkSort = new QList<QPair<QString, QString>>();
+	
+	for (ActionPtr &a : actions){
+		QString sourceName = a->getSource()->getSort()->getName();
+		QString targetName = a->getTarget()->getSort()->getName();
+		QPair<QString, QString> pairFound = NULL;
+		if(linkSort.contains(new QPair<QString, QString>(sourceName, targetName))){
+			pairFound = new QPair<QString, QString>(sourceName, targetName);
+		}else if(linkSort.contains(new QPair<QString, QString>(targetName, sourceName))){
+			pairFound = new QPair<QString, QString>(targetName, sourceName);
+		}
+		if(pairFound = NULL){
+			linkSort.append(pairFound);
+		}
+	}
+	
+	for(QPair<QString, QString> pair : linkSort){
+		gSkeleton->addEdge(pair.first, pair.second);
+	} 
+	
 	return gSkeleton;
 }
 
