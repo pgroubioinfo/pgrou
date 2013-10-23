@@ -128,13 +128,17 @@ GVSkeletonGraphPtr PH::createSkeletonGraph(void){
 	for (ActionPtr &a : actions){
 		QString sourceName = a->getSource()->getSort()->getName();
 		QString targetName = a->getTarget()->getSort()->getName();
-		QPair<QString, QString> pairFound = NULL;
+		QPair<QString, QString> pairFound;
+		bool pairAlreadyExisting = false;
+		
 		if(linkSort.contains(new QPair<QString, QString>(sourceName, targetName))){
 			pairFound = new QPair<QString, QString>(sourceName, targetName);
+			pairAlreadyExisting = true;
 		}else if(linkSort.contains(new QPair<QString, QString>(targetName, sourceName))){
 			pairFound = new QPair<QString, QString>(targetName, sourceName);
+			pairAlreadyExisting = true;
 		}
-		if(pairFound = NULL){
+		if(!pairAlreadyExisting){
 			linkSort.append(pairFound);
 		}
 	}
