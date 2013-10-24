@@ -22,7 +22,6 @@ void PHScene::doRender(void) {
 
     // retrieve graph
 	GVGraphPtr graph = ph->toGVGraph();
-	ph->createSkeletonGraph();
 	
     // create GProcesses linking actual processes (PH info) with GVNodes (display info)
     QList<GVNode> gnodes = graph->nodes();

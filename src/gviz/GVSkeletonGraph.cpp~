@@ -10,8 +10,6 @@ const qreal GVSkeletonGraph::DotDefaultDPI=72.0;
 const qreal GVSkeletonGraph::nodeSize = 50;
 const qreal GVSkeletonGraph::sepValue = 12.0;
 
-// Utils
-
 static inline Agnode_t* _agnode(Agraph_t* object, QString name){
 	return agnode(object, const_cast<char *>(qPrintable(name)));
 }
