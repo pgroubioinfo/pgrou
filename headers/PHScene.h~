@@ -8,7 +8,6 @@
 #include "GProcess.h"
 #include "GSort.h"
 #include "GVGraph.h"
-#include "GVSkeletonGraph.h"
 
 
 /**

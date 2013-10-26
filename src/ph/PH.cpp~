@@ -122,8 +122,6 @@ GVSkeletonGraphPtr PH::createSkeletonGraph(void){
 		gSkeleton->addNode(makeSkeletonNodeName(e.second->getName()));
 	}
 	
-	QList<QPair<QString, QString>> linkSort;
-	
 	for (ActionPtr &a : actions){
 		QString sourceName = QString::fromStdString(a->getSource()->getSort()->getName());
 		QString targetName = QString::fromStdString(a->getTarget()->getSort()->getName());
@@ -131,11 +129,8 @@ GVSkeletonGraphPtr PH::createSkeletonGraph(void){
 			gSkeleton->addEdge(sourceName,targetName);
 		}
 	}
+	gSkeleton->applyLayout();	
 
-	for(QPair<QString, QString> pair : linkSort){
-		gSkeleton->addEdge(pair.first, pair.second);
-	}
-	
 	return gSkeleton;
 }
 

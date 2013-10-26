@@ -153,9 +153,7 @@ class GSort : public QGraphicsRectItem {
           * @brief the related cluster
           *
           */
-		GVCluster cluster;
-
-		GVNode node;		
+		GVCluster cluster;		
 		
         /**
           * @brief the palette of colors that may be used as color member

@@ -30,7 +30,8 @@ PH::PH () {
 // trigger the rendering in the Scene
 void PH::render () {
     if (scene.use_count() == 0) scene = make_shared<PHScene>(this);
-    scene->doRender();
+    //scene->doRender();
+    scene->drawFromSkeleton();
 }
 
 // get graphics scene for display
@@ -129,7 +130,8 @@ GVSkeletonGraphPtr PH::createSkeletonGraph(void){
 			gSkeleton->addEdge(sourceName,targetName);
 		}
 	}
-	
+	gSkeleton->applyLayout();	
+
 	return gSkeleton;
 }
 
