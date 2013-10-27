@@ -44,7 +44,7 @@ GSort::GSort(SortPtr s, GVCluster c) :
 
 }
 
-GSort::GSort(SortPtr s, GVNode n) : sort(s), node(n) {
+GSort::GSort(SortPtr s, GVNode n) : QGraphicsRectItem(n.centerPos.x()-n.width/8, yCornerPos, n.width/4, n.height),sort(s), node(n) {
 
     // graphic items set and Actions color
     color = makeColor();
@@ -55,8 +55,7 @@ GSort::GSort(SortPtr s, GVNode n) : sort(s), node(n) {
     yCornerPos = n.centerPos.y()-heightRect/2;
 
     // rectangle
-    _rect = new QGraphicsRectItem(this);
-    _rect->setRect(QRectF(xCornerPos, yCornerPos, widthRect, heightRect));
+    _rect = new QGraphicsRectItem(QRectF(xCornerPos, yCornerPos, widthRect, heightRect),this);
     _rect->setPen(QPen(QColor(7,54,66)));
     _rect->setBrush(QBrush(QColor(7,54,66)));
 
@@ -75,13 +74,13 @@ GSort::GSort(SortPtr s, GVNode n) : sort(s), node(n) {
     vector<ProcessPtr> processes = sort->getProcesses();
     int nbProcess = processes.size();
     int currPosYProcess = heightRect/(1.5*nbProcess);
-    /*for(ProcessPtr &p : processes){
+    for(ProcessPtr &p : processes){
 	gProcesses.push_back(make_shared<GProcess>(p, xCornerPos + widthRect/2, yCornerPos+ currPosYProcess, widthRect-10, heightRect/(nbProcess+1)-30));
 	currPosYProcess+=heightRect/(nbProcess+1);
     }
     for(GProcessPtr &gp: gProcesses){
 	gp->getDisplayItem()->setParentItem(this);
-    }*/
+    }
 
 }
 
