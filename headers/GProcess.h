@@ -10,7 +10,7 @@
 /**
   * @file GProcess.h
   * @brief header for the GProcess class
-  * @author PAPPL_2012
+  * @author PAPPL_2013
   *
   */
 
@@ -38,6 +38,16 @@ class GProcess {
           */
         GProcess(ProcessPtr p, GVNode n, qreal graphDPI);
 
+        /**
+          * @brief constructor
+          *
+          * @param ProcessPtr the related Process object
+          * @param double centerX position of the center of the ellipse in the x axis
+          * @param double centerY position of the center of the ellipse in the y axis
+          * @param double width width of the ellipse
+          * @param double height height of the ellipse
+
+          */
 	GProcess(ProcessPtr p,double centerX, double centerY, double width, double height);
 
 		~GProcess();

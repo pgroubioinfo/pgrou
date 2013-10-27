@@ -74,7 +74,7 @@ GSort::GSort(SortPtr s, GVNode n) : sort(s), node(n) {
     // set related GProcesses as children (so they move with this GSort)
     vector<ProcessPtr> processes = sort->getProcesses();
     int nbProcess = processes.size();
-    int currPosYProcess = heightRect/nbProcess;
+    int currPosYProcess = heightRect/(1.5*nbProcess);
     for(ProcessPtr &p : processes){
 	gProcesses.push_back(make_shared<GProcess>(p, xCornerPos + widthRect/2, yCornerPos+ currPosYProcess, widthRect-10, heightRect/(nbProcess+1)-30));
 	currPosYProcess+=heightRect/(nbProcess+1);
@@ -82,6 +82,7 @@ GSort::GSort(SortPtr s, GVNode n) : sort(s), node(n) {
     for(GProcessPtr &gp: gProcesses){
 	gp->getDisplayItem()->setParentItem(this);
     }
+
 }
 
 GSort::~GSort() {

@@ -61,6 +61,7 @@ void PHScene::drawFromSkeleton(void){
 			}
 		}	
 	}
+	// Clear the scene and add sorts item (containing also processes) to the scene
 	clear();
     	for (auto &s : sorts){
         	addItem(s.second.get());

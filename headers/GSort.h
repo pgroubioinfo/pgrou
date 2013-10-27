@@ -31,7 +31,7 @@ class GSort : public QGraphicsRectItem {
 
 	public:
 
-        /**
+        /** 
           * @brief constructor
           *
           * @param SortPtr the related Sort object
@@ -39,6 +39,14 @@ class GSort : public QGraphicsRectItem {
           */
 		GSort(SortPtr p, GVCluster c);
 
+        /**
+          * @brief constructor
+          *
+          * @param SortPtr the related Sort object
+
+          * @param GVNode the node of the skeleton graph containing layout info
+
+          */
 		GSort(SortPtr p, GVNode n);
 
 		~GSort();
@@ -152,6 +160,13 @@ class GSort : public QGraphicsRectItem {
           *
           */
 		SortPtr sort;
+
+        /**
+          * @brief list of GProcessPtr contained by the sort
+
+          *
+
+          */
 		vector<GProcessPtr> gProcesses;
 
         /**

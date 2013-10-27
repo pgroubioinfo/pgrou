@@ -61,11 +61,11 @@ void PHScene::drawFromSkeleton(void){
 			}
 		}	
 	}
+	// Clear the scene and draw sorts
 	clear();
     	for (auto &s : sorts){
         	addItem(s.second.get());
 	}
-    	draw();
 }
 
 // draw all the elements of the scene
