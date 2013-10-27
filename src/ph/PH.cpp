@@ -105,9 +105,6 @@ GVGraphPtr PH::toGVGraph(void) {
             posVal = QString::number(0).append(",").append(QString::number(i)).append("!");
             _agset(res->getNode(makeProcessName(e.second->getProcess(i))), "pos", posVal);
         }
-        
-        vector<ProcessPtr> listProcess = e.second->getProcesses();
-        int nbProcess = listProcess.size();
     }
 	
     // let graphviz calculate an appropriate layout
@@ -118,9 +115,16 @@ GVGraphPtr PH::toGVGraph(void) {
 
 GVSkeletonGraphPtr PH::createSkeletonGraph(void){
 	GVSkeletonGraphPtr gSkeleton = make_shared<GVSkeletonGraph>(QString("Skeleton Graph"));
-	QString s;
+	QString sortName;
+        vector<ProcessPtr> listProcess;
+        QString nbProcess;
 	for(auto &e : sorts){
-		gSkeleton->addNode(makeSkeletonNodeName(e.second->getName()));
+		sortName = makeSkeletonNodeName(e.second->getName());
+		listProcess = e.second->getProcesses();
+		nbProcess = QString::number(listProcess.size());
+		gSkeleton->addNode(sortName);
+		gSkeleton->setGraphObjectAttributes(gSkeleton->getNode(sortName),"height",nbProcess);
+		gSkeleton->setGraphObjectAttributes(gSkeleton->getNode(sortName),"fixedsize","true");
 	}
 	
 	for (ActionPtr &a : actions){

@@ -7,8 +7,8 @@
 #include "GVSkeletonGraph.h"
 
 const qreal GVSkeletonGraph::DotDefaultDPI=72.0;
-const qreal GVSkeletonGraph::nodeSize = 50;
-const qreal GVSkeletonGraph::sepValue = 12.0;
+const qreal GVSkeletonGraph::nodeSize = 400;
+const qreal GVSkeletonGraph::sepValue = 2000.0;
 
 // Utils
 
@@ -72,7 +72,7 @@ void GVSkeletonGraph::setFont(QFont font){
 
 void GVSkeletonGraph::applyLayout(){
 	gvFreeLayout(_context, _graph);
-	_gvLayout(_context, _graph, "fdp");
+	_gvLayout(_context, _graph, "sfdp");
 }
 
 // Node management
