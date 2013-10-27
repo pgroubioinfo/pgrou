@@ -2,7 +2,7 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsTextItem>
 #include <QColor>
-#include <list>
+#include <vector>
 #include "PH.h"
 #include "Sort.h"
 #include "GVCluster.h"

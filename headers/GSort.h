@@ -8,7 +8,6 @@
 #include "GVCluster.h"
 #include "GVNode.h"
 #include "GProcess.h"
-#include "GSimpleProcess.h"
 
 /**
   * @file GSort.h
