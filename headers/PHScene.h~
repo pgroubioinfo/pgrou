@@ -8,6 +8,8 @@
 #include "GProcess.h"
 #include "GSort.h"
 #include "GVGraph.h"
+#include "GVSkeletonGraph.h"
+
 
 
 /**
@@ -24,6 +26,8 @@ using std::string;
 class PH;
 class GProcess;
 typedef boost::shared_ptr<GProcess> GProcessPtr;
+class GSimpleProcess;
+typedef boost::shared_ptr<GSimpleProcess> GSimpleProcessPtr;
 class GSort;
 typedef boost::shared_ptr<GSort> GSortPtr;
 class GAction;

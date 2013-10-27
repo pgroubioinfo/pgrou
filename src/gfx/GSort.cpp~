@@ -66,18 +66,29 @@ GSort::GSort(SortPtr s, GVNode n) : sort(s), node(n) {
     text->setDefaultTextColor(*color);
     text->setPos(xCornerPos+widthRect/2, yCornerPos);
     QSizeF textSize = text->document()->size();
-    text->setPos(text->x() - textSize.width()/2, text->y() + textSize.height()/2);
+    text->setPos(text->x() - textSize.width()/2, text->y());
 
     setCursor(QCursor(Qt::OpenHandCursor));
     setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
 
+    // set related GProcesses as children (so they move with this GSort)
+    vector<ProcessPtr> processes = sort->getProcesses();
+    int nbProcess = processes.size();
+    int currPosYProcess = heightRect/nbProcess;
+    for(ProcessPtr &p : processes){
+	gProcesses.push_back(make_shared<GProcess>(p, xCornerPos + widthRect/2, yCornerPos+ currPosYProcess, widthRect-10, heightRect/(nbProcess+1)-30));
+	currPosYProcess+=heightRect/(nbProcess+1);
+    }
+    for(GProcessPtr &gp: gProcesses){
+	gp->getDisplayItem()->setParentItem(this);
+    }
 }
 
 GSort::~GSort() {
+    gProcesses.clear();
     delete _rect;
-    delete text;
+    delete text;   
 }
-
 
 // mouse press event handler: start "drag"
 void GSort::mousePressEvent(QGraphicsSceneMouseEvent *event) {

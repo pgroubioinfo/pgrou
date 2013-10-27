@@ -2,11 +2,13 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsTextItem>
 #include <QColor>
-#include <list>
+#include <vector>
 #include "PH.h"
 #include "Sort.h"
 #include "GVCluster.h"
 #include "GVNode.h"
+#include "GProcess.h"
+#include "GSimpleProcess.h"
 
 /**
   * @file GSort.h
@@ -17,6 +19,8 @@
 
 class GSort;
 typedef boost::shared_ptr<GSort> GSortPtr;
+class GSimpleProcess;
+typedef boost::shared_ptr<GProcess> GProcessPtr;
 
 
 /**
@@ -39,6 +43,7 @@ class GSort : public QGraphicsRectItem {
 		GSort(SortPtr p, GVNode n);
 
 		~GSort();
+
 
         /**
           * @brief get the rect item
@@ -148,6 +153,7 @@ class GSort : public QGraphicsRectItem {
           *
           */
 		SortPtr sort;
+		vector<GProcessPtr> gProcesses;
 
         /**
           * @brief the related cluster

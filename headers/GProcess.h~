@@ -38,7 +38,7 @@ class GProcess {
           */
         GProcess(ProcessPtr p, GVNode n, qreal graphDPI);
 
-	GProcess(ProcessPtr p,double centerX, double centerY, double width, double height);
+	GProcess(ProcessPtr p,double xCornerPos, double yCornerPos, double width, double height);
 
 		~GProcess();
 
