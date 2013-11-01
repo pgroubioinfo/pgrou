@@ -162,7 +162,7 @@ class GSort : public QGraphicsRectItem {
 		SortPtr sort;
 
         /**
-          * @brief list of GProcessPtr contained by the sort
+          * @brief the related Sort
 
           *
 

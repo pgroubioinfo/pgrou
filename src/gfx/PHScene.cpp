@@ -22,24 +22,19 @@ void PHScene::doRender(void) {
 
     // retrieve graph
 	GVGraphPtr graph = ph->toGVGraph();
-	ph->createSkeletonGraph();
 	
     // create GProcesses linking actual processes (PH info) with GVNodes (display info)
     QList<GVNode> gnodes = graph->nodes();
 	for (GVNode &gn : gnodes) {
-        for (SortPtr &s : ph->getSorts()) {
-            for (ProcessPtr &p : s->getProcesses()) {
-                if (gn.name == makeProcessName(p)) {
-                    GProcessPtr gp = make_shared<GProcess>(p, gn, graph->getDPI());
-                    processes.push_back(gp);
-                    p.get()->setGProcess(gp);
-                }
-               // else{
-
-                 //   throw process_not_found();
-                //}
-			}
-        }
+            for (SortPtr &s : ph->getSorts()) {
+            	for (ProcessPtr &p : s->getProcesses()) {
+            	    if (gn.name == makeProcessName(p)) {
+            	        GProcessPtr gp = make_shared<GProcess>(p, gn, graph->getDPI());
+            	        processes.push_back(gp);
+            	        p.get()->setGProcess(gp);
+            	    }
+	    	}
+            }
 	}
 	
     // create GSorts linking actual sorts (PH info) with GVClusters (display info)
@@ -55,6 +50,23 @@ void PHScene::doRender(void) {
     draw();
 }
 
+void PHScene::drawFromSkeleton(void){
+	GVSkeletonGraphPtr gSkeleton = ph->createSkeletonGraph();
+	
+	QList<GVNode> gSkeletonNodes = gSkeleton->nodes();
+	for(GVNode &gn : gSkeletonNodes){
+		for(SortPtr &s : ph->getSorts()){
+			if(gn.name == makeSkeletonNodeName(s->getName())){
+				sorts.insert(GSortEntry(s->getName(), make_shared<GSort>(s,gn)));			
+			}
+		}	
+	}
+	// Clear the scene and add sorts item (containing also processes) to the scene
+	clear();
+    	for (auto &s : sorts){
+        	addItem(s.second.get());
+	}
+}
 
 // draw all the elements of the scene
 void PHScene::draw(void) {

@@ -44,7 +44,7 @@ GSort::GSort(SortPtr s, GVCluster c) :
 
 }
 
-GSort::GSort(SortPtr s, GVNode n) : QGraphicsRectItem(n.centerPos.x()-n.width/8, n.centerPos.y()-n.height/2, n.width/4, n.height),sort(s), node(n) {
+GSort::GSort(SortPtr s, GVNode n) : QGraphicsRectItem(n.centerPos.x()-n.width/8, yCornerPos, n.width/4, n.height),sort(s), node(n) {
 
     // graphic items set and Actions color
     color = makeColor();
