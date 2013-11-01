@@ -51,7 +51,7 @@ GProcess::GProcess(ProcessPtr p,double centerX, double centerY, double width, do
     display = new QGraphicsItemGroup();
 
     // ellipse
-    ellipse = new QGraphicsEllipseItem (centerX, centerY,
+    ellipse = new QGraphicsEllipseItem (centerX-width/2, centerY-height/2,
                                         width, height, display);
 	ellipse->setPen(QPen(QColor(238,232,213)));
 	ellipse->setBrush(QBrush(QColor(238,232,213)));
@@ -85,7 +85,7 @@ GProcess::GProcess(ProcessPtr p,double centerX, double centerY, double width, do
 GProcess::~GProcess() {
     delete ellipse;
     delete text;
-	delete display;
+    delete display;
 }
 
 

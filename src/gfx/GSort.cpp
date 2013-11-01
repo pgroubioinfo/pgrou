@@ -101,7 +101,6 @@ void GSort::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 
     setCursor(QCursor(Qt::ClosedHandCursor));
 
-    dynamic_cast<PHScene*>(scene())->hideActions();
 
     // record coordinates for drawing item when mouse is moved/released
     initPosPoint.setX(pos().x());
@@ -132,38 +131,6 @@ void GSort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     // update item position
     setX(initPosPoint.x() + event->scenePos().x() - eventPressPoint.x());
     setY(initPosPoint.y() + event->scenePos().y() - eventPressPoint.y());
-
-    bool collisionDetected = false;
-    vector<ProcessPtr> processes = sort->getProcesses();
-    for (ProcessPtr &process : processes) {
-        if (process->getGProcess()->checkCollisions()) {
-            collisionDetected = true;
-            break;
-        }
-    }
-
-    if (collisionDetected) {
-
-        setX(initPosPoint.x());
-        setY(initPosPoint.y());
-
-        dynamic_cast<PHScene*>(scene())->showActions();
-
-    } else {
-
-        // update cluster position
-        cluster.topLeft.setX(boundingRect().x() + pos().x());
-        cluster.topLeft.setY(boundingRect().y() + pos().y());
-
-        // update nodes positions
-        for (ProcessPtr &process : processes) {
-            process->getGProcess()->setNodeCoords(
-                        pos().x() - initPosPoint.x(),
-                        pos().y() - initPosPoint.y());
-        }
-
-        dynamic_cast<PHScene*>(scene())->updateGraph();
-    }
 
     event->accept();
 
