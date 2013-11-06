@@ -34,17 +34,18 @@ GAction::GAction(ActionPtr a, PHScene* sc) : scene(sc), action(a) {
     GProcessPtr source = action->getSource()->getGProcess();
     GProcessPtr target = action->getTarget()->getGProcess();
 
+
     QVector2D* hitVector = new QVector2D(*(target->getCenterPoint()) - *(source->getCenterPoint()));
     hitVector->normalize();
 
-    QSize* sizeSource = source->getSizeEllipse();
-    QSize* sizeTarget = source->getSizeEllipse();
+    QSizeF* sizeSource = source->getSizeEllipse();
+    QSizeF* sizeTarget = source->getSizeEllipse();
 
-    QPoint* sourcePointLine = new QPoint(sizeSource->width()*hitVector->x()+source->getCenterPoint()->x(),sizeSource->height()*hitVector->y()+source->getCenterPoint()->y());
+    QPointF* sourcePointLine = new QPointF(sizeSource->width()*hitVector->x()/2 + source->getCenterPoint()->x(),sizeSource->height()*hitVector->y()/2 + source->getCenterPoint()->y());
 
-    QPoint* targetPointLine = new QPoint(-sizeSource->width()*hitVector->x()+target->getCenterPoint()->x(),sizeSource->height()*hitVector->y()+source->getCenterPoint()->y());
+    QPointF* targetPointLine = new QPointF(-sizeTarget->width()*hitVector->x()/2 + target->getCenterPoint()->x(),-sizeTarget->height()*hitVector->y()/2 + target->getCenterPoint()->y());
 
-    hitLine = new QGraphicsLineItem(QLine(*sourcePointLine,*targetPointLine),display);
+    hitLine = new QGraphicsLineItem(QLineF(*targetPointLine,*sourcePointLine),display);
     hitLine->setPen(QPen(QColor(0,0,0)));
 }
 
