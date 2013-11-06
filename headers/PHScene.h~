@@ -151,6 +151,6 @@ class PHScene: public QGraphicsScene {
           * @param GVGraphPtr a smart pointer to the graphviz graph to convert
           *
           */
-        void createActions(GVGraphPtr graph);
+        void createActions();
 
 };

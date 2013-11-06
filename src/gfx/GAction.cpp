@@ -44,7 +44,11 @@ GAction::GAction(ActionPtr a, PHScene* sc) : scene(sc), action(a) {
 
     QPoint* targetPointLine = new QPoint(-sizeSource->width()*hitVector->x()+target->getCenterPoint()->x(),sizeSource->height()*hitVector->y()+source->getCenterPoint()->y());
 
-    hitLine = new QLine(*sourcePointLine,*targetPointLine);
+    hitLine = new QGraphicsLineItem(QLine(*sourcePointLine,*targetPointLine),display);
+    hitLine->setPen(QPen(QColor(0,0,0)));
+}
+
+GAction::GAction(){
 }
 
 // Important for the destructor : do not delete scene, it's owned by a shared pointer in PH.h

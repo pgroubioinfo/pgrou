@@ -80,6 +80,8 @@ GSort::GSort(SortPtr s, GVNode n) : QGraphicsRectItem(n.centerPos.x()-n.width/8,
     }
     for(GProcessPtr &gp: gProcesses){
 	gp->getDisplayItem()->setParentItem(this);
+	ProcessPtr* p = gp->getProcess();
+	(*p)->getNumber();
     }
 }
 
