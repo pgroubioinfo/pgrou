@@ -137,7 +137,7 @@ class PHScene: public QGraphicsScene {
           * @brief vector of the Processes drawn in the scene
           *
           */
-		std::vector<GProcessPtr> processes;
+	std::vector<GProcessPtr> processes;
 
         /**
           * @brief vector of the Actions drawn in the scene

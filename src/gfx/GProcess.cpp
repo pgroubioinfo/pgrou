@@ -52,8 +52,8 @@ GProcess::GProcess(ProcessPtr p,double centerX, double centerY, double width, do
 
 
     // init size of the ellipse and the position of the center
-    size = new QSize(width,height);
-    center = new QPoint(centerX,centerY);
+    size = new QSizeF(width,height);
+    center = new QPointF(centerX,centerY);
 
     // ellipse
     ellipse = new QGraphicsEllipseItem (center->x()-size->width()/2, center->y()-size->height()/2,
@@ -106,9 +106,9 @@ GVNode* GProcess::getNode() { return &(this->node); }
 
 QGraphicsRectItem* GProcess::getMarginRect() { return this->marginRect; }
 
-QPoint* GProcess::getCenterPoint() {return this->center;}
+QPointF* GProcess::getCenterPoint() {return this->center;}
 
-QSize* GProcess::getSizeEllipse() {return this->size;}
+QSizeF* GProcess::getSizeEllipse() {return this->size;}
 
 void GProcess::setNodeCoords(int dx, int dy) {
     node.centerPos.setX(node.centerPos.x() + dx);

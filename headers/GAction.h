@@ -53,6 +53,8 @@ class GAction {
       */
 	GAction(ActionPtr a, PHScene* sc);
 
+	GAction();
+
         ~GAction();
 
      /**
@@ -108,7 +110,7 @@ class GAction {
           * @brief line representing the first part of the action
           *
           */
-	QLine* hitLine;
+	QGraphicsLineItem* hitLine;
 
         /**
           * @brief the related Action

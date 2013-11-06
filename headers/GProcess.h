@@ -110,7 +110,7 @@ class GProcess {
           * @return GPoint the center of the ellipse
           *
           */
-	QPoint* getCenterPoint();
+	QPointF* getCenterPoint();
 
         /**
           * @brief get the size of the ellipse representing the process
@@ -118,7 +118,7 @@ class GProcess {
           * @return GSize the size of the ellipse
           *
           */
-	QSize* getSizeEllipse();
+	QSizeF* getSizeEllipse();
 
         /**
           * @brief checks collisions with margins of other GProcess items (see graph attribute "sep" in GVSubGraph)
@@ -149,13 +149,13 @@ class GProcess {
           * @brief position of the center of the ellipse representing the process
           *
           */
-	QPoint* center;
+	QPointF* center;
 
        /**
           * @brief size of the ellipse representing the process
           *
           */
-	QSize* size;
+	QSizeF* size;
 
         /**
           * @brief the graphical item representing the ellipse of the Process

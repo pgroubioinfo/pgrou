@@ -67,9 +67,12 @@ void PHScene::drawFromSkeleton(void){
         	addItem(s.second.get());
 	}
 
+        createActions();
+
 	for (auto &a : actions){
-	
+		addItem(a->getDisplayItem());
 	}
+
 }
 
 // draw all the elements of the scene
@@ -194,7 +197,7 @@ void PHScene::updateGraphForImport() {
 void PHScene::createActions() {
     // create GAction items
     for (ActionPtr &a : ph->getActions()) {
-    	actions.push_back(make_shared<GAction>(a, this));
+    	actions.push_back(make_shared<GAction>(a,this));
     }
 
 }
