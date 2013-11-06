@@ -84,10 +84,18 @@ class GVSkeletonGraph {
 		 */
 		void  applyLayout();
 
+		/**
+
+		 * @brief export the graph into the file out.png (for test purpose)
+
+		 */
+		void exportToPng();
+
 		// Node management
 		
 		/**
 		 * @brief set an attribute to a given value for a graph element
+		 *
 		 * @return a list QList<GVNode> containing nodes of the graph
 		 */
 		QList<GVNode>  nodes();
@@ -117,24 +125,53 @@ class GVSkeletonGraph {
 		 */	
 		Agnode_t* getNode(const QString& name);
 
+		/**
+		 * @brief remove all nodes of the graph
+		 */
+		void  clearNodes();
+
 		// Edge management
 
 		/**
 		 * @brief add a edge to the graph
-		 * @param QString name the name of the  to add to the graph
+		 * @param QString source the name first node related to the edge
+		 * @param QString target the name second node related to the edge
 		 */			
 		void addEdge(const QString &source, const QString &target);
 		
+		/**
+		 * @brief remove a edge to the graph
+		 * @param QString source the name first node related to the edge
+		 * @param QString target the name second node related to the edge
+		 */
 		void removeEdge(const QString &source, const QString &target);
-		
+
+		/**
+		 * @brief remove a edge to the graph
+		 * @param QPair<QString, QString> key pair of nodes related to the edge
+		 */	
 		void removeEdge(const QPair<QString, QString>& key);
 
+		/**
+		 * @brief check if a edge exists between two nodes in the graph
+		 * @param QString source the name first node related to the edge
+		 * @param QString target the name second node related to the edge
+		 * @return bool true if the connection exists, false if it doesn't
+		 */
 		bool connectionExists(const QString &sourceName, const QString &targetName);
-		
-		void  clearNodes();
-		
+
+		/**
+		 * @brief gets the DPI value
+		 *
+		 * @return qreal the DPI value
+		 */
 		qreal  getDPI();
-		
+
+		/**
+		 * @brief gets the graphviz graph struct of this GVSkeletonGraph
+		 *
+		 * @return Agraph_t* a pointer to the graph
+		 */		
 		Agraph_t*  graph();
 		
 		protected:

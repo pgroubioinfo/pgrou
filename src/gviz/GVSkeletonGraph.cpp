@@ -72,7 +72,12 @@ void GVSkeletonGraph::setFont(QFont font){
 
 void GVSkeletonGraph::applyLayout(){
 	gvFreeLayout(_context, _graph);
-	_gvLayout(_context, _graph, "sfdp");
+	_gvLayout(_context, _graph, "dot");
+}
+
+
+void GVSkeletonGraph::exportToPng() {
+	gvRenderFilename(_context,_graph,"png","out.png");
 }
 
 // Node management
@@ -160,3 +165,4 @@ qreal GVSkeletonGraph::getDPI(){
 }
 
 Agraph_t* GVSkeletonGraph::graph() {return this->_graph;}
+
