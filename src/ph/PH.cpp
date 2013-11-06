@@ -128,13 +128,13 @@ GVSkeletonGraphPtr PH::createSkeletonGraph(void){
 	}
 	
 	for (ActionPtr &a : actions){
-		QString sourceName = QString::fromStdString(a->getSource()->getSort()->getName());
-		QString targetName = QString::fromStdString(a->getTarget()->getSort()->getName());
-		if(gSkeleton->connectionExists(sourceName,targetName)){
+		QString sourceName = makeSkeletonNodeName(a->getSource()->getSort()->getName());
+		QString targetName = makeSkeletonNodeName(a->getTarget()->getSort()->getName());
+		if(!gSkeleton->connectionExists(sourceName,targetName)&&(QString::compare(sourceName,targetName)!=0)){
 			gSkeleton->addEdge(sourceName,targetName);
 		}
 	}
-	gSkeleton->applyLayout();	
+	gSkeleton->applyLayout();
 
 	return gSkeleton;
 }

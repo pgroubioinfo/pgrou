@@ -13,9 +13,6 @@
 #include "FunctionForm.h"
 #include "GSort.h"
 #include <QThread>
-#include <sstream>
-#include <time.h> 
-#include <fstream>
 
 MainWindow* MainWindow::mwThis;
 

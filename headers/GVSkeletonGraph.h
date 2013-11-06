@@ -84,6 +84,13 @@ class GVSkeletonGraph {
 		 */
 		void  applyLayout();
 
+		/**
+
+		 * @brief export the graph into the file out.png (for test purpose)
+
+		 */
+		void exportToPng();
+
 		// Node management
 		
 		/**
