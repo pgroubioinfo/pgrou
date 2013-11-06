@@ -51,7 +51,7 @@ class GAction {
       * @param ActionPtr the related Action object
       * @param PHScene the related scene
       */
-	GAction(ActionPtr a, PHScene* sc);
+	GAction(ActionPtr a, PHScene* sc)
 
         ~GAction();
 
