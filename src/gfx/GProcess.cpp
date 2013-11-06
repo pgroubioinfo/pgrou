@@ -50,9 +50,14 @@ GProcess::GProcess(ProcessPtr p,double centerX, double centerY, double width, do
 
     display = new QGraphicsItemGroup();
 
+
+    // init size of the ellipse and the position of the center
+    size = new QSize(width,height);
+    center = new QPoint(centerX,centerY);
+
     // ellipse
-    ellipse = new QGraphicsEllipseItem (centerX-width/2, centerY-height/2,
-                                        width, height, display);
+    ellipse = new QGraphicsEllipseItem (center->x()-size->width()/2, center->y()-size->height()/2,
+                                        size->width(), size->height(), display);
 	ellipse->setPen(QPen(QColor(238,232,213)));
 	ellipse->setBrush(QBrush(QColor(238,232,213)));
 
@@ -85,6 +90,8 @@ GProcess::GProcess(ProcessPtr p,double centerX, double centerY, double width, do
 GProcess::~GProcess() {
     delete text;
     delete ellipse;
+    delete center;
+    delete size;
     delete display;
 }
 
@@ -99,6 +106,9 @@ GVNode* GProcess::getNode() { return &(this->node); }
 
 QGraphicsRectItem* GProcess::getMarginRect() { return this->marginRect; }
 
+QPoint* GProcess::getCenterPoint() {return this->center;}
+
+QSize* GProcess::getSizeEllipse() {return this->size;}
 
 void GProcess::setNodeCoords(int dx, int dy) {
     node.centerPos.setX(node.centerPos.x() + dx);

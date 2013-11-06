@@ -2,6 +2,8 @@
 #include <QGraphicsRectItem>
 #include <QGraphicsTextItem>
 #include <QColor>
+#include <QSize>
+#include <QPoint>
 #include <vector>
 #include "PH.h"
 #include "Sort.h"
@@ -139,9 +141,37 @@ class GSort : public QGraphicsRectItem {
           */
         QPoint geteventPressPoint();
 
+        /**
+          * @brief get the center of the ellipse representing the process
+          *
+          * @return GPoint the center of the ellipse
+          *
+          */
+	QPoint* getLeftTopCornerPoint();
+
+        /**
+          * @brief get the size of the ellipse representing the process
+          *
+          * @return GSize the size of the ellipse
+          *
+          */
+	QSize* getSizeRect();
+
 
 		
 	protected:
+
+        /**
+          * @brief position of the left top corner of the rectangle representing the sort
+          *
+          */
+	QPoint* leftTopCorner;
+
+        /**
+          * @brief size of the rectangle representing the sort
+          *
+          */
+	QSize* sizeRect;
 
         /**
           * @brief the graphical item representing the rectangle of the Sort

@@ -9,6 +9,8 @@
 #include <QDebug>
 #include <QApplication>
 #include <QMenu>
+#include <QPoint>
+#include <QSize>
 #include "GSort.h"
 #include "Process.h"
 
@@ -48,14 +50,12 @@ GSort::GSort(SortPtr s, GVNode n) : QGraphicsRectItem(n.centerPos.x()-n.width/8,
 
     // graphic items set and Actions color
     color = makeColor();
-    double widthRect, heightRect, xCornerPos, yCornerPos;
-    widthRect = n.width/4;
-    heightRect = n.height;
-    xCornerPos = n.centerPos.x()-widthRect/2;
-    yCornerPos = n.centerPos.y()-heightRect/2;
+    sizeRect = new QSize(n.width/4, n.height);
+    sizeRect->width();
+    leftTopCorner = new QPoint(n.centerPos.x()-sizeRect->width()/2,n.centerPos.y()-sizeRect->height()/2);
 
     // rectangle
-    _rect = new QGraphicsRectItem(QRectF(xCornerPos, yCornerPos, widthRect, heightRect),this);
+    _rect = new QGraphicsRectItem(QRectF(*leftTopCorner, *sizeRect),this);
     _rect->setPen(QPen(QColor(7,54,66)));
     _rect->setBrush(QBrush(QColor(7,54,66)));
 
@@ -63,7 +63,7 @@ GSort::GSort(SortPtr s, GVNode n) : QGraphicsRectItem(n.centerPos.x()-n.width/8,
     text = new QGraphicsTextItem (QString(), this);
     text->setHtml(QString::fromStdString("<u>sort " + sort->getName() + "</u>"));
     text->setDefaultTextColor(*color);
-    text->setPos(xCornerPos+widthRect/2, yCornerPos);
+    text->setPos(leftTopCorner->x()+sizeRect->width()/2, leftTopCorner->y());
     QSizeF textSize = text->document()->size();
     text->setPos(text->x() - textSize.width()/2, text->y());
 
@@ -73,20 +73,21 @@ GSort::GSort(SortPtr s, GVNode n) : QGraphicsRectItem(n.centerPos.x()-n.width/8,
     // set related GProcesses as children (so they move with this GSort)
     vector<ProcessPtr> processes = sort->getProcesses();
     int nbProcess = processes.size();
-    int currPosYProcess = heightRect/(1.5*nbProcess);
+    int currPosYProcess = sizeRect->height()/(1.5*nbProcess);
     for(ProcessPtr &p : processes){
-	gProcesses.push_back(make_shared<GProcess>(p, xCornerPos + widthRect/2, yCornerPos+ currPosYProcess, widthRect-10, heightRect/(nbProcess+1)-30));
-	currPosYProcess+=heightRect/(nbProcess+1);
+	gProcesses.push_back(make_shared<GProcess>(p, leftTopCorner->x() + sizeRect->width()/2, leftTopCorner->y()+ currPosYProcess, sizeRect->width()-10, sizeRect->height()/(nbProcess+1)-30));
+	currPosYProcess+=sizeRect->height()/(nbProcess+1);
     }
     for(GProcessPtr &gp: gProcesses){
 	gp->getDisplayItem()->setParentItem(this);
     }
-
 }
 
 GSort::~GSort() {
     gProcesses.clear();
     delete _rect;
+    delete leftTopCorner;
+    delete sizeRect;
     delete text;   
 }
 
@@ -180,7 +181,9 @@ QGraphicsTextItem* GSort::getText() { return this->text; }
 
 QPoint GSort::geteventPressPoint() { return this->eventPressPoint; }
 
+QPoint* GSort::getLeftTopCornerPoint() {return this->leftTopCorner;}
 
+QSize* GSort::getSizeRect() { return this->sizeRect;}
 
 void GSort::updatePosition() {
 
