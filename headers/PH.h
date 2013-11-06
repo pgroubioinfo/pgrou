@@ -6,6 +6,7 @@
 #include <boost/make_shared.hpp>
 #include "Action.h"
 #include "GVGraph.h"
+#include "GVSkeletonGraph.h"
 #include "PHScene.h"
 #include "Process.h"
 #include "Sort.h"
@@ -47,6 +48,13 @@ static inline QString makeProcessName (ProcessPtr p) {
 	return QString::fromStdString(p->getSort()->getName()) + QString("_%1").arg(p->getNumber());
 }
 
+/**
+  * @brief builds node name for graphviz, from Process name
+  * @param ProcessPtr pointer to the Process which name is to be adapted for graphviz node
+  */
+static inline QString makeSkeletonNodeName (string s) {
+	return QString::fromStdString("sort_"+s);
+}
 
 /**
   * @class PH
@@ -125,6 +133,8 @@ class PH {
           *
           */
 		GVGraphPtr toGVGraph(void);
+		
+		GVSkeletonGraphPtr createSkeletonGraph(void);
 
         /**
           * @brief updates the representation of the process hitting as a graph after user's customizations

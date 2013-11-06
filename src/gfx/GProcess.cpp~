@@ -83,8 +83,8 @@ GProcess::GProcess(ProcessPtr p,double centerX, double centerY, double width, do
 
 
 GProcess::~GProcess() {
-    delete text;
     delete ellipse;
+    delete text;
     delete display;
 }
 

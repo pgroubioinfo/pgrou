@@ -85,9 +85,9 @@ GSort::GSort(SortPtr s, GVNode n) : QGraphicsRectItem(n.centerPos.x()-n.width/8,
 }
 
 GSort::~GSort() {
-    gProcesses.clear();
-    delete _rect;
-    delete text;   
+    //gProcesses.clear();
+    //delete _rect;
+    //delete text;   
 }
 
 // mouse press event handler: start "drag"

@@ -26,7 +26,6 @@ void GVGraph::applyLayout() {
     _gvLayout(_context, _graph, "fdp");
 }
 
-
 // get bounding rect (after layout has been done)
 QRectF GVGraph::boundingRect() {
     qreal dpi = this->getDPI();

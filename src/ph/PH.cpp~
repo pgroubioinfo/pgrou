@@ -136,6 +136,8 @@ GVSkeletonGraphPtr PH::createSkeletonGraph(void){
 	}
 	gSkeleton->applyLayout();
 
+        gSkeleton->exportToPng();
+
 	return gSkeleton;
 }
 
