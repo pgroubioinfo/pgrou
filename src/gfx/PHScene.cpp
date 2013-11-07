@@ -116,6 +116,10 @@ void PHScene::hideActions() {
     }
 }
 
+void PHScene::updateAction(){
+
+}
+
 
 void PHScene::showActions() {
 

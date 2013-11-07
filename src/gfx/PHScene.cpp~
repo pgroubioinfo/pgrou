@@ -68,11 +68,11 @@ void PHScene::drawFromSkeleton(void){
 	}
 
         createActions();
-/*
+
 	for (auto &a : actions){
 		addItem(a->getDisplayItem());
 	}
-*/
+
 }
 
 // draw all the elements of the scene
@@ -114,6 +114,10 @@ void PHScene::hideActions() {
     for (GActionPtr &action : actions) {
         action->getDisplayItem()->hide();
     }
+}
+
+void PHScene::updateAction(){
+
 }
 
 

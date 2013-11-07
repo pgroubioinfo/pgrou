@@ -99,6 +99,12 @@ class PHScene: public QGraphicsScene {
         void showActions();
 
         /**
+          * @brief update the position of actions
+          *
+          */
+	void updateAction();
+
+        /**
           * @brief recalculates the graph, functions of customized GSort items positions
           *
           */

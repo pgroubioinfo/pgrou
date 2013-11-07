@@ -99,6 +99,12 @@ class PHScene: public QGraphicsScene {
         void showActions();
 
         /**
+          * @brief update the position of actions
+          *
+          */
+	void updateAction()
+
+        /**
           * @brief recalculates the graph, functions of customized GSort items positions
           *
           */
@@ -137,7 +143,7 @@ class PHScene: public QGraphicsScene {
           * @brief vector of the Processes drawn in the scene
           *
           */
-		std::vector<GProcessPtr> processes;
+	std::vector<GProcessPtr> processes;
 
         /**
           * @brief vector of the Actions drawn in the scene
