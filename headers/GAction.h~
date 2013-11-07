@@ -110,7 +110,7 @@ class GAction {
           * @brief line representing the first part of the action
           *
           */
-	QGraphicsLineItemLine* hitLine;
+	QGraphicsLineItem* hitLine;
 
         /**
           * @brief the related Action

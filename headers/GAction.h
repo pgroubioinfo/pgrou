@@ -57,6 +57,12 @@ class GAction {
 
         ~GAction();
 
+        /**
+          * @brief update position of GAction
+          *
+          */
+	void update();
+
      /**
        * @brief gets the display
        *
