@@ -7,8 +7,8 @@
 #include "GVSkeletonGraph.h"
 
 const qreal GVSkeletonGraph::DotDefaultDPI=72.0;
-const qreal GVSkeletonGraph::nodeSize = 400;
-const qreal GVSkeletonGraph::sepValue = 2000.0;
+const qreal GVSkeletonGraph::nodeSize = 1;
+const qreal GVSkeletonGraph::sepValue = 30.0;
 
 // Utils
 
@@ -56,9 +56,6 @@ void GVSkeletonGraph::setGraphAttributes(){
 	setGraphObjectAttributes(_graph,"dpi","96,0");
 	QString strSepValue = QString::number(sepValue).prepend("+");
 	setGraphObjectAttributes(_graph, "sep", strSepValue);
-	
-	QString nodePtsWidth = QString("%1").arg(GVSkeletonGraph::nodeSize/_agget(_graph,"dpi", "96,0").replace(',',".").toDouble());
-	_agnodeattr(_graph, "width", nodePtsWidth.replace('.',","));
 }
 
 void GVSkeletonGraph::setGraphObjectAttributes(void *object, QString attr, QString value){
@@ -124,6 +121,13 @@ bool GVSkeletonGraph::hasNode(const QString& name){
 Agnode_t* GVSkeletonGraph::getNode(const QString& name){
 	if(_nodes.contains(name)) return _nodes[name];
 	return NULL;
+}
+
+void GVSkeletonGraph::setNodeSize(void* object, qreal width, qreal height){
+	QString nodePtsWidth = QString("%1").arg(width/_agget(_graph,"dpi", "96,0").replace(',',".").toDouble());
+	setGraphObjectAttributes(object,"width",nodePtsWidth.replace('.',","));
+	QString nodePtsHeight = QString("%1").arg(height/_agget(_graph,"dpi", "96,0").replace(',',".").toDouble());
+	setGraphObjectAttributes(object,"height",nodePtsHeight.replace('.',","));
 }
 
 void GVSkeletonGraph::clearNodes(){

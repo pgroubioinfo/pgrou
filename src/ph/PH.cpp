@@ -117,13 +117,15 @@ GVSkeletonGraphPtr PH::createSkeletonGraph(void){
 	GVSkeletonGraphPtr gSkeleton = make_shared<GVSkeletonGraph>(QString("Skeleton Graph"));
 	QString sortName;
         vector<ProcessPtr> listProcess;
-        QString nbProcess;
+        int nbProcess;
 	for(auto &e : sorts){
 		sortName = makeSkeletonNodeName(e.second->getName());
 		listProcess = e.second->getProcesses();
-		nbProcess = QString::number(listProcess.size());
+		nbProcess = listProcess.size();
+		int width = GProcess::sizeDefault+2*GSort::marginDefault;
+		int height = nbProcess*(GProcess::sizeDefault+2*GSort::marginDefault);
 		gSkeleton->addNode(sortName);
-		gSkeleton->setGraphObjectAttributes(gSkeleton->getNode(sortName),"height",nbProcess);
+		gSkeleton->setNodeSize(gSkeleton->getNode(sortName),width,height);
 		gSkeleton->setGraphObjectAttributes(gSkeleton->getNode(sortName),"fixedsize","true");
 	}
 	
@@ -135,6 +137,7 @@ GVSkeletonGraphPtr PH::createSkeletonGraph(void){
 		}
 	}
 	gSkeleton->applyLayout();
+
 
 	return gSkeleton;
 }

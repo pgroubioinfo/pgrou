@@ -56,8 +56,11 @@ void PHScene::drawFromSkeleton(void){
 	QList<GVNode> gSkeletonNodes = gSkeleton->nodes();
 	for(GVNode &gn : gSkeletonNodes){
 		for(SortPtr &s : ph->getSorts()){
+			int nbProcess = s->getProcesses()->size();
+			int width = GProcess::sizeDefault+2*GSort::marginDefault;
+			int height = nbProcess*(GProcess::sizeDefault+2*GSort::marginDefault);
 			if(gn.name == makeSkeletonNodeName(s->getName())){
-				sorts.insert(GSortEntry(s->getName(), make_shared<GSort>(s,gn)));			
+				sorts.insert(GSortEntry(s->getName(), make_shared<GSort>(s,gn,width,height)));			
 			}
 		}	
 	}
@@ -72,7 +75,6 @@ void PHScene::drawFromSkeleton(void){
 	for (auto &a : actions){
 		addItem(a->getDisplayItem());
 	}
-
 }
 
 // draw all the elements of the scene

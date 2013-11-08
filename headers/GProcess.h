@@ -29,6 +29,8 @@ class GProcess {
 
 	public:
 
+	static const int sizeDefault;
+
         /**
           * @brief constructor
           *
@@ -48,7 +50,7 @@ class GProcess {
           * @param double height height of the ellipse
 
           */
-	GProcess(ProcessPtr p,double centerX, double centerY, double width, double height);
+	GProcess(ProcessPtr p,double centerX, double centerY);
 
 		~GProcess();
 

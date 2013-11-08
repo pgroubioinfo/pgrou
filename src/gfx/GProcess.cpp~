@@ -11,7 +11,7 @@
 
 const int GProcess::marginZone  = 10;
 const int GProcess::sortName    = 11;
-
+const int GProcess::sizeDefault = 100;
 
 GProcess::GProcess(ProcessPtr p, GVNode n, qreal graphDPI) : process(p), node(n) {
 
@@ -46,29 +46,29 @@ GProcess::GProcess(ProcessPtr p, GVNode n, qreal graphDPI) : process(p), node(n)
 	text->setPos(text->x() - textSize.width()/2, text->y() - textSize.height()/2);
 }
 
-GProcess::GProcess(ProcessPtr p,double centerX, double centerY, double width, double height) : process(p){
+GProcess::GProcess(ProcessPtr p,double centerX, double centerY) : process(p){
 
     display = new QGraphicsItemGroup();
 
 
     // init size of the ellipse and the position of the center
-    size = new QSize(width,height);
-    center = new QPoint(centerX,centerY);
+    size = new QSizeF(sizeDefault,sizeDefault);
+    center = new QPointF(centerX,centerY);
 
     // ellipse
-    ellipse = new QGraphicsEllipseItem (center->x()-size->width()/2, center->y()-size->height()/2,
+    ellipse = new QGraphicsEllipseItem (center->x()-sizeDefault/2, center->y()-sizeDefault/2,
                                         size->width(), size->height(), display);
 	ellipse->setPen(QPen(QColor(238,232,213)));
 	ellipse->setBrush(QBrush(QColor(238,232,213)));
 
 
-    //int margin( (int) ceil(GVSubGraph::sepValue * graphDPI / GVGraph::DotDefaultDPI) );
-    int margin = 30;
+    int margin(GSort::marginDefault);
+
     marginRect = new QGraphicsRectItem(
-                centerX - margin,
-                centerY - margin,
-                width + 2*margin,
-                height + 2*margin,
+                centerX - margin/2,
+                centerY - margin/2,
+                margin,
+                margin,
                 display);
                 
     marginRect->setBrush(Qt::NoBrush);
