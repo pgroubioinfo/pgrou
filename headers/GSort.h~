@@ -33,6 +33,8 @@ class GSort : public QGraphicsRectItem {
 
 	public:
 
+	static const int marginDefault;
+
         /** 
           * @brief constructor
           *
@@ -49,7 +51,7 @@ class GSort : public QGraphicsRectItem {
           * @param GVNode the node of the skeleton graph containing layout info
 
           */
-		GSort(SortPtr p, GVNode n);
+		GSort(SortPtr p, GVNode n, qreal width, qreal height);
 
 		~GSort();
 
@@ -165,7 +167,7 @@ class GSort : public QGraphicsRectItem {
           * @brief position of the left top corner of the rectangle representing the sort
           *
           */
-	QPoint leftTopCorner;
+	QPoint* leftTopCorner;
 
         /**
           * @brief size of the rectangle representing the sort

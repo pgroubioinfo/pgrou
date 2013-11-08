@@ -41,15 +41,15 @@ GAction::GAction(ActionPtr a, PHScene* sc) : scene(sc), action(a) {
     QSizeF* sizeSource = source->getSizeEllipse();
     QSizeF* sizeTarget = source->getSizeEllipse();
 
-/*
+
     QPointF* sourcePointLine = new QPointF(sizeSource->width()*hitVector->x()/2 + source->getCenterPoint()->x(),sizeSource->height()*hitVector->y()/2 + source->getCenterPoint()->y());
 
     QPointF* targetPointLine = new QPointF(-sizeTarget->width()*hitVector->x()/2 + target->getCenterPoint()->x(),-sizeTarget->height()*hitVector->y()/2 + target->getCenterPoint()->y());
-*/
 
+/*
     QPointF* sourcePointLine = new QPointF(source->getCenterPoint()->x(),source->getCenterPoint()->y());
-
     QPointF* targetPointLine = new QPointF(target->getCenterPoint()->x(),target->getCenterPoint()->y());
+*/  
     hitLine = new QGraphicsLineItem(QLineF(*targetPointLine,*sourcePointLine),display);
     hitLine->setPen(QPen(QColor(0,0,0)));
 }

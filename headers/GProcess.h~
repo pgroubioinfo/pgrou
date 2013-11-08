@@ -29,6 +29,8 @@ class GProcess {
 
 	public:
 
+	static const int sizeDefault;
+
         /**
           * @brief constructor
           *
@@ -149,13 +151,13 @@ class GProcess {
           * @brief position of the center of the ellipse representing the process
           *
           */
-	QPoint* center;
+	QPointF* center;
 
        /**
           * @brief size of the ellipse representing the process
           *
           */
-	QSize* size;
+	QSizeF* size;
 
         /**
           * @brief the graphical item representing the ellipse of the Process
