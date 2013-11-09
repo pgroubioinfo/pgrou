@@ -653,13 +653,13 @@ void MainWindow::importXMLMetadata(QString tempXML){
                         qreal posxCluster = stream.attributes().value("xcluster").toString().toDouble();
 
                         // Setting the x coordinate to the new value
-                        myarea->getPHPtr()->getGraphicsScene()->getGSort(sortname)->getCluster().topLeft.setX(posxCluster);
+                        myarea->getPHPtr()->getGraphicsScene()->getGSort(sortname)->getLeftTopCornerPoint()->setX(posxCluster);
 
                         // Getting y coordinate of the cluster of the sort
                         qreal posyCluster = stream.attributes().value("ycluster").toString().toDouble();
 
                         // Setting the y coordinate to the new value
-                        myarea->getPHPtr()->getGraphicsScene()->getGSort(sortname)->getCluster().topLeft.setY(posyCluster);
+                        myarea->getPHPtr()->getGraphicsScene()->getGSort(sortname)->getLeftTopCornerPoint()->setY(posyCluster);
 
                         stream.readNext();
                         while (stream.isStartElement()==false)
@@ -739,7 +739,7 @@ void MainWindow::importXMLMetadata(QString tempXML){
                                 for (ProcessPtr &b : myarea->getPHPtr()->getGraphicsScene()->getGSort(sortname)->getSort()->getProcesses()){
                                     if (b->getNumber()==noprocess)
                                     {
-                                        b->getGProcess()->setNodeCoordsForImport(nodeX,nodeY);
+                                        b->getGProcess()->setCoordsForImport(nodeX,nodeY);
                                     }
                                 }
 
@@ -775,7 +775,7 @@ void MainWindow::importXMLMetadata(QString tempXML){
                     i++;
                 }
 
-                myarea->getPHPtr()->getGraphicsScene()->updateGraphForImport();
+                myarea->getPHPtr()->getGraphicsScene()->updateForImport();
             }
 
 

@@ -56,7 +56,7 @@ void PHScene::drawFromSkeleton(void){
 	QList<GVNode> gSkeletonNodes = gSkeleton->nodes();
 	for(GVNode &gn : gSkeletonNodes){
 		for(SortPtr &s : ph->getSorts()){
-			int nbProcess = s->getProcesses()->size();
+			int nbProcess = (s->getProcesses()).size();
 			int width = GProcess::sizeDefault+2*GSort::marginDefault;
 			int height = nbProcess*(GProcess::sizeDefault+2*GSort::marginDefault);
 			if(gn.name == makeSkeletonNodeName(s->getName())){
@@ -138,64 +138,7 @@ void PHScene::showActions() {
     }
 }
 
-
-void PHScene::updateGraph() {
-
-    GVGraphPtr graph = ph->updateGVGraph(this);
-
-    // update GProcess items' positions
-    // using nested loops to make sure that each GVNode matches related GProcess
-    list<ProcessPtr> phProcesses = ph->getProcesses();
-    for (GVNode &gvnode : graph->nodes())
-        for (list<ProcessPtr>::iterator it = phProcesses.begin(); it != phProcesses.end(); ++it)
-            if (gvnode.name == makeProcessName(*it)) {
-                (*it)->getGProcess()->setNode(gvnode);
-                break;
-            }
-
-    // update GSort items' positions (including related GProcess items)
-    map<string, GSortPtr>::iterator it;
-    for(it = sorts.begin(); it != sorts.end(); it++) {
-        it->second->updatePosition();
-    }
-
-    // create GActions linking actual actions to GVEdges (display info)
-    actions.clear();
-    createActions();
-
-    for (GActionPtr &a : actions)
-        addItem(a->getDisplayItem());
-
-    // hide actions that are related to hidden sorts
-    showActions();
-
-}
-
-void PHScene::updateGraphForImport() {
-
-    GVGraphPtr graph = ph->updateGVGraph(this);
-
-    // update GProcess items' positions
-    // using nested loops to make sure that each GVNode matches related GProcess
-    list<ProcessPtr> phProcesses = ph->getProcesses();
-    for (GVNode &gvnode : graph->nodes())
-        for (list<ProcessPtr>::iterator it = phProcesses.begin(); it != phProcesses.end(); ++it)
-            if (gvnode.name == makeProcessName(*it)) {
-                (*it)->getGProcess()->setNode(gvnode);
-                break;
-            }
-
-
-    // create GActions linking actual actions to GVEdges (display info)
-    actions.clear();
-    createActions();
-
-
-    for (GActionPtr &a : actions)
-        addItem(a->getDisplayItem());
-
-    // hide actions that are related to hidden sorts
-    showActions();
+void PHScene::updateForImport() {
 
 }
 

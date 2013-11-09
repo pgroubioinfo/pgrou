@@ -66,7 +66,7 @@ class PHScene: public QGraphicsScene {
           * @return GSortPtr pointer to the GSort to get
           *
           */
-		GSortPtr getGSort (const string& s);
+	GSortPtr getGSort (const string& s);
 
         /**
           * @brief getter for sorts
@@ -108,16 +108,7 @@ class PHScene: public QGraphicsScene {
           * @brief recalculates the graph, functions of customized GSort items positions
           *
           */
-        void updateGraph();
-
-        /**
-          * @brief recalculates the graph, functions of customized GSort items positions
-          *
-          */
-        void updateGraphForImport();
-
-
-
+        void updateForImport();
 
 	protected:
 

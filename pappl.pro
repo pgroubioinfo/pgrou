@@ -10,11 +10,8 @@ HEADERS 	= 	headers/Action.h 		\
 				headers/GProcess.h 		\
 				headers/GAction.h 		\
 				headers/GSort.h 		\
-				headers/GVCluster.h 	\
 				headers/GVEdge.h 		\
-				headers/GVGraph.h 		\
 				headers/GVNode.h	 	\
-				headers/GVSubGraph.h 	\
 				headers/MainWindow.h 	\
 				headers/MyArea.h 		\
 				headers/PH.h 			\
@@ -43,8 +40,6 @@ SOURCES			= 	src/gfx/GProcess.cpp	\
 					src/gfx/GAction.cpp		\					
 					src/gfx/GSort.cpp		\					
 					src/gfx/PHScene.cpp		\
-					src/gviz/GVGraph.cpp	\
-					src/gviz/GVSubGraph.cpp	\
 					src/gviz/GVSkeletonGraph.cpp \
 					src/io/IO.cpp			\
 					src/io/PHIO.cpp			\

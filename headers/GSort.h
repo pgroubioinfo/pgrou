@@ -7,7 +7,6 @@
 #include <vector>
 #include "PH.h"
 #include "Sort.h"
-#include "GVCluster.h"
 #include "GVNode.h"
 #include "GProcess.h"
 
@@ -35,14 +34,6 @@ class GSort : public QGraphicsRectItem {
 
 	static const int marginDefault;
 
-        /** 
-          * @brief constructor
-          *
-          * @param SortPtr the related Sort object
-          * @param GVCluster the object that contains style and layout info
-          */
-		GSort(SortPtr p, GVCluster c);
-
         /**
           * @brief constructor
           *
@@ -66,7 +57,7 @@ class GSort : public QGraphicsRectItem {
           * @brief the color used by the Actions that have this Sort as source
           *
           */
-		QColor* color;
+	QColor* color;
 
         /**
           * @brief Handles mouse press event (handles drag start)
@@ -102,13 +93,6 @@ class GSort : public QGraphicsRectItem {
           * @return SortPtr a pointer to the related Sort object
           */
         SortPtr getSort();
-
-        /**
-          * @brief gets the related GVCluster which stores GSort absolute coordinates
-          *
-          * @return GVCluster the related GVCluster
-          */
-        GVCluster getCluster();
 
         /**
           * @brief gets the text of the sort
@@ -185,29 +169,25 @@ class GSort : public QGraphicsRectItem {
           * @brief the graphical item representing the text of the Sort
           *
           */
-		QGraphicsTextItem* text;
+	QGraphicsTextItem* text;
 
         /**
           * @brief the related Sort
           *
           */
-		SortPtr sort;
+	SortPtr sort;
 
         /**
           * @brief list of GProcessPtr contained by the sort
-
           *
-
           */
-		vector<GProcessPtr> gProcesses;
+	vector<GProcessPtr> gProcesses;
 
         /**
-          * @brief the related cluster
+          * @brief the related of the skeletonGraph
           *
           */
-		GVCluster cluster;
-
-		GVNode node;		
+	GVNode node;		
 		
         /**
           * @brief the palette of colors that may be used as color member
@@ -219,14 +199,14 @@ class GSort : public QGraphicsRectItem {
           * @brief palette management index
           *
           */
-		static int paletteIndex;
+	static int paletteIndex;
 
         /**
           * @brief gets a new color in the palette
           *
           * @return QColor* the color retrieved in the palette
           */
-		static QColor* makeColor(void);
+	static QColor* makeColor(void);
 
         /**
           * @brief the point used to record this GSort's coordinates when user clicks it (ie. starts drag&drop)
