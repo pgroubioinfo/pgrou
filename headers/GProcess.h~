@@ -10,7 +10,7 @@
 /**
   * @file GProcess.h
   * @brief header for the GProcess class
-  * @author PAPPL_2014
+  * @author PAPPL_2013
   *
   */
 
@@ -28,6 +28,8 @@ typedef boost::shared_ptr<Process> ProcessPtr;
 class GProcess {
 
 	public:
+
+	static const int sizeDefault;
 
         /**
           * @brief constructor
@@ -105,6 +107,22 @@ class GProcess {
         void setNode(GVNode gvnode);
 
         /**
+          * @brief get the center of the ellipse representing the process
+          *
+          * @return GPoint the center of the ellipse
+          *
+          */
+	QPointF* getCenterPoint();
+
+        /**
+          * @brief get the size of the ellipse representing the process
+          *
+          * @return GSize the size of the ellipse
+          *
+          */
+	QSizeF* getSizeEllipse();
+
+        /**
           * @brief checks collisions with margins of other GProcess items (see graph attribute "sep" in GVSubGraph)
           *
           * @return bool true if this GProcess' margin collides with another one's margin (of a different sort), else false
@@ -128,6 +146,18 @@ class GProcess {
           *
           */
 		QGraphicsItem* display;
+
+       /**
+          * @brief position of the center of the ellipse representing the process
+          *
+          */
+	QPointF* center;
+
+       /**
+          * @brief size of the ellipse representing the process
+          *
+          */
+	QSizeF* size;
 
         /**
           * @brief the graphical item representing the ellipse of the Process

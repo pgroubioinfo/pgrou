@@ -9,8 +9,12 @@
 #include <QDebug>
 #include <QApplication>
 #include <QMenu>
+#include <QPoint>
+#include <QSize>
 #include "GSort.h"
 #include "Process.h"
+
+const int GSort::marginDefault = 10;
 
 GSort::GSort(SortPtr s, GVCluster c) :
     QGraphicsRectItem(c.topLeft.x(), c.topLeft.y(), c.width, c.height),
@@ -37,6 +41,7 @@ GSort::GSort(SortPtr s, GVCluster c) :
 
     // set related GProcesses as children (so they move with this GSort)
     vector<ProcessPtr> processes = sort->getProcesses();
+    
     for (ProcessPtr &process : processes) {
         process->getGProcess()->getDisplayItem()->setParentItem(this);
     }
@@ -44,18 +49,16 @@ GSort::GSort(SortPtr s, GVCluster c) :
 
 }
 
-GSort::GSort(SortPtr s, GVNode n) : QGraphicsRectItem(n.centerPos.x()-n.width/8, n.centerPos.y()-n.height/2, n.width/4, n.height),sort(s), node(n) {
+GSort::GSort(SortPtr s, GVNode n, qreal width, qreal height) : QGraphicsRectItem(n.centerPos.x()-width/2, n.centerPos.y()-height/2, width, height),sort(s), node(n) {
 
     // graphic items set and Actions color
     color = makeColor();
-    double widthRect, heightRect, xCornerPos, yCornerPos;
-    widthRect = n.width/4;
-    heightRect = n.height;
-    xCornerPos = n.centerPos.x()-widthRect/2;
-    yCornerPos = n.centerPos.y()-heightRect/2;
+    sizeRect = new QSize(width, height);
+
+    leftTopCorner = new QPoint(n.centerPos.x()-sizeRect->width()/2,n.centerPos.y()-sizeRect->height()/2);
 
     // rectangle
-    _rect = new QGraphicsRectItem(QRectF(xCornerPos, yCornerPos, widthRect, heightRect),this);
+    _rect = new QGraphicsRectItem(QRectF(*leftTopCorner, *sizeRect),this);
     _rect->setPen(QPen(QColor(7,54,66)));
     _rect->setBrush(QBrush(QColor(7,54,66)));
 
@@ -63,9 +66,9 @@ GSort::GSort(SortPtr s, GVNode n) : QGraphicsRectItem(n.centerPos.x()-n.width/8,
     text = new QGraphicsTextItem (QString(), this);
     text->setHtml(QString::fromStdString("<u>sort " + sort->getName() + "</u>"));
     text->setDefaultTextColor(*color);
-    text->setPos(xCornerPos+widthRect/2, yCornerPos);
+    text->setPos(leftTopCorner->x()+sizeRect->width()/2, leftTopCorner->y());
     QSizeF textSize = text->document()->size();
-    text->setPos(text->x() - textSize.width()/2, text->y());
+    text->setPos(text->x() - textSize.width()/2, text->y() - textSize.height());
 
     setCursor(QCursor(Qt::OpenHandCursor));
     setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
@@ -73,13 +76,16 @@ GSort::GSort(SortPtr s, GVNode n) : QGraphicsRectItem(n.centerPos.x()-n.width/8,
     // set related GProcesses as children (so they move with this GSort)
     vector<ProcessPtr> processes = sort->getProcesses();
     int nbProcess = processes.size();
-    int currPosYProcess = heightRect/(1.5*nbProcess);
+    int currPosYProcess = marginDefault+GProcess::sizeDefault/2;
+
     for(ProcessPtr &p : processes){
-	gProcesses.push_back(make_shared<GProcess>(p, xCornerPos + widthRect/2, yCornerPos+ currPosYProcess, widthRect-10, heightRect/(nbProcess+1)-30));
-	currPosYProcess+=heightRect/(nbProcess+1);
+	gProcesses.push_back(make_shared<GProcess>(p, leftTopCorner->x() + GProcess::sizeDefault/2+ marginDefault, leftTopCorner->y()+ currPosYProcess));
+	currPosYProcess+= 2*marginDefault + GProcess::sizeDefault;
     }
     for(GProcessPtr &gp: gProcesses){
 	gp->getDisplayItem()->setParentItem(this);
+	ProcessPtr* p = gp->getProcess();
+	(*p)->setGProcess(gp);
     }
 
 }
@@ -87,6 +93,8 @@ GSort::GSort(SortPtr s, GVNode n) : QGraphicsRectItem(n.centerPos.x()-n.width/8,
 GSort::~GSort() {
     gProcesses.clear();
     delete _rect;
+    delete leftTopCorner;
+    delete sizeRect;
     delete text;   
 }
 
@@ -180,7 +188,9 @@ QGraphicsTextItem* GSort::getText() { return this->text; }
 
 QPoint GSort::geteventPressPoint() { return this->eventPressPoint; }
 
+QPoint* GSort::getLeftTopCornerPoint() {return this->leftTopCorner;}
 
+QSize* GSort::getSizeRect() { return this->sizeRect;}
 
 void GSort::updatePosition() {
 

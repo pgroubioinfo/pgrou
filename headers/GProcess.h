@@ -29,6 +29,8 @@ class GProcess {
 
 	public:
 
+	static const int sizeDefault;
+
         /**
           * @brief constructor
           *
@@ -48,7 +50,7 @@ class GProcess {
           * @param double height height of the ellipse
 
           */
-	GProcess(ProcessPtr p,double centerX, double centerY, double width, double height);
+	GProcess(ProcessPtr p,double centerX, double centerY);
 
 		~GProcess();
 
@@ -105,6 +107,22 @@ class GProcess {
         void setNode(GVNode gvnode);
 
         /**
+          * @brief get the center of the ellipse representing the process
+          *
+          * @return GPoint the center of the ellipse
+          *
+          */
+	QPointF* getCenterPoint();
+
+        /**
+          * @brief get the size of the ellipse representing the process
+          *
+          * @return GSize the size of the ellipse
+          *
+          */
+	QSizeF* getSizeEllipse();
+
+        /**
           * @brief checks collisions with margins of other GProcess items (see graph attribute "sep" in GVSubGraph)
           *
           * @return bool true if this GProcess' margin collides with another one's margin (of a different sort), else false
@@ -128,6 +146,18 @@ class GProcess {
           *
           */
 		QGraphicsItem* display;
+
+       /**
+          * @brief position of the center of the ellipse representing the process
+          *
+          */
+	QPointF* center;
+
+       /**
+          * @brief size of the ellipse representing the process
+          *
+          */
+	QSizeF* size;
 
         /**
           * @brief the graphical item representing the ellipse of the Process

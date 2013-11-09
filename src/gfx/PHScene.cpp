@@ -45,7 +45,7 @@ void PHScene::doRender(void) {
                 sorts.insert(GSortEntry(s->getName(), make_shared<GSort>(s, gc)));
 
     // create GActions linking actual actions to GVEdges (display info)
-    createActions(graph);
+    createActions();
 
     draw();
 }
@@ -56,8 +56,11 @@ void PHScene::drawFromSkeleton(void){
 	QList<GVNode> gSkeletonNodes = gSkeleton->nodes();
 	for(GVNode &gn : gSkeletonNodes){
 		for(SortPtr &s : ph->getSorts()){
+			int nbProcess = (s->getProcesses()).size();
+			int width = GProcess::sizeDefault+2*GSort::marginDefault;
+			int height = nbProcess*(GProcess::sizeDefault+2*GSort::marginDefault);
 			if(gn.name == makeSkeletonNodeName(s->getName())){
-				sorts.insert(GSortEntry(s->getName(), make_shared<GSort>(s,gn)));			
+				sorts.insert(GSortEntry(s->getName(), make_shared<GSort>(s,gn,width,height)));			
 			}
 		}	
 	}
@@ -65,6 +68,12 @@ void PHScene::drawFromSkeleton(void){
 	clear();
     	for (auto &s : sorts){
         	addItem(s.second.get());
+	}
+
+        createActions();
+
+	for (auto &a : actions){
+		addItem(a->getDisplayItem());
 	}
 }
 
@@ -109,6 +118,10 @@ void PHScene::hideActions() {
     }
 }
 
+void PHScene::updateAction(){
+
+}
+
 
 void PHScene::showActions() {
 
@@ -148,7 +161,7 @@ void PHScene::updateGraph() {
 
     // create GActions linking actual actions to GVEdges (display info)
     actions.clear();
-    createActions(graph);
+    createActions();
 
     for (GActionPtr &a : actions)
         addItem(a->getDisplayItem());
@@ -175,7 +188,7 @@ void PHScene::updateGraphForImport() {
 
     // create GActions linking actual actions to GVEdges (display info)
     actions.clear();
-    createActions(graph);
+    createActions();
 
 
     for (GActionPtr &a : actions)
@@ -187,37 +200,10 @@ void PHScene::updateGraphForImport() {
 }
 
 
-void PHScene::createActions(GVGraphPtr graph) {
-
-    // retrieve list of GVEdge structs from graphviz geometry data
-    QList<GVEdge> gEdges = graph->edges();
-
+void PHScene::createActions() {
     // create GAction items
-    using std::pair;
-    pair<GVEdge*, GVEdge*> edges;
     for (ActionPtr &a : ph->getActions()) {
-        edges.first = NULL;
-        edges.second = NULL;
-
-        // find graph edges that match the Action
-        for (GVEdge &gEdge : gEdges) {
-
-            // check the hit of the Action
-            if 	(	makeProcessName(a->getSource()) == gEdge.source
-                &&	makeProcessName(a->getTarget()) == gEdge.target
-                ) 	edges.first = &gEdge;
-
-            // check the bounce (result) of the Action
-            if 	(	makeProcessName(a->getTarget()) == gEdge.source
-                &&	makeProcessName(a->getResult()) == gEdge.target
-                ) 	edges.second = &gEdge;
-
-            // if match, add Action to objects to be drawn
-            if (edges.first != NULL && edges.second != NULL) {
-                actions.push_back(make_shared<GAction>(a, *(edges.first), *(edges.second), this));
-                break;
-            }
-        }
+    	actions.push_back(make_shared<GAction>(a,this));
     }
 
 }

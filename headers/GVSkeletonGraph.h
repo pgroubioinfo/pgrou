@@ -118,6 +118,8 @@ class GVSkeletonGraph {
 		 */	
 		bool hasNode(const QString& name);
 
+		void setNodeSize(void* object, qreal width, qreal height);
+
 		/**
 		 * @brief gets a node by its name
 		 * @param QString name the name of the node to get
