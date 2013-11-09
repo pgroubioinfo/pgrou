@@ -5,7 +5,6 @@
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include "Action.h"
-#include "GVGraph.h"
 #include "GVSkeletonGraph.h"
 #include "PHScene.h"
 #include "Process.h"
@@ -81,13 +80,13 @@ class PH {
           * @brief adds an action to the PH
           * @param ActionPtr the action to add
           */
-		void addAction(ActionPtr a);
+	void addAction(ActionPtr a);
 
         /**
           * @brief getter for a sort
           *
           */
-		SortPtr getSort(string const&);
+	SortPtr getSort(string const&);
 
         /**
           * @brief getter for the actions of the PH
@@ -105,7 +104,7 @@ class PH {
           * @brief getter for the processes of the PH
           *
           */
-		list<ProcessPtr> getProcesses(void);		
+	list<ProcessPtr> getProcesses(void);		
 
         /**
           * @brief gives a text representation of the process hitting (as it would be in a .ph file)
@@ -124,25 +123,16 @@ class PH {
           * @details time-expensive method, calls the toGVGraph method
           *
           */
-		void render (void);
+	void render (void);
 
         /**
-          * @brief makes a representation of the process hitting as a graph
+          * @brief make the skeletonGraph related to the ph model
           * @details calls graphviz to calculate the optimized graph
-          * @return GVGraphPtr pointer to the Graph built
+          * @return GVSkeletonGraphPtr pointer to the Graph built representing the skeleton
           *
           */
-		GVGraphPtr toGVGraph(void);
-		
-		GVSkeletonGraphPtr createSkeletonGraph(void);
 
-        /**
-          * @brief updates the representation of the process hitting as a graph after user's customizations
-          * @details calls graphviz to calculate the graph
-          * @return
-          *
-          */
-        GVGraphPtr updateGVGraph(PHScene *scene);
+	GVSkeletonGraphPtr createSkeletonGraph(void);
 
         /**
           * @brief outputs for display

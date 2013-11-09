@@ -16,39 +16,6 @@
 
 const int GSort::marginDefault = 10;
 
-GSort::GSort(SortPtr s, GVCluster c) :
-    QGraphicsRectItem(c.topLeft.x(), c.topLeft.y(), c.width, c.height),
-    sort(s), cluster(c) {
-
-    // graphic items set and Actions color
-    color = makeColor();
-
-    // rectangle
-    _rect = new QGraphicsRectItem(boundingRect(), this);
-    _rect->setPen(QPen(QColor(7,54,66)));
-    _rect->setBrush(QBrush(QColor(7,54,66)));
-
-    // label
-    text = new QGraphicsTextItem (QString(), this);
-    text->setHtml(QString::fromStdString("<u>sort " + sort->getName() + "</u>"));
-    text->setDefaultTextColor(*color);
-    text->setPos(cluster.labelPos.x(), cluster.labelPos.y());
-    QSizeF textSize = text->document()->size();
-    text->setPos(text->x() - textSize.width()/2, text->y() - textSize.height()/2);
-
-    setCursor(QCursor(Qt::OpenHandCursor));
-    setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
-
-    // set related GProcesses as children (so they move with this GSort)
-    vector<ProcessPtr> processes = sort->getProcesses();
-    
-    for (ProcessPtr &process : processes) {
-        process->getGProcess()->getDisplayItem()->setParentItem(this);
-    }
-    paddingTop = processes.back()->getGProcess()->getEllipseItem()->rect().y() - c.topLeft.y();
-
-}
-
 GSort::GSort(SortPtr s, GVNode n, qreal width, qreal height) : QGraphicsRectItem(n.centerPos.x()-width/2, n.centerPos.y()-height/2, width, height),sort(s), node(n) {
 
     // graphic items set and Actions color
@@ -182,8 +149,6 @@ QGraphicsRectItem* GSort::getRect() { return this->_rect; }
 
 SortPtr GSort::getSort() { return this->sort; }
 
-GVCluster GSort::getCluster() { return this->cluster; }
-
 QGraphicsTextItem* GSort::getText() { return this->text; }
 
 QPoint GSort::geteventPressPoint() { return this->eventPressPoint; }
@@ -193,21 +158,6 @@ QPoint* GSort::getLeftTopCornerPoint() {return this->leftTopCorner;}
 QSize* GSort::getSizeRect() { return this->sizeRect;}
 
 void GSort::updatePosition() {
-
-    // compute coords of process n°0 in this sort
-    GVNode *gvNode0 = sort->getProcesses().back()->getGProcess()->getNode();
-    qreal process0X = gvNode0->centerPos.x() - gvNode0->width/2;
-    qreal process0Y = gvNode0->centerPos.y() - gvNode0->height/2;
-
-    // GSort's new absolute coords
-    qreal newX = process0X - (cluster.width - gvNode0->width)/2; // processes are centered in sort
-    qreal newY = process0Y - paddingTop;
-
-    // update GSort and cluster's coords
-    setX(newX - boundingRect().x());
-    setY(newY - boundingRect().y());
-    cluster.topLeft.setX(boundingRect().x() + pos().x());
-    cluster.topLeft.setY(boundingRect().y() + pos().y());
 
 }
 
