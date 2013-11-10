@@ -5,8 +5,6 @@
 #include <list>
 #include "PH.h"
 #include "Process.h"
-#include "GVNode.h"
-
 /**
   * @file GProcess.h
   * @brief header for the GProcess class
@@ -35,15 +33,6 @@ class GProcess {
           * @brief constructor
           *
           * @param ProcessPtr the related Process object
-          * @param GVNode the object that contains style and layout info
-          * @param qreal graph DPI value (graphviz)
-          */
-        GProcess(ProcessPtr p, GVNode n, qreal graphDPI);
-
-        /**
-          * @brief constructor
-          *
-          * @param ProcessPtr the related Process object
           * @param double centerX position of the center of the ellipse in the x axis
           * @param double centerY position of the center of the ellipse in the y axis
           * @param double width width of the ellipse
@@ -59,7 +48,7 @@ class GProcess {
           *
           * @return QGraphicsItem the graphical item representing the Process
           */
-		QGraphicsItem* getDisplayItem (void);
+	QGraphicsItem* getDisplayItem (void);
 
         /**
           * @brief gets the ellipse
@@ -68,43 +57,21 @@ class GProcess {
         QGraphicsEllipseItem* getEllipseItem();
 
         /**
-          * @brief gets the related GVNode
-          *
-          * @return the related GVNode
-          */
-        GVNode* getNode();
-
-        /**
           * @brief gets the rect item that represents the margin of this GProcess
           *
           */
         QGraphicsRectItem* getMarginRect();
 
-        /**
-          * @brief updates the related GVNode's coordinates with a vector
-          *
-          * @param int dx the horizontal component of the translation
-          * @param int dy the vertical component of the translation
-          *
-          */
-        void setNodeCoords(int dx, int dy);
 
         /**
-          * @brief updates the related GVNode's coordinates with a point
+          * @brief updates the related center's coordinates with a point
           *
           * @param int x the horizontal coordinate of the node
           * @param int y the vertical coordinate of the node
           *
           */
-        void setNodeCoordsForImport(int x, int y);
+        void setCoordsForImport(int x, int y);
 
-        /**
-          * @brief sets the related GVNode structure
-          *
-          * @param GVNode the GVNode to copy geometry from
-          *
-          */
-        void setNode(GVNode gvnode);
 
         /**
           * @brief get the center of the ellipse representing the process
@@ -121,14 +88,6 @@ class GProcess {
           *
           */
 	QSizeF* getSizeEllipse();
-
-        /**
-          * @brief checks collisions with margins of other GProcess items (see graph attribute "sep" in GVSubGraph)
-          *
-          * @return bool true if this GProcess' margin collides with another one's margin (of a different sort), else false
-          */
-        bool checkCollisions();
-
 
         /**
           * @brief gets the related Process
@@ -176,12 +135,6 @@ class GProcess {
           *
           */
 		ProcessPtr process;
-
-        /**
-          * @brief the related node
-          *
-          */
-		GVNode node;
 
         /**
           * @brief the margin around this process, must exclude any other process' margin (cf. graphviz attribute "pos" in GVSubGraph)

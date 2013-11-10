@@ -30,7 +30,6 @@ PH::PH () {
 // trigger the rendering in the Scene
 void PH::render () {
     if (scene.use_count() == 0) scene = make_shared<PHScene>(this);
-    //scene->doRender();
     scene->drawFromSkeleton();
 }
 
@@ -86,33 +85,7 @@ list<ProcessPtr> PH::getProcesses(void) {
 // retrieve the list of Actions
 list<ActionPtr> PH::getActions(void) { return actions; }
 
-
-// represent the PH as a mathematical graph and calculates a layout
-GVGraphPtr PH::toGVGraph(void) {
-	
-	GVGraphPtr res = make_shared<GVGraph>(QString("PH Graph"));
-	QString s;
-	
-    QString posVal;
-    // add Sorts and Processes (well named)
-	for (auto &e : sorts) {
-		s = makeClusterName(e.second->getName());
-		res->addSubGraph(s);
-        res->getSubGraph(s)->setLabel(QString::fromStdString(e.second->getName()));
-        // add constraints on Processes: displayed vertically in their Sort
-        for (int i = 0; i < e.second->countProcesses(); i++) {
-            res->getSubGraph(s)->addNode(makeProcessName(e.second->getProcess(i)));            
-            posVal = QString::number(0).append(",").append(QString::number(i)).append("!");
-            _agset(res->getNode(makeProcessName(e.second->getProcess(i))), "pos", posVal);
-        }
-    }
-	
-    // let graphviz calculate an appropriate layout
-    res->applyLayout();
-
-	return res;
-}
-
+// build the skeleton graph of the ph model
 GVSkeletonGraphPtr PH::createSkeletonGraph(void){
 	GVSkeletonGraphPtr gSkeleton = make_shared<GVSkeletonGraph>(QString("Skeleton Graph"));
 	QString sortName;
@@ -122,8 +95,8 @@ GVSkeletonGraphPtr PH::createSkeletonGraph(void){
 		sortName = makeSkeletonNodeName(e.second->getName());
 		listProcess = e.second->getProcesses();
 		nbProcess = listProcess.size();
-		int width = GProcess::sizeDefault+3*GSort::marginDefault;
-		int height = nbProcess*(GProcess::sizeDefault+3*GSort::marginDefault);
+		int width = GProcess::sizeDefault+2*GSort::marginDefault;
+		int height = nbProcess*(GProcess::sizeDefault+2*GSort::marginDefault);
 		gSkeleton->addNode(sortName);
 		gSkeleton->setNodeSize(gSkeleton->getNode(sortName),width,height);
 		gSkeleton->setGraphObjectAttributes(gSkeleton->getNode(sortName),"fixedsize","true");
@@ -140,168 +113,6 @@ GVSkeletonGraphPtr PH::createSkeletonGraph(void){
 
 
 	return gSkeleton;
-}
-
-GVGraphPtr PH::updateGVGraph(PHScene *scene) {
-
-    // TODO make sure graph name is always unique in the application (see GVGraph constructor)
-    GVGraphPtr res = make_shared<GVGraph>(QString("PH Graph"));
-
-    // add Processes as Nodes (well named and well located)
-    QString clusterName, processName, posVal;
-    qreal nodeX, nodeY;
-    for (auto &e : scene->getGSorts()) {
-        clusterName = makeClusterName(e.second->getSort()->getName());
-        // add constraints on Processes: positions retrieved from graphics scene
-        for (int i(0); i < e.second->getSort()->countProcesses(); i++) {
-            processName = makeProcessName(e.second->getSort()->getProcess(i));
-            res->addNode(processName);
-            // TODO use GProcess ellipse's absolute coordinates instead (maybe avoids progressive vertical shifting that occurs sometimes between processes and actions of a sort)
-            nodeX =   (qreal) e.second->getSort()->getProcess(i)->getGProcess()->getNode()->centerPos.x() / res->getDPI();
-            nodeY = - (qreal) e.second->getSort()->getProcess(i)->getGProcess()->getNode()->centerPos.y() / res->getDPI();
-            posVal = QString::number(nodeX).append(",").append(QString::number(nodeY)).append("!");
-            _agset(res->getNode(processName), "pos", posVal);
-        }
-    }
-
-    // add Actions as Edges (well named)
-    for (ActionPtr &a : actions) {
-        res->addEdge(	makeProcessName(a->getSource())
-                    , 	makeProcessName(a->getTarget()));
-        res->addEdge(	makeProcessName(a->getTarget())
-                    , 	makeProcessName(a->getResult()));
-    }
-
-    // BUG FIXING ATTEMPT:
-    // to force hits' heads and bounces' tails to coincide
-
-    if(MainWindow::mwThis->getDisplayMode() == 0){
-
-        const int nbPorts(3);
-        const int nbResult(5);
-        int i(0);
-        int j(0);
-        QStringList target;
-        QStringList result;
-        QStringList source;
-
-        // add Actions (well named)
-        for (ActionPtr &a : actions) {
-            res->addEdge(	makeProcessName(a->getSource())
-                        , 	makeProcessName(a->getTarget()));
-            res->addEdge(	makeProcessName(a->getTarget())
-                        , 	makeProcessName(a->getResult()));
-
-            int xSource = a->getSource()->getGProcess()->getNode()->centerPos.x();
-            int ySource = a->getSource()->getGProcess()->getNode()->centerPos.y();
-            int xTarget = a->getTarget()->getGProcess()->getNode()->centerPos.x();
-            int yTarget = a->getTarget()->getGProcess()->getNode()->centerPos.y();
-            //int xResult = a->getResult()->getGProcess()->getNode()->centerPos.x();
-            int yResult = a->getResult()->getGProcess()->getNode()->centerPos.y();
-
-            if((xSource > xTarget && ySource < yTarget) || (xSource >= xTarget && ySource < yTarget) || (xSource > xTarget && ySource <= yTarget)){
-
-                target.insert(0,"n");
-                target.insert(1,"ne");
-                target.insert(2,"e");
-                source.insert(0,"s");
-                source.insert(1,"sw");
-                source.insert(2,"w");
-            }
-            else if((xSource < xTarget && ySource < yTarget) || (xSource <= xTarget && ySource < yTarget) || (xSource < xTarget && ySource <= yTarget)){
-
-                target.insert(0,"n");
-                target.insert(1,"nw");
-                target.insert(2,"w");
-                source.insert(0,"s");
-                source.insert(1,"se");
-                source.insert(2,"e");
-            }
-            else if((xSource > xTarget && ySource > yTarget) || (xSource >= xTarget && ySource > yTarget) || (xSource > xTarget && ySource >= yTarget)){
-
-                target.insert(0,"e");
-                target.insert(1,"se");
-                target.insert(2,"s");
-                source.insert(0,"n");
-                source.insert(1,"nw");
-                source.insert(2,"w");
-            }
-            else if((xSource < xTarget && ySource > yTarget) || (xSource <= xTarget && ySource > yTarget) || (xSource < xTarget && ySource >= yTarget)){
-
-                target.insert(0,"w");
-                target.insert(1,"sw");
-                target.insert(2,"s");
-                source.insert(0,"n");
-                source.insert(1,"ne");
-                source.insert(2,"e");
-            }
-            else if(xSource == xTarget && ySource == yTarget){
-
-                target.insert(0,"ne");
-                source.insert(0,"e");
-            }
-            else{
-
-                target.insert(0,"_");
-                source.insert(0,"_");
-            }
-
-            if(yResult < yTarget){
-
-                result.insert(0,"s");
-                result.insert(1,"se");
-                result.insert(2,"sw");
-                result.insert(3,"w");
-                result.insert(4,"e");
-            }
-            else if(yResult > yTarget){
-
-                result.insert(0,"n");
-                result.insert(1,"nw");
-                result.insert(2,"w");
-                result.insert(3,"ne");
-                result.insert(4,"e");
-            }
-            else{
-
-                result.insert(0,"_");
-            }
-
-            // BUG FIXING ATTEMPT:
-            // to force hits' heads and bounces' tails to coincide
-            _agset(res->getEdge(makeProcessName(a->getSource()), makeProcessName(a->getTarget())), "tailport", source.at(i));
-            _agset(res->getEdge(makeProcessName(a->getSource()), makeProcessName(a->getTarget())), "headport", target.at(i));
-            _agset(res->getEdge(makeProcessName(a->getTarget()), makeProcessName(a->getResult())), "tailport", target.at(i));
-            _agset(res->getEdge(makeProcessName(a->getTarget()), makeProcessName(a->getResult())), "headport", result.at(j));
-            i = (i+1) % (nbPorts-1);
-            j = (j+1) % (nbResult-1);
-
-        }
-    }
-    else if(MainWindow::mwThis->getDisplayMode() == 1){
-
-        const int nbPorts(9);
-        QString ports[nbPorts] = {"n", "ne", "e", "se", "s", "sw", "w", "nw", "_"};
-        int i(0);
-
-        // add Actions (well named)
-        for (ActionPtr &a : actions) {
-            res->addEdge(	makeProcessName(a->getSource())
-                        , 	makeProcessName(a->getTarget()));
-            res->addEdge(	makeProcessName(a->getTarget())
-                        , 	makeProcessName(a->getResult()));
-
-            // BUG FIXING ATTEMPT:
-            // to force hits' heads and bounces' tails to coincide
-            _agset(res->getEdge(makeProcessName(a->getSource()), makeProcessName(a->getTarget())), "headport", ports[i]);
-            _agset(res->getEdge(makeProcessName(a->getTarget()), makeProcessName(a->getResult())), "tailport", ports[i]);
-            i = (i+1) % (nbPorts-1);
-        }
-    }
-
-    res->applyLayout();
-
-    return res;
 }
 
 // output for DOT file
