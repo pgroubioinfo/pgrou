@@ -42,9 +42,9 @@ GAction::GAction(ActionPtr a, PHScene* sc) : scene(sc), action(a) {
     QSizeF* sizeTarget = source->getSizeEllipse();
 
 
-    QPointF* sourcePointLine = new QPointF(sizeSource->width()*hitVector->x()/2 + source->getCenterPoint()->x(),sizeSource->height()*hitVector->y()/2 + source->getCenterPoint()->y());
+    sourcePointLine = new QPointF(sizeSource->width()*hitVector->x()/2 + source->getCenterPoint()->x(),sizeSource->height()*hitVector->y()/2 + source->getCenterPoint()->y());
 
-    QPointF* targetPointLine = new QPointF(-sizeTarget->width()*hitVector->x()/2 + target->getCenterPoint()->x(),-sizeTarget->height()*hitVector->y()/2 + target->getCenterPoint()->y());
+    targetPointLine = new QPointF(-sizeTarget->width()*hitVector->x()/2 + target->getCenterPoint()->x(),-sizeTarget->height()*hitVector->y()/2 + target->getCenterPoint()->y());
 
 /*
     QPointF* sourcePointLine = new QPointF(source->getCenterPoint()->x(),source->getCenterPoint()->y());
@@ -52,6 +52,26 @@ GAction::GAction(ActionPtr a, PHScene* sc) : scene(sc), action(a) {
 */  
     hitLine = new QGraphicsLineItem(QLineF(*targetPointLine,*sourcePointLine),display);
     hitLine->setPen(QPen(QColor(0,0,0)));
+}
+
+void GAction::update() {
+
+    GProcessPtr source = action->getSource()->getGProcess();
+    GProcessPtr target = action->getTarget()->getGProcess();
+
+    QVector2D* hitVector = new QVector2D(*(target->getCenterPoint()) - *(source->getCenterPoint()));
+    hitVector->normalize();
+
+    QSizeF* sizeSource = source->getSizeEllipse();
+    QSizeF* sizeTarget = source->getSizeEllipse();
+
+    sourcePointLine->setX(sizeSource->width()*hitVector->x()/2 + source->getCenterPoint()->x());
+    sourcePointLine->setY(sizeSource->height()*hitVector->y()/2 + source->getCenterPoint()->y());
+    targetPointLine->setX(-sizeTarget->width()*hitVector->x()/2 + target->getCenterPoint()->x());
+    targetPointLine->setY(-sizeTarget->height()*hitVector->y()/2 + target->getCenterPoint()->y());
+
+    hitLine->setLine(QLineF(*targetPointLine,*sourcePointLine));
+
 }
 
 GAction::GAction(){
@@ -93,9 +113,6 @@ QGraphicsPolygonItem* GAction::makeArrowHead(const GVEdge& e, const QColor& colo
     res->setPen(QPen(color));
     res->setBrush(QBrush(color));
     return res;
-}
-
-void GAction::update(){
 }
 
 // getters

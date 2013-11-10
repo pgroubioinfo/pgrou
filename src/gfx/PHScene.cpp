@@ -90,8 +90,10 @@ void PHScene::hideActions() {
     }
 }
 
-void PHScene::updateAction(){
-
+void PHScene::updateActions(){
+    for(auto &a: actions){
+        a->update();
+    }
 }
 
 

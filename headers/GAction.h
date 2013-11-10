@@ -57,11 +57,11 @@ class GAction {
 
         ~GAction();
 
-        /**
-          * @brief update position of GAction
-          *
-          */
-	void update();
+     /**
+       * @brief update position of GAction
+       *
+       */
+        void update();
 
      /**
        * @brief gets the display
@@ -116,7 +116,19 @@ class GAction {
           * @brief line representing the first part of the action
           *
           */
-	QGraphicsLineItem* hitLine;
+        QGraphicsLineItem* hitLine;
+
+        /**
+          * @brief target Point of the line representing the first part of the action
+          *
+          */
+        QPointF* targetPointLine;
+
+        /**
+          * @brief source Point of the line representing the first part of the action
+          *
+          */
+        QPointF* sourcePointLine;
 
         /**
           * @brief the related Action

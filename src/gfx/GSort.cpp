@@ -93,6 +93,7 @@ void GSort::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     setX(initPosPoint.x() + event->scenePos().x() - eventPressPoint.x());
     setY(initPosPoint.y() + event->scenePos().y() - eventPressPoint.y());
 
+
     event->accept();
 }
 
@@ -105,6 +106,20 @@ void GSort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     // update item position
     setX(initPosPoint.x() + event->scenePos().x() - eventPressPoint.x());
     setY(initPosPoint.y() + event->scenePos().y() - eventPressPoint.y());
+
+    leftTopCorner->setX(x());
+    leftTopCorner->setY(y());
+
+    for(GProcessPtr &p: gProcesses){
+        p->getCenterPoint()->setX(p->getCenterPoint()->x() + event->scenePos().x() - eventPressPoint.x());
+        p->getCenterPoint()->setY(p->getCenterPoint()->y() + event->scenePos().y() - eventPressPoint.y());
+    }
+
+    dynamic_cast<PHScene*>(scene())->updateActions();
+
+
+
+
 
     event->accept();
 
