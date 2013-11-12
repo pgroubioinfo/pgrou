@@ -38,9 +38,9 @@ class GSort : public QGraphicsRectItem {
           * @brief constructor
           *
           * @param SortPtr the related Sort object
-
           * @param GVNode the node of the skeleton graph containing layout info
-
+          * @param qreal width of the Sort
+          * @param qreal height of the Sort
           */
 		GSort(SortPtr p, GVNode n, qreal width, qreal height);
 

@@ -87,14 +87,14 @@ list<ActionPtr> PH::getActions(void) { return actions; }
 GVSkeletonGraphPtr PH::createSkeletonGraph(void){
 	GVSkeletonGraphPtr gSkeleton = make_shared<GVSkeletonGraph>(QString("Skeleton Graph"));
 	QString sortName;
-        vector<ProcessPtr> listProcess;
-        int nbProcess;
+    vector<ProcessPtr> listProcess;
+    int nbProcess;
 	for(auto &e : sorts){
 		sortName = makeSkeletonNodeName(e.second->getName());
 		listProcess = e.second->getProcesses();
-		nbProcess = listProcess.size();
-		int width = GProcess::sizeDefault+2*GSort::marginDefault;
-		int height = nbProcess*(GProcess::sizeDefault+2*GSort::marginDefault);
+        nbProcess = listProcess.size();
+        int height = (nbProcess+1)*(GProcess::sizeDefault+2*GSort::marginDefault);
+        int width = height; // modified to get less "vertical" graphs
 		gSkeleton->addNode(sortName);
 		gSkeleton->setNodeSize(gSkeleton->getNode(sortName),width,height);
 		gSkeleton->setGraphObjectAttributes(gSkeleton->getNode(sortName),"fixedsize","true");
