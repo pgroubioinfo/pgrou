@@ -77,23 +77,23 @@ class GAction {
         ActionPtr getAction();
 
         /**
-          * @brief gets the source GProcess item
+          * @brief gets the source GSort item
           *
-          * @param GProcessPtr a pointer to the source GProcess item
+          * @preturn GSortPtr a pointer to the source GSorts item
           */
         GSortPtr getSourceSort();
 
         /**
-          * @brief gets the target GProcess item
+          * @brief gets the target GSort item
           *
-          * @param GProcessPtr a pointer to the target GProcess item
+          * @return GSortPtr a pointer to the target GSort item
           */
         GSortPtr getTargetSort();
 
         /**
-          * @brief gets the result GProcess item
+          * @brief gets the result GSort item
           *
-          * @param GProcessPtr a pointer to the result GProcess item
+          * @param GSortPtr a pointer to the result GSort item
           */
         GSortPtr getResultSort();
 
