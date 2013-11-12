@@ -40,7 +40,7 @@ typedef std::pair<string, GSortPtr> GSortEntry;
 /**
   * @class PHScene
   * @brief the graphic object representing the process hitting
-    extends QGraphicsScene
+  * extends QGraphicsScene
   *
   */
 class PHScene: public QGraphicsScene {
@@ -58,7 +58,11 @@ class PHScene: public QGraphicsScene {
           */
         void doRender(void);
 
-	void drawFromSkeleton(void);
+        /**
+          * @brief create a GVSkeletonGraph from the PH object, then draw the PHSCene from it
+          *
+          */
+        void drawFromSkeleton(void);
 
         /**
           * @brief gets a GSort by its related Sort's name
@@ -144,8 +148,6 @@ class PHScene: public QGraphicsScene {
 
         /**
           * @brief creates GAction items from graphviz graph (GVEdge structs)
-          *
-          * @param GVGraphPtr a smart pointer to the graphviz graph to convert
           *
           */
         void createActions();
