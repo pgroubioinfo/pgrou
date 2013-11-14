@@ -273,25 +273,6 @@ MyArea* MainWindow::openTab() {
                 }
             }
 
-            //Selection of graphic performance
-
-            QStringList items;
-            items << tr("Low") << tr("High");
-            bool ok;
-            QString display = QInputDialog::getItem(this, "Graphic performance", "Display : ", items, 0, false, &ok);
-
-            if(ok && display == "Low"){
-
-                this->displayMode = 0;
-            }
-            else if(ok && display == "High"){
-
-                this->displayMode = 1;
-            }
-            else{
-
-                return NULL;
-            }
 
             if(!alreadyOpen){
 
@@ -349,7 +330,7 @@ MyArea* MainWindow::openTab() {
                     time(&arrivee);
 		    double timeRendering;
                     timeRendering = difftime(arrivee,depart);
-		    logFile << file.toStdString()+"-----"+display.toStdString()+"-----" << timeRendering;
+            logFile << file.toStdString()+"-----"+"-----" << timeRendering;
                     logFile << " s\n";
                     logFile.close();
                     return area->myArea;
@@ -1343,15 +1324,5 @@ void MainWindow::enableMenu(){
             this->actionConnection->setEnabled(true);
         }
     }
-}
-
-int MainWindow::getDisplayMode(){
-
-    return this->displayMode;
-}
-
-void MainWindow::setDisplayMode(int a){
-
-    this->displayMode = a;
 }
 
