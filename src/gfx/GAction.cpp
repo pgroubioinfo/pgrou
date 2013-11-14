@@ -33,6 +33,7 @@ GAction::GAction(ActionPtr a, PHScene* sc) : scene(sc), action(a) {
 
     GProcessPtr source = action->getSource()->getGProcess();
     GProcessPtr target = action->getTarget()->getGProcess();
+    GProcessPtr result = action->getResult()->getGProcess();
 
 
     QVector2D* hitVector = new QVector2D(*(target->getCenterPoint()) - *(source->getCenterPoint()));
@@ -46,12 +47,42 @@ GAction::GAction(ActionPtr a, PHScene* sc) : scene(sc), action(a) {
 
     targetPointLine = new QPointF(-sizeTarget->width()*hitVector->x()/2 + target->getCenterPoint()->x(),-sizeTarget->height()*hitVector->y()/2 + target->getCenterPoint()->y());
 
-/*
-    QPointF* sourcePointLine = new QPointF(source->getCenterPoint()->x(),source->getCenterPoint()->y());
-    QPointF* targetPointLine = new QPointF(target->getCenterPoint()->x(),target->getCenterPoint()->y());
-*/  
-    hitLine = new QGraphicsLineItem(QLineF(*targetPointLine,*sourcePointLine),display);
-    hitLine->setPen(QPen(QColor(0,0,0)));
+    resultPointLine = new QPointF(-sizeTarget->width()*hitVector->x()/2 + result->getCenterPoint()->x(),sizeTarget->height()*hitVector->y()/2 + result->getCenterPoint()->y());
+
+ //   hitLine = new QGraphicsLineItem(QLineF(*targetPointLine,*sourcePointLine),display);
+ //   hitLine->setPen(QPen(QColor(0,0,0)));
+
+
+    qreal rectCornerX;
+    qreal rectCornerY;
+    qreal widthRect;
+    qreal heightRect;
+    qreal centerArcY = (targetPointLine->y()+resultPointLine->y())/2;
+    qreal sweepAngle;
+
+    if(targetPointLine->y()<resultPointLine->y()){
+	rectCornerY = targetPointLine->y();
+        heightRect = resultPointLine->y()-targetPointLine->y();
+    } else{
+	rectCornerY = resultPointLine->y();
+	heightRect = targetPointLine->y()-resultPointLine->y();
+    }
+
+    if(resultPointLine->x()<result->getCenterPoint()->x()){
+	sweepAngle = 180;
+    }else{
+	sweepAngle = -180;
+    }
+
+    rectCornerX = resultPointLine->x()- GProcess::sizeDefault/2;
+    widthRect = GProcess::sizeDefault;
+
+    QPainterPath path(QPointF(rectCornerX+widthRect/2,rectCornerY));
+
+    path.arcTo(QRectF(rectCornerX,rectCornerY,widthRect,heightRect),90,sweepAngle);
+    resultLine = new QGraphicsPathItem(path,display);
+
+
 }
 
 void GAction::update() {

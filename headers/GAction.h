@@ -119,6 +119,12 @@ class GAction {
         QGraphicsLineItem* hitLine;
 
         /**
+          * @brief path representing the second part of the action
+          *
+          */
+        QGraphicsPathItem* resultLine;
+
+        /**
           * @brief target Point of the line representing the first part of the action
           *
           */
@@ -129,6 +135,13 @@ class GAction {
           *
           */
         QPointF* sourcePointLine;
+
+
+        /**
+          * @brief source Point of the arc representing the second part of the action
+          *
+          */
+        QPointF* resultPointLine;
 
         /**
           * @brief the related Action
