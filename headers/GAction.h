@@ -77,25 +77,25 @@ class GAction {
         ActionPtr getAction();
 
         /**
-          * @brief gets the source GSort item
+          * @brief gets the source GProcess item
           *
-          * @preturn GSortPtr a pointer to the source GSorts item
+          * @preturn GProcessPtr a pointer to the source GProcess item
           */
-        GSortPtr getSourceSort();
+        GProcessPtr getSource();
 
         /**
-          * @brief gets the target GSort item
+          * @brief gets the target GProcess item
           *
-          * @return GSortPtr a pointer to the target GSort item
+          * @return GProcessPtr a pointer to the target GProcess item
           */
-        GSortPtr getTargetSort();
+        GProcessPtr getTarget();
 
         /**
-          * @brief gets the result GSort item
+          * @brief gets the result GProcess item
           *
-          * @param GSortPtr a pointer to the result GSort item
+          * @param GProcessPtr a pointer to the result GProcess item
           */
-        GSortPtr getResultSort();
+        GProcessPtr getResult();
 
 	
 	protected:
@@ -104,13 +104,13 @@ class GAction {
           * @brief the PHScene related to the Action
           *
           */
-		PHScene* scene;
+	PHScene* scene;
 
         /**
           * @brief the graphical item representing the Action
           *
           */
-		QGraphicsItem* display;
+	QGraphicsItem* display;
 
         /**
           * @brief line representing the first part of the action
@@ -122,26 +122,26 @@ class GAction {
           * @brief path representing the second part of the action
           *
           */
-        QGraphicsPathItem* resultLine;
+        QGraphicsPathItem* actionPath;
 
         /**
           * @brief target Point of the line representing the first part of the action
           *
           */
-        QPointF* targetPointLine;
+        QPointF* targetPoint;
 
         /**
           * @brief source Point of the line representing the first part of the action
           *
           */
-        QPointF* sourcePointLine;
+        QPointF* sourcePoint;
 
 
         /**
           * @brief source Point of the arc representing the second part of the action
           *
           */
-        QPointF* resultPointLine;
+        QPointF* resultPoint;
 
         /**
           * @brief the related Action
@@ -153,7 +153,7 @@ class GAction {
           * @brief the pair of graphical items representing the tails of the arrows of the Action
           *
           */
-		pair<QGraphicsPathItem*, QGraphicsPathItem*> 		arrowTails;
+	pair<QGraphicsPathItem*, QGraphicsPathItem*> 		arrowTails;
 
         /**
           * @brief the pair of graphical items representing the heads of the arrows of the Action
@@ -165,7 +165,24 @@ class GAction {
           * @brief the edges related to the arrows
           *
           */
-		pair<GVEdge, GVEdge> edges;
+	pair<GVEdge, GVEdge> edges;
+
+        /**
+          * @brief init the position of sourcePointLine, targetPointLine and resultPointLine
+          */
+	void initContactPoints();
+
+        /**
+          * @brief update the position of sourcePointLine, targetPointLine and resultPointLine
+          */
+	void updateContactPoints();
+        
+	/**
+          * @brief build the arc corresponding to the second part of the action
+	  *
+	  * @return QPainterPath the arc representing the second part of the action
+          */
+	QPainterPath createPath();
 
         /**
           * @brief draws the head of the arrow
@@ -176,6 +193,6 @@ class GAction {
           * @return QGraphicsPolygonItem* the graphical item representing the head of the arrow
           *
           */
-		QGraphicsPolygonItem* makeArrowHead(const GVEdge& e, const QColor& color);		
+	QPolygonF makeArrowHead(QPainterPath path);		
 	
 };
