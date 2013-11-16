@@ -2,10 +2,8 @@
 #define AREA_H
 
 #include <QWidget>
-#include "Area.h"
 #include "TextArea.h"
 #include "TreeArea.h"
-#include "MyArea.h"
 #include "MainWindow.h"
 #include "ColorerSequences.h"
 

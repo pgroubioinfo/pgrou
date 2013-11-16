@@ -5,7 +5,6 @@
 #include <QSize>
 #include <QPoint>
 #include <vector>
-#include "PH.h"
 #include "Sort.h"
 #include "GVNode.h"
 #include "GProcess.h"

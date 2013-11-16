@@ -1,6 +1,5 @@
 #include "FunctionForm.h"
 #include <vector>
-#include "ConnectionSettings.h"
 #include "MainWindow.h"
 
 

@@ -3,8 +3,6 @@
 #include <iostream>
 #include "Exceptions.h"
 #include "PH.h"
-#include "PHScene.h"
-#include "Sort.h"
 #include "MainWindow.h"
 #include <GVSkeletonGraph.h>
 #include <QDebug>

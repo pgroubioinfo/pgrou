@@ -1,8 +1,6 @@
 #include "ConnectionSettings.h"
 #include <vector>
 #include "MainWindow.h"
-#include "FuncFrame.h"
-#include "ArgumentFrame.h"
 
 
 ConnectionSettings::ConnectionSettings():
