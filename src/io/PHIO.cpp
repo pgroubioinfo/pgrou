@@ -15,11 +15,8 @@
 #include <QXmlStreamReader>
 #include "axe.h"
 #include "Exceptions.h"
-#include "Action.h"
 #include "IO.h"
-#include "PH.h"
 #include "PHIO.h"
-#include "Sort.h"
 #include "Area.h"
 
 

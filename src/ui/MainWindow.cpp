@@ -1,17 +1,13 @@
 #include <QApplication>
 #include <QtGui>
 #include "MainWindow.h"
-#include "MyArea.h"
 #include "PHIO.h"
 #include "Exceptions.h"
 #include "Area.h"
 #include <stdio.h>
 #include <qthread.h>
 #include <iostream>
-#include "ConnectionSettings.h"
 #include "IO.h"
-#include "FunctionForm.h"
-#include "GSort.h"
 #include <QThread>
 #include <sstream>
 #include <time.h> 

@@ -5,7 +5,6 @@
 #include "ConnectionSettings.h"
 #include <vector>
 #include "FunctionForm.h"
-#include "ConnectionSettings.h"
 
 /**
   * @file MainWindow.h
