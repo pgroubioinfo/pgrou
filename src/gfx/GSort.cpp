@@ -12,7 +12,6 @@
 #include <QPoint>
 #include <QSize>
 #include "GSort.h"
-#include "Process.h"
 
 const int GSort::marginDefault = 10;
 

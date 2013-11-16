@@ -6,8 +6,6 @@
 #include <boost/make_shared.hpp>
 #include "Exceptions.h"
 #include "PH.h"
-#include "Sort.h"
-#include "Process.h"
 #include "PHScene.h"
 
 PHScene::PHScene(PH* _ph) : ph(_ph) {
