@@ -11,12 +11,16 @@
 #include <QMenu>
 #include <QPoint>
 #include <QSize>
+#include <cmath>
+#include <algorithm>
 #include "GSort.h"
 #include "Process.h"
 
-const int GSort::marginDefault = 10;
 
-GSort::GSort(SortPtr s, GVNode n, qreal width, qreal height) : QGraphicsRectItem(n.centerPos.x()-width/2, n.centerPos.y()-height/2, width, height),sort(s), node(n) {
+const int GSort::marginDefault = 10;
+const int GSort::defaultDistance = 15;
+
+GSort::GSort(SortPtr s, GVNode n, qreal width, qreal height,PHScene* sc) : scene(sc), QGraphicsRectItem(n.centerPos.x()-width/2, n.centerPos.y()-height/2, width, height),sort(s), node(n) {
 
     // graphic items set and Actions color
     color = makeColor();
@@ -86,46 +90,79 @@ void GSort::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 }
 
 
-// mouse move event handler: process "drag"
+// mouse move event handler: porcess "drag"
 void GSort::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 
     // update item position
     setX(initPosPoint.x() + event->scenePos().x() - eventPressPoint.x());
     setY(initPosPoint.y() + event->scenePos().y() - eventPressPoint.y());
 
-
     event->accept();
 }
 
-
-// mouse release event handler: process "drop"
 void GSort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 
     setCursor(QCursor(Qt::OpenHandCursor));
 
-    // update item position
-    setX(initPosPoint.x() + event->scenePos().x() - eventPressPoint.x());
-    setY(initPosPoint.y() + event->scenePos().y() - eventPressPoint.y());
+    //save new position of inital point
+    int x1=initPosPoint.x() + event->scenePos().x() - eventPressPoint.x();
+    int y1=initPosPoint.y() + event->scenePos().y() - eventPressPoint.y();
 
-    leftTopCorner->setX(x());
-    leftTopCorner->setY(y());
+    int a=node.centerPos.x()+ event->scenePos().x() - eventPressPoint.x();
+    int b=node.centerPos.y()+ event->scenePos().y() - eventPressPoint.y();
 
-    for(GProcessPtr &p: gProcesses){
-        p->getCenterPoint()->setX(p->getCenterPoint()->x() + event->scenePos().x() - eventPressPoint.x());
-        p->getCenterPoint()->setY(p->getCenterPoint()->y() + event->scenePos().y() - eventPressPoint.y());
+    int x2,y2;
+    int distanceHeightMin=0;
+
+   // map<string, GSortPtr> listGSorts = dynamic_cast<PHScene*>(sscenecene())->getGSorts();
+
+    map<string, GSortPtr> listGSorts = scene->getGSorts();
+
+
+    bool resetPosition = false;
+
+    for(auto &s : listGSorts){
+
+        x2=s.second.get()->getNode().centerPos.x();
+        y2=s.second.get()->getNode().centerPos.y();
+
+       if(s.second.get()->getSort()->getName()!=sort->getName()){
+
+           distanceHeightMin=getSizeRect()->height()/2 + s.second.get()->getSizeRect()->height()/2;
+
+           if( abs(a-x2)<getSizeRect()->width()+defaultDistance && abs(b-y2)<distanceHeightMin+defaultDistance ){
+               resetPosition = true;
+               break;
+           }
+        }
     }
 
-    dynamic_cast<PHScene*>(scene())->updateActions();
+        //coordinates have the initial value
+    if(resetPosition){
+        setX(initPosPoint.x());
+        setY(initPosPoint.y());
+        leftTopCorner->setX(x());
+        leftTopCorner->setY(y());
+    }
+    else{
+        setX(x1);
+        setY(y1);
+        leftTopCorner->setX(x());
+        leftTopCorner->setY(y());
+        for(GProcessPtr &p: gProcesses){
+            p->getCenterPoint()->setX(p->getCenterPoint()->x() + event->scenePos().x() - eventPressPoint.x());
+            p->getCenterPoint()->setY(p->getCenterPoint()->y() + event->scenePos().y() - eventPressPoint.y());
+        }
 
+        node.centerPos = QPoint(node.centerPos.x()+ event->scenePos().x() - eventPressPoint.x(),node.centerPos.y()+ event->scenePos().y() - eventPressPoint.y());
 
+    }
 
+    //dynamic_cast<PHScene*>(sscenecene())->updateActions();
 
-
+    scene->updateActions();
     event->accept();
-
 }
-
-
 // context menu event handler
 void GSort::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
 
@@ -136,8 +173,7 @@ void GSort::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
     }
 }
 
-
-// palette management
+// palette managementsizeRect
 
 int GSort::paletteIndex = 0;
 
@@ -163,11 +199,15 @@ QGraphicsRectItem* GSort::getRect() { return this->_rect; }
 
 SortPtr GSort::getSort() { return this->sort; }
 
+GVNode GSort::getNode() { return this->node; }
+
 QGraphicsTextItem* GSort::getText() { return this->text; }
 
 QPoint GSort::geteventPressPoint() { return this->eventPressPoint; }
 
 QPoint* GSort::getLeftTopCornerPoint() {return this->leftTopCorner;}
+
+QPoint GSort::getInitPosPoint() {return this->initPosPoint;}
 
 QSize* GSort::getSizeRect() { return this->sizeRect;}
 

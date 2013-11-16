@@ -87,11 +87,11 @@ QList<GVNode> GVSkeletonGraph::nodes(){
 		GVNode object;
 		object.name = node->name;
 		
-		qreal x = node ->u.coord.x *(dpi/GVSkeletonGraph::DotDefaultDPI);
+        qreal x = node ->u.coord.x *(dpi/GVSkeletonGraph::DotDefaultDPI);
 		qreal y = -node ->u.coord.y *(dpi/GVSkeletonGraph::DotDefaultDPI);
 		
-		object.centerPos = QPoint(x,y);
-		
+        object.centerPos = QPoint(x,y);
+
 		object.height = node->u.height * dpi;
 		object.width = node->u.width * dpi;
 		

@@ -9,6 +9,7 @@
 #include "Sort.h"
 #include "Process.h"
 #include "PHScene.h"
+#include <map>
 
 PHScene::PHScene(PH* _ph) : ph(_ph) {
     // set background color
@@ -32,7 +33,7 @@ void PHScene::drawFromSkeleton(void){
 			int width = GProcess::sizeDefault+2*GSort::marginDefault;
 			int height = nbProcess*(GProcess::sizeDefault+2*GSort::marginDefault);
 			if(gn.name == makeSkeletonNodeName(s->getName())){
-				sorts.insert(GSortEntry(s->getName(), make_shared<GSort>(s,gn,width,height)));			
+                sorts.insert(GSortEntry(s->getName(), make_shared<GSort>(s,gn,width,height,this)));
 			}
 		}	
 	}
