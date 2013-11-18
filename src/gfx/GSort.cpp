@@ -12,7 +12,6 @@
 #include <QPoint>
 #include <QSize>
 #include <cmath>
-#include <algorithm>
 #include "GSort.h"
 #include "Process.h"
 

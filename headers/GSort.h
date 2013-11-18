@@ -21,7 +21,6 @@ class GSort;
 typedef boost::shared_ptr<GSort> GSortPtr;
 class GSimpleProcess;
 typedef boost::shared_ptr<GProcess> GProcessPtr;
-class PHScene;
 
 /**
   * @class GSort
@@ -44,7 +43,7 @@ class GSort : public QGraphicsRectItem {
           * @param qreal width of the Sort
           * @param qreal height of the Sort
           */
-        GSort(SortPtr p, GVNode n, qreal width, qreal height,PHScene* sc);
+        GSort(SortPtr p, GVNode n, qreal width, qreal height);
 
 		~GSort();
 
@@ -144,8 +143,6 @@ class GSort : public QGraphicsRectItem {
           */
         QPoint* getLeftTopCornerPoint();
 
-
-        QPoint getInitPosPoint();
         /**
           * @brief get the size of the ellipse representing the process
           *
@@ -157,12 +154,6 @@ class GSort : public QGraphicsRectItem {
 
 		
 	protected:
-
-    /**
-      * @brief the PHScene related to the Action
-      *
-      */
-    PHScene* scene;
 
         /**
           * @brief position of the left top corner of the rectangle representing the sort
