@@ -20,7 +20,7 @@
 const int GSort::marginDefault = 10;
 const int GSort::defaultDistance = 15;
 
-GSort::GSort(SortPtr s, GVNode n, qreal width, qreal height,PHScene* sc) : scene(sc), QGraphicsRectItem(n.centerPos.x()-width/2, n.centerPos.y()-height/2, width, height),sort(s), node(n) {
+GSort::GSort(SortPtr s, GVNode n, qreal width, qreal height) : QGraphicsRectItem(n.centerPos.x()-width/2, n.centerPos.y()-height/2, width, height),sort(s), node(n) {
 
     // graphic items set and Actions color
     color = makeColor();
@@ -114,10 +114,7 @@ void GSort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     int x2,y2;
     int distanceHeightMin=0;
 
-   // map<string, GSortPtr> listGSorts = dynamic_cast<PHScene*>(sscenecene())->getGSorts();
-
-    map<string, GSortPtr> listGSorts = scene->getGSorts();
-
+    map<string, GSortPtr> listGSorts = dynamic_cast<PHScene*>(scene())->getGSorts();
 
     bool resetPosition = false;
 
@@ -158,9 +155,8 @@ void GSort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 
     }
 
-    //dynamic_cast<PHScene*>(sscenecene())->updateActions();
+    dynamic_cast<PHScene*>(scene())->updateActions();
 
-    scene->updateActions();
     event->accept();
 }
 // context menu event handler
@@ -206,8 +202,6 @@ QGraphicsTextItem* GSort::getText() { return this->text; }
 QPoint GSort::geteventPressPoint() { return this->eventPressPoint; }
 
 QPoint* GSort::getLeftTopCornerPoint() {return this->leftTopCorner;}
-
-QPoint GSort::getInitPosPoint() {return this->initPosPoint;}
 
 QSize* GSort::getSizeRect() { return this->sizeRect;}
 
