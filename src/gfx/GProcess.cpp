@@ -25,8 +25,8 @@ GProcess::GProcess(ProcessPtr p,double centerX, double centerY) : process(p){
     // ellipse
     ellipse = new QGraphicsEllipseItem (center->x()-sizeDefault/2, center->y()-sizeDefault/2,
                                         size->width(), size->height(), display);
-	ellipse->setPen(QPen(QColor(238,232,213)));
-	ellipse->setBrush(QBrush(QColor(238,232,213)));
+	ellipse->setPen(QPen(QColor(0,0,0)));
+	ellipse->setBrush(QBrush(QColor(255,255,255)));
 
 
     int margin(GSort::marginDefault);

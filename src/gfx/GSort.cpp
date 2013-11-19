@@ -28,8 +28,8 @@ GSort::GSort(SortPtr s, GVNode n, qreal width, qreal height) : QGraphicsRectItem
 
     // rectangle
     _rect = new QGraphicsRectItem(QRectF(*leftTopCorner, *sizeRect),this);
-    _rect->setPen(QPen(QColor(7,54,66)));
-    _rect->setBrush(QBrush(QColor(7,54,66)));
+    _rect->setPen(QPen(QColor(0,0,0)));
+    _rect->setBrush(QBrush(QColor(255,255,255)));
 
     // label
     text = new QGraphicsTextItem (QString(), this);
@@ -88,7 +88,7 @@ void GSort::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 }
 
 
-// mouse move event handler: porcess "drag"
+// mouse move event handler: process "drag"
 void GSort::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 
     // update item position
@@ -154,7 +154,6 @@ void GSort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     }
 
     dynamic_cast<PHScene*>(scene())->updateActions();
-
     event->accept();
 }
 // context menu event handler

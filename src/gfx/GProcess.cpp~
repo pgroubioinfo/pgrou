@@ -75,11 +75,6 @@ QPointF* GProcess::getCenterPoint() {return this->center;}
 
 QSizeF* GProcess::getSizeEllipse() {return this->size;}
 
-/
-void GProcess::setCoords(int dx, int dy) {
-    center->setX(node.centerPos.x() + dx);
-    center->setY(node.centerPos.y() + dy);
-}
 
 void GProcess::setCoordsForImport(int x, int y) {
     center->setX(x);
