@@ -214,7 +214,6 @@ MainWindow::MainWindow()
         this->actionStatistics->setEnabled(false);
         this->actionConnection->setEnabled(false);
     }
-
 }
 
 
