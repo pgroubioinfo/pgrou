@@ -6,8 +6,6 @@
 #include <boost/make_shared.hpp>
 #include "Exceptions.h"
 #include "PH.h"
-#include "Sort.h"
-#include "Process.h"
 #include "PHScene.h"
 #include <map>
 
@@ -100,17 +98,6 @@ void PHScene::updateActions(){
 
 void PHScene::showActions() {
 
-    for (GActionPtr &action : actions) {
-        // hide actions related to hidden sorts
-        if (!action->getSourceSort()->GSort::isVisible() ||
-            !action->getTargetSort()->GSort::isVisible() ||
-            !action->getResultSort()->GSort::isVisible()) // optional condition as bounces concern couples of processes in same sorts
-        {
-                action->getDisplayItem()->hide();
-        }
-        // show other actions
-        else    action->getDisplayItem()->show();
-    }
 }
 
 void PHScene::updateForImport() {

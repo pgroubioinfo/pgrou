@@ -5,7 +5,6 @@
 #include <QTreeWidget>
 #include <QPushButton>
 #include <QLineEdit>
-#include "PH.h"
 #include "MyArea.h"
 
 

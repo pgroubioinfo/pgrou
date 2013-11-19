@@ -2,7 +2,6 @@
 #define HEADER_CONNECTIONSETTINGS
 
 #include <QtGui>
-#include "ArgumentFrame.h"
 #include "FuncFrame.h"
 #include "ChoixLigne.h"
 

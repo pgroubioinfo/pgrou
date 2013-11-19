@@ -5,10 +5,6 @@
 #include <map>
 #include <string>
 #include "GAction.h"
-#include "GProcess.h"
-#include "GSort.h"
-#include "GVGraph.h"
-#include "GVSkeletonGraph.h"
 
 
 

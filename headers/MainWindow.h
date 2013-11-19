@@ -5,7 +5,6 @@
 #include "ConnectionSettings.h"
 #include <vector>
 #include "FunctionForm.h"
-#include "ConnectionSettings.h"
 
 /**
   * @file MainWindow.h
@@ -74,17 +73,7 @@ public:
 
     QString pathCurrentWindow();
 
-    /**
-      * @brief returns the display mode high = 1 or low = 0
-      *
-      */
-    int getDisplayMode();
 
-    /**
-      * @brief sets the display mode high = 1 or low = 0
-      *
-      */
-    void setDisplayMode(int);
 
 protected:
 
