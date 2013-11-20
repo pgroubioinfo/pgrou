@@ -5,8 +5,7 @@
 // constructor
 MyArea::MyArea(QWidget *parent, QString path) : QGraphicsView(parent) {
     this->path = path;
-	setRenderHints (QPainter::Antialiasing);
-
+    setRenderHints (QPainter::Antialiasing);
     this->scalingFactor = 1.2;
 }
 
@@ -64,7 +63,6 @@ void MyArea::wheelEvent(QWheelEvent *event)
         {
             QGraphicsView::wheelEvent(event);
         }
-
 }
 
 // method to zoom In

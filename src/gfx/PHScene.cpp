@@ -11,7 +11,7 @@
 
 PHScene::PHScene(PH* _ph) : ph(_ph) {
     // set background color
-    setBackgroundBrush(QBrush(QColor(210, 210, 210)));
+    setBackgroundBrush(QBrush(QColor(255, 255, 255)));
 }
 
 
