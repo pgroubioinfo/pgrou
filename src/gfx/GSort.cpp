@@ -28,8 +28,8 @@ GSort::GSort(SortPtr s, GVNode n, qreal width, qreal height) : QGraphicsRectItem
 
     // rectangle
     _rect = new QGraphicsRectItem(QRectF(*leftTopCorner, *sizeRect),this);
-    _rect->setPen(QPen(QColor(7,54,66)));
-    _rect->setBrush(QBrush(QColor(7,54,66)));
+    _rect->setPen(QPen(QColor(0,0,0)));
+    _rect->setBrush(QBrush(QColor(255,255,255)));
 
     // label
     text = new QGraphicsTextItem (QString(), this);
@@ -83,18 +83,30 @@ void GSort::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     initPosPoint.setY(pos().y());
     eventPressPoint.setX(event->scenePos().x());
     eventPressPoint.setY(event->scenePos().y());
-
     event->accept();
 }
 
 
-// mouse move event handler: porcess "drag"
+// mouse move event handler: process "drag"
 void GSort::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 
     // update item position
-    setX(initPosPoint.x() + event->scenePos().x() - eventPressPoint.x());
-    setY(initPosPoint.y() + event->scenePos().y() - eventPressPoint.y());
+    setX(x() + event->scenePos().x() - eventPressPoint.x());
+    setY(y() + event->scenePos().y() - eventPressPoint.y());
+    leftTopCorner->setX(x());
+    leftTopCorner->setY(y());
+    for(GProcessPtr &p: gProcesses){
+	    qreal prevPosX = p->getCenterPoint()->x();
+	    qreal prevPosY = p->getCenterPoint()->y();
+	    p->getCenterPoint()->setX(prevPosX + event->scenePos().x()- eventPressPoint.x());
+	    p->getCenterPoint()->setY(prevPosY + event->scenePos().y()- eventPressPoint.y());
+    }
+    node.centerPos.setX(node.centerPos.x()+ event->scenePos().x()- eventPressPoint.x());
+    node.centerPos.setY(node.centerPos.y()+ event->scenePos().y()- eventPressPoint.y());
 
+    dynamic_cast<PHScene*>(scene())->updateActions();
+    eventPressPoint.setX(event->scenePos().x());
+    eventPressPoint.setY(event->scenePos().y());
     event->accept();
 }
 
@@ -103,11 +115,11 @@ void GSort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     setCursor(QCursor(Qt::OpenHandCursor));
 
     //save new position of inital point
-    int x1=initPosPoint.x() + event->scenePos().x() - eventPressPoint.x();
-    int y1=initPosPoint.y() + event->scenePos().y() - eventPressPoint.y();
+    int x1=x();
+    int y1=y();
 
-    int a=node.centerPos.x()+ event->scenePos().x() - eventPressPoint.x();
-    int b=node.centerPos.y()+ event->scenePos().y() - eventPressPoint.y();
+    int a=node.centerPos.x();
+    int b=node.centerPos.y();
 
     int x2,y2;
     int distanceHeightMin=0;
@@ -134,26 +146,18 @@ void GSort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 
         //coordinates have the initial value
     if(resetPosition){
+	for(GProcessPtr &p: gProcesses){
+	    p->getCenterPoint()->setX(p->getCenterPoint()->x() + initPosPoint.x() - x());
+	    p->getCenterPoint()->setY(p->getCenterPoint()->y() + initPosPoint.y() - y());
+   	}
         setX(initPosPoint.x());
         setY(initPosPoint.y());
         leftTopCorner->setX(x());
         leftTopCorner->setY(y());
+        node.centerPos.setX(node.centerPos.x()+ initPosPoint.x() - x());
+        node.centerPos.setY(node.centerPos.y()+ initPosPoint.y() - y());
+	dynamic_cast<PHScene*>(scene())->updateActions();
     }
-    else{
-        setX(x1);
-        setY(y1);
-        leftTopCorner->setX(x());
-        leftTopCorner->setY(y());
-        for(GProcessPtr &p: gProcesses){
-            p->getCenterPoint()->setX(p->getCenterPoint()->x() + event->scenePos().x() - eventPressPoint.x());
-            p->getCenterPoint()->setY(p->getCenterPoint()->y() + event->scenePos().y() - eventPressPoint.y());
-        }
-
-        node.centerPos = QPoint(node.centerPos.x()+ event->scenePos().x() - eventPressPoint.x(),node.centerPos.y()+ event->scenePos().y() - eventPressPoint.y());
-
-    }
-
-    dynamic_cast<PHScene*>(scene())->updateActions();
 
     event->accept();
 }
