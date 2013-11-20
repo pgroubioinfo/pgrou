@@ -106,6 +106,7 @@ QPainterPath GAction::createPath(){
     qreal heightRect;
     qreal sweepAngle;
     qreal startAngle;
+    QLineF* targetToResult = new QLineF(targetPoint->x(), targetPoint->y(), resultPoint->x(), resultPoint->y());
 
     if(targetPoint->y()<resultPoint->y()){
 	rectCornerY = targetPoint->y();
@@ -123,8 +124,15 @@ QPainterPath GAction::createPath(){
 	sweepAngle = -180;
     }
 
-    rectCornerX = resultPoint->x()- GProcess::sizeDefault/2;
-    widthRect = GProcess::sizeDefault;
+   if (targetToResult->length()> GProcess::sizeDefault)
+   {
+         rectCornerX = resultPoint->x()- GProcess::sizeDefault/2;
+         widthRect = GProcess::sizeDefault;
+    }else{
+
+        rectCornerX = resultPoint->x()- targetToResult->length()/2;
+        widthRect = targetToResult->length()/2 ;
+    }
 
     path.arcTo(QRectF(rectCornerX,rectCornerY,widthRect,heightRect),startAngle,sweepAngle);
 
