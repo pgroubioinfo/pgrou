@@ -759,7 +759,7 @@ void MainWindow::importXMLMetadata(QString tempXML){
 
                 myarea->getPHPtr()->getGraphicsScene()->updateActions();
 //TODO what is the use of updateForImport() ?
-                myarea->getPHPtr()->getGraphicsScene()->updateForImport();
+//                myarea->getPHPtr()->getGraphicsScene()->updateForImport();
             }
 
 
