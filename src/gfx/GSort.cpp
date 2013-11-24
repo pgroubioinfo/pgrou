@@ -16,7 +16,7 @@
 
 
 const int GSort::marginDefault = 10;
-const int GSort::defaultDistance = 15;
+const int GSort::defaultDistance = 25;
 
 GSort::GSort(SortPtr s, GVNode n, qreal width, qreal height) : QGraphicsRectItem(n.centerPos.x()-width/2, n.centerPos.y()-height/2, width, height),sort(s), node(n) {
 
@@ -93,16 +93,14 @@ void GSort::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     // update item position
     setX(x() + event->scenePos().x() - eventPressPoint.x());
     setY(y() + event->scenePos().y() - eventPressPoint.y());
-    leftTopCorner->setX(x());
-    leftTopCorner->setY(y());
+    leftTopCorner->setX(leftTopCorner->x() + event->scenePos().x() - eventPressPoint.x());
+    leftTopCorner->setY(leftTopCorner->y() + event->scenePos().y() - eventPressPoint.y());
     for(GProcessPtr &p: gProcesses){
 	    qreal prevPosX = p->getCenterPoint()->x();
 	    qreal prevPosY = p->getCenterPoint()->y();
 	    p->getCenterPoint()->setX(prevPosX + event->scenePos().x()- eventPressPoint.x());
 	    p->getCenterPoint()->setY(prevPosY + event->scenePos().y()- eventPressPoint.y());
     }
-    node.centerPos.setX(node.centerPos.x()+ event->scenePos().x()- eventPressPoint.x());
-    node.centerPos.setY(node.centerPos.y()+ event->scenePos().y()- eventPressPoint.y());
 
     dynamic_cast<PHScene*>(scene())->updateActions();
     eventPressPoint.setX(event->scenePos().x());
@@ -115,13 +113,10 @@ void GSort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     setCursor(QCursor(Qt::OpenHandCursor));
 
     //save new position of inital point
-    int x1=x();
-    int y1=y();
+    int centerX1=leftTopCorner->x() + sizeRect->width()/2;
+    int centerY1=leftTopCorner->y() + sizeRect->height()/2;
 
-    int a=node.centerPos.x();
-    int b=node.centerPos.y();
-
-    int x2,y2;
+    int centerX2,centerY2;
     int distanceHeightMin=0;
 
     map<string, GSortPtr> listGSorts = dynamic_cast<PHScene*>(scene())->getGSorts();
@@ -130,16 +125,15 @@ void GSort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 
     for(auto &s : listGSorts){
 
-        x2=s.second.get()->getNode().centerPos.x();
-        y2=s.second.get()->getNode().centerPos.y();
+        centerX2=s.second.get()->getLeftTopCornerPoint()->x() + sizeRect->width()/2;
+        centerY2=s.second.get()->getLeftTopCornerPoint()->y() + sizeRect->height()/2;
 
        if(s.second.get()->getSort()->getName()!=sort->getName()){
+	   
+           distanceHeightMin=getSizeRect()->height()/2.0 + s.second.get()->getSizeRect()->height()/2.0 + defaultDistance;
 
-           distanceHeightMin=getSizeRect()->height()/2 + s.second.get()->getSizeRect()->height()/2;
-
-           if( abs(a-x2)<getSizeRect()->width()+defaultDistance && abs(b-y2)<distanceHeightMin+defaultDistance ){
+           if( abs(centerX1-centerX2)<getSizeRect()->width()+defaultDistance && abs(centerY1-centerY2)<distanceHeightMin+defaultDistance ){
                resetPosition = true;
-               break;
            }
         }
     }
@@ -150,12 +144,10 @@ void GSort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 	    p->getCenterPoint()->setX(p->getCenterPoint()->x() + initPosPoint.x() - x());
 	    p->getCenterPoint()->setY(p->getCenterPoint()->y() + initPosPoint.y() - y());
    	}
+        leftTopCorner->setX(leftTopCorner->x() + initPosPoint.x() - x());
+        leftTopCorner->setY(leftTopCorner->y() + initPosPoint.y() - y());
         setX(initPosPoint.x());
         setY(initPosPoint.y());
-        leftTopCorner->setX(x());
-        leftTopCorner->setY(y());
-        node.centerPos.setX(node.centerPos.x()+ initPosPoint.x() - x());
-        node.centerPos.setY(node.centerPos.y()+ initPosPoint.y() - y());
 	dynamic_cast<PHScene*>(scene())->updateActions();
     }
 
