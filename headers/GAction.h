@@ -115,13 +115,13 @@ class GAction {
           * @brief line representing the first part of the action
           *
           */
-        QGraphicsLineItem* hitLine;
+        QGraphicsPathItem* hitLine;
 
         /**
           * @brief path representing the second part of the action
           *
           */
-        QGraphicsPathItem* actionPath;
+        QGraphicsPathItem* boundArc;
 
         /**
           * @brief target Point of the line representing the first part of the action
@@ -141,6 +141,12 @@ class GAction {
           *
           */
         QPointF* resultPoint;
+
+        /*/**
+          * @brief the line between targetPoint and resultPoint
+          *
+          */
+       /*QLineF* targetToResult;**/
 
         /**
           * @brief the related Action
@@ -177,11 +183,18 @@ class GAction {
 	void updateContactPoints();
         
 	/**
-          * @brief build the arc corresponding to the second part of the action
+          * @brief build the line corresponding to the first part of the action
 	  *
-	  * @return QPainterPath the arc representing the second part of the action
+      * @return QPainterPath the line representing the first part of the action
           */
-	QPainterPath createPath();
+    QPainterPath createHitPath();
+    /**
+          * @brief build the arc corresponding to the second part of the action
+      *
+      * @return QPainterPath the arc representing the second part of the action
+          */
+    QPainterPath createBoundPath();
+
 
         /**
           * @brief draws the head of the arrow
