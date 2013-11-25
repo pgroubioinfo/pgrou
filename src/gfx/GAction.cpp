@@ -7,19 +7,23 @@
 #include <QVector2D>
 #include "GAction.h"
 
+
 GAction::GAction(ActionPtr a, PHScene* sc) : scene(sc), action(a) {
     display = new QGraphicsItemGroup();
 
     initContactPoints();
 
-    actionPath = new QGraphicsPathItem(createPath(),display);
+    boundArc = new QGraphicsPathItem(createBoundPath(),display);
+    boundArc->setPen(QPen(Qt::DotLine));
+    hitLine= new QGraphicsPathItem(createHitPath(),display);
 }
 
 void GAction::update() {
 
     updateContactPoints();
 
-    actionPath->setPath(createPath());
+    boundArc->setPath(createBoundPath());
+    hitLine->setPath(createHitPath());
 
 }
 
@@ -37,23 +41,24 @@ void GAction::initContactPoints(){
     GProcessPtr result = getResult();
 
     if(source!=target){
-	    QVector2D* hitVector = new QVector2D(*(target->getCenterPoint()) - *(source->getCenterPoint()));
-	    hitVector->normalize();
+        QVector2D* hitVector = new QVector2D(*(target->getCenterPoint()) - *(source->getCenterPoint()));
+        hitVector->normalize();
 
-	    QSizeF* sizeSource = source->getSizeEllipse();
-	    QSizeF* sizeTarget = source->getSizeEllipse();
+        QSizeF* sizeSource = source->getSizeEllipse();
+        QSizeF* sizeTarget = source->getSizeEllipse();
 
 
-	    sourcePoint = new QPointF(sizeSource->width()*hitVector->x()/2.0 + source->getCenterPoint()->x(),sizeSource->height()*hitVector->y()/2 + source->getCenterPoint()->y());
+        sourcePoint = new QPointF(sizeSource->width()*hitVector->x()/2.0 + source->getCenterPoint()->x(),sizeSource->height()*hitVector->y()/2 + source->getCenterPoint()->y());
 
-	    targetPoint = new QPointF(-sizeTarget->width()*hitVector->x()/2.0 + target->getCenterPoint()->x(),-sizeTarget->height()*hitVector->y()/2 + target->getCenterPoint()->y());
+        targetPoint = new QPointF(-sizeTarget->width()*hitVector->x()/2.0 + target->getCenterPoint()->x(),-sizeTarget->height()*hitVector->y()/2 + target->getCenterPoint()->y());
 
-    	    resultPoint = new QPointF(-sizeTarget->width()*hitVector->x()/2.0 + result->getCenterPoint()->x(),sizeTarget->height()*hitVector->y()/2 + result->getCenterPoint()->y());
+            resultPoint = new QPointF(-sizeTarget->width()*hitVector->x()/2.0 + result->getCenterPoint()->x(),sizeTarget->height()*hitVector->y()/2 + result->getCenterPoint()->y());
      }else{
-	    sourcePoint = new QPointF(GProcess::sizeDefault/2 + source->getCenterPoint()->x(),source->getCenterPoint()->y());
+        sourcePoint = new QPointF(GProcess::sizeDefault/2 + source->getCenterPoint()->x(),source->getCenterPoint()->y());
             targetPoint = sourcePoint;
             resultPoint = new QPointF(GProcess::sizeDefault/2 + result->getCenterPoint()->x(),result->getCenterPoint()->y());
      }
+        //targetToResult = new QLineF(targetPoint->x(), targetPoint->y(), resultPoint->x(), resultPoint->y());
 
 }
 
@@ -63,36 +68,44 @@ void GAction::updateContactPoints(){
     GProcessPtr result = getResult();
 
     if(source!=target){
-    	QVector2D* hitVector = new QVector2D(*(target->getCenterPoint()) - *(source->getCenterPoint()));
-    	hitVector->normalize();
+        QVector2D* hitVector = new QVector2D(*(target->getCenterPoint()) - *(source->getCenterPoint()));
+        hitVector->normalize();
 
-    	QSizeF* sizeSource = source->getSizeEllipse();
-    	QSizeF* sizeTarget = source->getSizeEllipse();
+        QSizeF* sizeSource = source->getSizeEllipse();
+        QSizeF* sizeTarget = source->getSizeEllipse();
 
-    	sourcePoint->setX(sizeSource->width()*hitVector->x()/2.0 + source->getCenterPoint()->x());
-    	sourcePoint->setY(sizeSource->height()*hitVector->y()/2.0 + source->getCenterPoint()->y());
-    	targetPoint->setX(-sizeTarget->width()*hitVector->x()/2.0 + target->getCenterPoint()->x());
-    	targetPoint->setY(-sizeTarget->height()*hitVector->y()/2.0 + target->getCenterPoint()->y());
-    	resultPoint->setX(-sizeTarget->width()*hitVector->x()/2.0 + result->getCenterPoint()->x());
-    	resultPoint->setY(sizeTarget->height()*hitVector->y()/2.0 + result->getCenterPoint()->y());
+        sourcePoint->setX(sizeSource->width()*hitVector->x()/2.0 + source->getCenterPoint()->x());
+        sourcePoint->setY(sizeSource->height()*hitVector->y()/2.0 + source->getCenterPoint()->y());
+        targetPoint->setX(-sizeTarget->width()*hitVector->x()/2.0 + target->getCenterPoint()->x());
+        targetPoint->setY(-sizeTarget->height()*hitVector->y()/2.0 + target->getCenterPoint()->y());
+        resultPoint->setX(-sizeTarget->width()*hitVector->x()/2.0 + result->getCenterPoint()->x());
+        resultPoint->setY(sizeTarget->height()*hitVector->y()/2.0 + result->getCenterPoint()->y());
      }else{
-    	sourcePoint->setX(GProcess::sizeDefault/2 + source->getCenterPoint()->x());
-    	sourcePoint->setY(source->getCenterPoint()->y());
+        sourcePoint->setX(GProcess::sizeDefault/2 + source->getCenterPoint()->x());
+        sourcePoint->setY(source->getCenterPoint()->y());
         resultPoint->setX(GProcess::sizeDefault/2 + result->getCenterPoint()->x());
         resultPoint->setY(result->getCenterPoint()->y());
      }
 }
 
-QPainterPath GAction::createPath(){
-    QPainterPath path(*sourcePoint);
+// Create actions paths
+//Hit Part
+QPainterPath GAction::createHitPath(){
+    QPainterPath hitPath(*sourcePoint);
 
     if(sourcePoint!=targetPoint){
-	path.lineTo(*targetPoint);
+        hitPath.lineTo(*targetPoint);
     }else{
-    	path.arcTo(QRectF(sourcePoint->x(),sourcePoint->y()-20,50,40),180,360);
+        hitPath.arcTo(QRectF(sourcePoint->x(),sourcePoint->y()-20,50,40),180,360);
     }
-    
-    path.addPolygon(makeArrowHead(path));
+
+    hitPath.addPolygon(makeArrowHead(hitPath));
+
+    return hitPath;
+}
+// Bound Part
+QPainterPath GAction::createBoundPath(){
+    QPainterPath boundPath(*targetPoint);
 
     qreal rectCornerX;
     qreal rectCornerY;
@@ -103,31 +116,33 @@ QPainterPath GAction::createPath(){
     int invertSweep;
 
     if(targetPoint->y()<resultPoint->y()){
-	rectCornerY = targetPoint->y();
-        heightRect = resultPoint->y()-targetPoint->y();
-	startAngle = 90;
-	invertSweep = 1;
+    rectCornerY = targetPoint->y();
+    heightRect = resultPoint->y()-targetPoint->y();
+    startAngle = 90;
+    invertSweep = 1;
     } else{
-	rectCornerY = resultPoint->y();
-	heightRect = targetPoint->y()-resultPoint->y();
-	startAngle = -90;
-	invertSweep = -1;
+    rectCornerY = resultPoint->y();
+    heightRect = targetPoint->y()-resultPoint->y();
+    startAngle = -90;
+    invertSweep = -1;
     }
 
     if(resultPoint->x()<getResult()->getCenterPoint()->x()){
-	sweepAngle = 180*invertSweep;
+    sweepAngle = 180*invertSweep;
     }else{
-	sweepAngle = -180*invertSweep;
+    sweepAngle = -180*invertSweep;
     }
+
 
     rectCornerX = resultPoint->x()- (GProcess::sizeDefault)/2.0;
     widthRect = GProcess::sizeDefault;
 
-    path.arcTo(QRectF(rectCornerX,rectCornerY,widthRect,heightRect),startAngle,sweepAngle);
 
-    path.addPolygon(makeArrowHead(path));
+    boundPath.arcTo(QRectF(rectCornerX,rectCornerY,widthRect,heightRect),startAngle,sweepAngle);
 
-    return path;
+    boundPath.addPolygon(makeArrowHead(boundPath));
+
+    return boundPath;
 }
 
 // draw an arrowhead
@@ -151,10 +166,11 @@ QPolygonF GAction::makeArrowHead(QPainterPath path) {
     // rotate arrow
     QMatrix matrix;
     matrix.translate(p.x(), p.y());
-    if(sourcePoint!=targetPoint){
-	matrix.rotate(-path.angleAtPercent(1));
+    if(sourcePoint!=targetPoint)
+    {
+        matrix.rotate(-path.angleAtPercent(1));
     }else{
-	matrix.rotate(-path.angleAtPercent(0.98));
+        matrix.rotate(-path.angleAtPercent(0.98));
     }
     matrix.translate(-p.x(), -p.y());
     polygon = matrix.map(polygon);

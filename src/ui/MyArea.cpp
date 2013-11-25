@@ -38,7 +38,7 @@ float MyArea::getScalingFactor(){
 QString MyArea::getPath() {
     return this->path;
 }
-void MyArea::setPath(QString Path) {
+void MyArea::setPath(QString path) {
      this->path = path;
 }
 
