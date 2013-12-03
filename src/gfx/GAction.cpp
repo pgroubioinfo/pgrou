@@ -6,7 +6,7 @@
 #include <Qt>
 #include <QVector2D>
 #include "GAction.h"
-
+#include <QtCore/qmath.h>
 
 GAction::GAction(ActionPtr a, PHScene* sc) : scene(sc), action(a) {
     display = new QGraphicsItemGroup();
@@ -52,14 +52,12 @@ void GAction::initContactPoints(){
 
         targetPoint = new QPointF(-sizeTarget->width()*hitVector->x()/2.0 + target->getCenterPoint()->x(),-sizeTarget->height()*hitVector->y()/2 + target->getCenterPoint()->y());
 
-            resultPoint = new QPointF(-sizeTarget->width()*hitVector->x()/2.0 + result->getCenterPoint()->x(),sizeTarget->height()*hitVector->y()/2 + result->getCenterPoint()->y());
-     }else{
-        sourcePoint = new QPointF(GProcess::sizeDefault/2 + source->getCenterPoint()->x(),source->getCenterPoint()->y());
-            targetPoint = sourcePoint;
-            resultPoint = new QPointF(GProcess::sizeDefault/2 + result->getCenterPoint()->x(),result->getCenterPoint()->y());
+        resultPoint = new QPointF(-sizeTarget->width()*hitVector->x()/2.0 + result->getCenterPoint()->x(),sizeTarget->height()*hitVector->y()/2 + result->getCenterPoint()->y());
+    }else{
+        sourcePoint = new QPointF(source->getCenterPoint()->x() + 0*(GProcess::sizeDefault)/2.0, source->getCenterPoint()->y() + qSin(qAcos(0))*(GProcess::sizeDefault)/2.0);
+        targetPoint = new QPointF(GProcess::sizeDefault/2 + source->getCenterPoint()->x(), source->getCenterPoint()->y());
+        resultPoint = new QPointF(GProcess::sizeDefault/2 + result->getCenterPoint()->x(),result->getCenterPoint()->y());
      }
-        //targetToResult = new QLineF(targetPoint->x(), targetPoint->y(), resultPoint->x(), resultPoint->y());
-
 }
 
 void GAction::updateContactPoints(){
@@ -80,9 +78,11 @@ void GAction::updateContactPoints(){
         targetPoint->setY(-sizeTarget->height()*hitVector->y()/2.0 + target->getCenterPoint()->y());
         resultPoint->setX(-sizeTarget->width()*hitVector->x()/2.0 + result->getCenterPoint()->x());
         resultPoint->setY(sizeTarget->height()*hitVector->y()/2.0 + result->getCenterPoint()->y());
-     }else{
-        sourcePoint->setX(GProcess::sizeDefault/2 + source->getCenterPoint()->x());
-        sourcePoint->setY(source->getCenterPoint()->y());
+    }else{
+        sourcePoint->setX(source->getCenterPoint()->x() + 0*(GProcess::sizeDefault)/2.0);
+        sourcePoint->setY(source->getCenterPoint()->y() + qSin(qAcos(0))*(GProcess::sizeDefault)/2.0);
+        targetPoint->setX(GProcess::sizeDefault/2 + source->getCenterPoint()->x());
+        targetPoint->setY(source->getCenterPoint()->y());
         resultPoint->setX(GProcess::sizeDefault/2 + result->getCenterPoint()->x());
         resultPoint->setY(result->getCenterPoint()->y());
      }
@@ -91,12 +91,29 @@ void GAction::updateContactPoints(){
 // Create actions paths
 //Hit Part
 QPainterPath GAction::createHitPath(){
+    GProcessPtr source = getSource();
+    GProcessPtr target = getTarget();
+    GProcessPtr result = getResult();
+
+    qreal rectCornerX;
+    qreal rectCornerY;
+    qreal widthRect;
+    qreal heightRect;
+    qreal sweepAngle;
+    qreal startAngle;
+
     QPainterPath hitPath(*sourcePoint);
 
-    if(sourcePoint!=targetPoint){
-        hitPath.lineTo(*targetPoint);
+    if(source!=target){
+       hitPath.lineTo(*targetPoint);
     }else{
-        hitPath.arcTo(QRectF(sourcePoint->x(),sourcePoint->y()-20,50,40),180,360);
+        rectCornerY = source->getCenterPoint()->y();
+        rectCornerX = sourcePoint->x();
+        heightRect = (sourcePoint->y() - targetPoint->y())*2;
+        startAngle = 180 ;
+        sweepAngle = 270;
+        widthRect = (targetPoint->x() - sourcePoint->x())*2;
+        hitPath.arcTo(QRectF(rectCornerX,rectCornerY,widthRect,heightRect),startAngle,sweepAngle);
     }
 
     hitPath.addPolygon(makeArrowHead(hitPath));
@@ -127,7 +144,7 @@ QPainterPath GAction::createBoundPath(){
     invertSweep = -1;
     }
 
-    if(resultPoint->x()<getResult()->getCenterPoint()->x()){
+    if(resultPoint->x() < getResult()->getCenterPoint()->x()){
     sweepAngle = 180*invertSweep;
     }else{
     sweepAngle = -180*invertSweep;
