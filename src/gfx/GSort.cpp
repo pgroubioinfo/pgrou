@@ -23,6 +23,7 @@ GSort::GSort(SortPtr s, GVNode n, qreal width, qreal height) : QGraphicsRectItem
     // graphic items set and Actions color
     color = makeColor();
     sizeRect = new QSize(width, height);
+    vertical = true;
 
     leftTopCorner = new QPoint(n.centerPos.x()-sizeRect->width()/2,n.centerPos.y()-sizeRect->height()/2);
 
@@ -66,24 +67,112 @@ GSort::~GSort() {
     delete text;   
 }
 
+
+void GSort::changeOrientation(){
+
+    qreal topLeftX=0;
+    qreal topLeftY=0;
+    qreal bottomRightX=0;
+    qreal bottomRightY=0;
+    _rect->rect().getCoords(&topLeftX,&topLeftY,&bottomRightX,&bottomRightY);
+    std::cout << "---before---" << std::endl;
+    std::cout << leftTopCorner->x() << "," << leftTopCorner->y() << "," << x() << "," << y() << std::endl;
+    std::cout << topLeftX << "," << topLeftY << std::endl;
+
+    //Swap Height and Width
+    qreal oldWidth = sizeRect->width();
+    qreal oldHeight = sizeRect->height();
+    sizeRect->transpose();
+
+
+    leftTopCorner->setX(leftTopCorner->x() + oldWidth/2.0 - sizeRect->width()/2.0);
+    leftTopCorner->setY(leftTopCorner->y() + oldHeight/2.0 - sizeRect->height()/2.0);
+
+    QPoint sceneLeftTopCorner(topLeftX + oldWidth/2.0 - sizeRect->width()/2.0,topLeftY + oldHeight/2.0 - sizeRect->height()/2.0);
+
+    _rect->setRect(QRectF(sceneLeftTopCorner, *sizeRect));
+    setRect(_rect->rect());
+
+    _rect->rect().getCoords(&topLeftX,&topLeftY,&bottomRightX,&bottomRightY);
+    std::cout << "---after---" << std::endl;
+    std::cout << leftTopCorner->x() << "," << leftTopCorner->y() << "," << x() << "," << y() << std::endl;
+    std::cout << topLeftX << "," << topLeftY << std::endl;
+    std::cout << "----------" << std::endl;
+
+    text->setPos(topLeftX+sizeRect->width()/2, topLeftY);
+    QSizeF textSize = text->document()->size();
+    text->setPos(text->x() - textSize.width()/2, text->y() - textSize.height());
+
+
+    if(vertical){
+        vertical = false;
+
+        int currPosXProcess = marginDefault+GProcess::sizeDefault/2;
+        int i = 0;
+	int currCenterX = 0;
+        int currCenterY = 0;
+
+        for(GProcessPtr &p: gProcesses){
+            p->getCenterPoint()->setX(leftTopCorner->x() + currPosXProcess);
+            p->getCenterPoint()->setY(leftTopCorner->y()+ GProcess::sizeDefault/2+ marginDefault);
+
+	    currCenterX = topLeftX +  currPosXProcess;
+            currCenterY = topLeftY + GProcess::sizeDefault/2 + marginDefault;
+
+            int margin(GSort::marginDefault);
+
+            p->getMarginRect()->setPos(currCenterX -p->getSizeEllipse()->width()/2,currCenterY-p->getSizeEllipse()->height()/2);
+
+            p->getEllipseItem()->setRect(currCenterX -p->getSizeEllipse()->width()/2,currCenterY -p->getSizeEllipse()->height()/2, p->getSizeEllipse()->width(), p->getSizeEllipse()->height());
+            textSize = p->getText()->document()->size();
+            p->getText()->setPos(currCenterX - textSize.width()/2,currCenterY- textSize.height()/2);
+
+            currPosXProcess+= 2*marginDefault + GProcess::sizeDefault;
+        }
+
+    }
+    else{
+        vertical=true;
+        int currPosYProcess = marginDefault+GProcess::sizeDefault/2;
+	int currCenterX = 0;
+        int currCenterY = 0;
+
+        for(GProcessPtr &p: gProcesses){
+            p->getCenterPoint()->setX(leftTopCorner->x() + GProcess::sizeDefault/2+ marginDefault);
+            p->getCenterPoint()->setY(leftTopCorner->y()+ currPosYProcess);
+
+	    currCenterX = topLeftX + GProcess::sizeDefault/2 + marginDefault;
+            currCenterY = topLeftY +  currPosYProcess;
+
+            int margin(GSort::marginDefault);
+            p->getMarginRect()->setPos(currCenterX -p->getSizeEllipse()->width()/2,currCenterY-p->getSizeEllipse()->height()/2);
+            p->getEllipseItem()->setRect(currCenterX -p->getSizeEllipse()->width()/2,currCenterY -p->getSizeEllipse()->height()/2, p->getSizeEllipse()->width(), p->getSizeEllipse()->height());
+            textSize = p->getText()->document()->size();
+            p->getText()->setPos(currCenterX - textSize.width()/2,currCenterY- textSize.height()/2);
+            currPosYProcess+= 2*marginDefault + GProcess::sizeDefault;
+        }
+    }
+    dynamic_cast<PHScene*>(scene())->updateActions();
+
+}
+
 // mouse press event handler: start "drag"
 void GSort::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 
     // ignore right click
     if (event->button() == Qt::RightButton) {
-        event->ignore();
-        return;
+        changeOrientation();
+        dynamic_cast<PHScene*>(scene())->updateActions();
+        event->accept();
+    }else if (event->button() == Qt::LeftButton) {
+	setCursor(QCursor(Qt::ClosedHandCursor));
+	// record coordinates for drawing item when mouse is moved/released
+    	initPosPoint.setX(pos().x());
+    	initPosPoint.setY(pos().y());
+    	eventPressPoint.setX(event->scenePos().x());
+    	eventPressPoint.setY(event->scenePos().y());
+    	event->accept();
     }
-
-    setCursor(QCursor(Qt::ClosedHandCursor));
-
-
-    // record coordinates for drawing item when mouse is moved/released
-    initPosPoint.setX(pos().x());
-    initPosPoint.setY(pos().y());
-    eventPressPoint.setX(event->scenePos().x());
-    eventPressPoint.setY(event->scenePos().y());
-    event->accept();
 }
 
 
@@ -113,26 +202,31 @@ void GSort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     setCursor(QCursor(Qt::OpenHandCursor));
 
     //save new position of inital point
-    int centerX1=leftTopCorner->x() + sizeRect->width()/2;
-    int centerY1=leftTopCorner->y() + sizeRect->height()/2;
+    int centerX1=leftTopCorner->x();
+    int centerY1=leftTopCorner->y();
 
-    int centerX2,centerY2;
+    int centerX2;
+    int centerY2;
     int distanceHeightMin=0;
 
     map<string, GSortPtr> listGSorts = dynamic_cast<PHScene*>(scene())->getGSorts();
 
     bool resetPosition = false;
-
     for(auto &s : listGSorts){
 
-        centerX2=s.second.get()->getLeftTopCornerPoint()->x() + sizeRect->width()/2;
-        centerY2=s.second.get()->getLeftTopCornerPoint()->y() + sizeRect->height()/2;
+        centerX2=s.second.get()->getLeftTopCornerPoint()->x();
+        centerY2=s.second.get()->getLeftTopCornerPoint()->y();
+
+	
 
        if(s.second.get()->getSort()->getName()!=sort->getName()){
-	   
            distanceHeightMin=getSizeRect()->height()/2.0 + s.second.get()->getSizeRect()->height()/2.0 + defaultDistance;
-
-           if( abs(centerX1-centerX2)<getSizeRect()->width()+defaultDistance && abs(centerY1-centerY2)<distanceHeightMin+defaultDistance ){
+	   bool xCond = abs(centerX1-centerX2)<getSizeRect()->width()+defaultDistance;
+           bool yCondInf = (centerY1 > centerY2 - defaultDistance) && (centerY1 < centerY2 + s.second.get()->getSizeRect()->height()+defaultDistance);
+           bool yCondSup = (centerY2 > centerY1 - defaultDistance) && (centerY2 < centerY1 + getSizeRect()->height() + defaultDistance);
+           bool yCond = yCondInf || yCondSup;
+           
+	   if(xCond && yCond ){
                resetPosition = true;
            }
         }

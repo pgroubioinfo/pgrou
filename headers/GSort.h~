@@ -5,7 +5,6 @@
 #include <QSize>
 #include <QPoint>
 #include <vector>
-#include "PH.h"
 #include "Sort.h"
 #include "GVNode.h"
 #include "GProcess.h"
@@ -21,7 +20,6 @@ class GSort;
 typedef boost::shared_ptr<GSort> GSortPtr;
 class GSimpleProcess;
 typedef boost::shared_ptr<GProcess> GProcessPtr;
-class PHScene;
 
 /**
   * @class GSort
@@ -152,7 +150,7 @@ class GSort : public QGraphicsRectItem {
           */
         QSize* getSizeRect();
 
-
+	void changeOrientation();
 		
 	protected:
 
