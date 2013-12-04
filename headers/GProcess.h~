@@ -5,8 +5,6 @@
 #include <list>
 #include "PH.h"
 #include "Process.h"
-#include "GVNode.h"
-
 /**
   * @file GProcess.h
   * @brief header for the GProcess class
@@ -37,9 +35,6 @@ class GProcess {
           * @param ProcessPtr the related Process object
           * @param double centerX position of the center of the ellipse in the x axis
           * @param double centerY position of the center of the ellipse in the y axis
-          * @param double width width of the ellipse
-          * @param double height height of the ellipse
-
           */
 	GProcess(ProcessPtr p,double centerX, double centerY);
 

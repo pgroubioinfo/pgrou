@@ -93,7 +93,7 @@ class GProcess {
 
         ProcessPtr* getProcess();
 
-
+	QGraphicsTextItem* getText();
 	
 	protected:
 

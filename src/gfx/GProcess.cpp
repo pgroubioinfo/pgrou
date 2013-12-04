@@ -75,6 +75,7 @@ QPointF* GProcess::getCenterPoint() {return this->center;}
 
 QSizeF* GProcess::getSizeEllipse() {return this->size;}
 
+QGraphicsTextItem* GProcess::getText() {return this->text;}
 
 void GProcess::setCoordsForImport(int x, int y) {
     center->setX(x);

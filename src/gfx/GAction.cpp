@@ -14,7 +14,7 @@ GAction::GAction(ActionPtr a, PHScene* sc) : scene(sc), action(a) {
     initContactPoints();
 
     boundArc = new QGraphicsPathItem(createBoundPath(),display);
-    boundArc->setPen(QPen(Qt::DotLine));
+    boundArc->setPen(QPen(Qt::DashLine));
     hitLine= new QGraphicsPathItem(createHitPath(),display);
 }
 
