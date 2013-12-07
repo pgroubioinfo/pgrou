@@ -17,7 +17,6 @@ GProcess::GProcess(ProcessPtr p,double centerX, double centerY) : process(p){
 
     display = new QGraphicsItemGroup();
 
-
     // init size of the ellipse and the position of the center
     size = new QSizeF(sizeDefault,sizeDefault);
     center = new QPointF(centerX,centerY);
@@ -74,6 +73,7 @@ QGraphicsRectItem* GProcess::getMarginRect() { return this->marginRect; }
 QPointF* GProcess::getCenterPoint() {return this->center;}
 
 QSizeF* GProcess::getSizeEllipse() {return this->size;}
+
 
 QGraphicsTextItem* GProcess::getText() {return this->text;}
 

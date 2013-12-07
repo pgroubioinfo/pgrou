@@ -32,7 +32,7 @@ class GSort : public QGraphicsRectItem {
 
 	static const int marginDefault;
 
-    static const int defaultDistance;
+        static const int defaultDistance;
 
         /**
           * @brief constructor
@@ -86,6 +86,8 @@ class GSort : public QGraphicsRectItem {
           * @param QGraphicsSceneContextMenuEvent the event to be handled
           */
         void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
+
+        void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
 
         /**
           * @brief gets the related Sort object
@@ -151,7 +153,10 @@ class GSort : public QGraphicsRectItem {
         QSize* getSizeRect();
 
 	void changeOrientation();
-		
+
+	void setSimpleDisplay(bool isSimpleDisplay);
+
+	bool getSimpleDisplay();
 	protected:
 
         /**
@@ -238,5 +243,11 @@ class GSort : public QGraphicsRectItem {
           *
           */
         bool vertical;
+
+        /**
+          * @brief if action related to this sort has to be displayed following the simplified model
+          *
+          */
+        bool simpleDisplay;
 
 };

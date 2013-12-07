@@ -25,6 +25,7 @@ GSort::GSort(SortPtr s, GVNode n, qreal width, qreal height) : QGraphicsRectItem
     sizeRect = new QSize(width, height);
     vertical = true;
 
+    simpleDisplay = true;
     leftTopCorner = new QPoint(n.centerPos.x()-sizeRect->width()/2,n.centerPos.y()-sizeRect->height()/2);
 
     // rectangle
@@ -48,9 +49,10 @@ GSort::GSort(SortPtr s, GVNode n, qreal width, qreal height) : QGraphicsRectItem
     int currPosYProcess = marginDefault+GProcess::sizeDefault/2;
 
     for(ProcessPtr &p : processes){
-	gProcesses.push_back(make_shared<GProcess>(p, leftTopCorner->x() + GProcess::sizeDefault/2+ marginDefault, leftTopCorner->y()+ currPosYProcess));
+	gProcesses.push_back(make_shared<GProcess>(p,leftTopCorner->x() + GProcess::sizeDefault/2+ marginDefault, leftTopCorner->y()+ currPosYProcess));
 	currPosYProcess+= 2*marginDefault + GProcess::sizeDefault;
     }
+
     for(GProcessPtr &gp: gProcesses){
 	gp->getDisplayItem()->setParentItem(this);
 	ProcessPtr* p = gp->getProcess();
@@ -247,6 +249,17 @@ void GSort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 
     event->accept();
 }
+
+void GSort::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event){
+    if(simpleDisplay){
+    	simpleDisplay = false;
+    }else{
+	simpleDisplay = true;
+    }
+    dynamic_cast<PHScene*>(scene())->updateActions();
+    event->accept();
+}
+
 // context menu event handler
 void GSort::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
 
@@ -308,4 +321,12 @@ void GSort::show() {
 
 bool GSort::isVisible() {
     return (this->opacity() == 1);
+}
+
+void GSort::setSimpleDisplay(bool isSimpleDisplay){
+	this->simpleDisplay = isSimpleDisplay;
+}
+
+bool GSort::getSimpleDisplay(){
+    return this->simpleDisplay;
 }
