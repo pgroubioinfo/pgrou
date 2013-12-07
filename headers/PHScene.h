@@ -110,6 +110,9 @@ class PHScene: public QGraphicsScene {
           */
         void updateForImport();
 
+
+        void setSimpleDisplay(bool onOff);
+
 	protected:
 
         /**

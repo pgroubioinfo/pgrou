@@ -77,9 +77,7 @@ void GSort::changeOrientation(){
     qreal bottomRightX=0;
     qreal bottomRightY=0;
     _rect->rect().getCoords(&topLeftX,&topLeftY,&bottomRightX,&bottomRightY);
-    std::cout << "---before---" << std::endl;
-    std::cout << leftTopCorner->x() << "," << leftTopCorner->y() << "," << x() << "," << y() << std::endl;
-    std::cout << topLeftX << "," << topLeftY << std::endl;
+  
 
     //Swap Height and Width
     qreal oldWidth = sizeRect->width();
@@ -96,10 +94,7 @@ void GSort::changeOrientation(){
     setRect(_rect->rect());
 
     _rect->rect().getCoords(&topLeftX,&topLeftY,&bottomRightX,&bottomRightY);
-    std::cout << "---after---" << std::endl;
-    std::cout << leftTopCorner->x() << "," << leftTopCorner->y() << "," << x() << "," << y() << std::endl;
-    std::cout << topLeftX << "," << topLeftY << std::endl;
-    std::cout << "----------" << std::endl;
+
 
     text->setPos(topLeftX+sizeRect->width()/2, topLeftY);
     QSizeF textSize = text->document()->size();
