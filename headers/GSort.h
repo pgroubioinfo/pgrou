@@ -151,6 +151,8 @@ class GSort : public QGraphicsRectItem {
         QSize* getSizeRect();
 
 	void changeOrientation();
+
+    bool isVertical();
 		
 	protected:
 

@@ -109,17 +109,15 @@ void GSort::changeOrientation(){
 
         int currPosXProcess = marginDefault+GProcess::sizeDefault/2;
         int i = 0;
-	int currCenterX = 0;
+        int currCenterX = 0;
         int currCenterY = 0;
 
         for(GProcessPtr &p: gProcesses){
             p->getCenterPoint()->setX(leftTopCorner->x() + currPosXProcess);
             p->getCenterPoint()->setY(leftTopCorner->y()+ GProcess::sizeDefault/2+ marginDefault);
 
-	    currCenterX = topLeftX +  currPosXProcess;
+            currCenterX = topLeftX +  currPosXProcess;
             currCenterY = topLeftY + GProcess::sizeDefault/2 + marginDefault;
-
-            int margin(GSort::marginDefault);
 
             p->getMarginRect()->setPos(currCenterX -p->getSizeEllipse()->width()/2,currCenterY-p->getSizeEllipse()->height()/2);
 
@@ -144,7 +142,6 @@ void GSort::changeOrientation(){
 	    currCenterX = topLeftX + GProcess::sizeDefault/2 + marginDefault;
             currCenterY = topLeftY +  currPosYProcess;
 
-            int margin(GSort::marginDefault);
             p->getMarginRect()->setPos(currCenterX -p->getSizeEllipse()->width()/2,currCenterY-p->getSizeEllipse()->height()/2);
             p->getEllipseItem()->setRect(currCenterX -p->getSizeEllipse()->width()/2,currCenterY -p->getSizeEllipse()->height()/2, p->getSizeEllipse()->width(), p->getSizeEllipse()->height());
             textSize = p->getText()->document()->size();
@@ -308,4 +305,8 @@ void GSort::show() {
 
 bool GSort::isVisible() {
     return (this->opacity() == 1);
+}
+
+bool GSort::isVertical(){
+    return vertical;
 }
