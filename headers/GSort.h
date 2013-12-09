@@ -241,4 +241,10 @@ class GSort : public QGraphicsRectItem {
           */
         bool vertical;
 
+        /**
+          @brief to know if the right button of the mouse is pressed (to prevent drag'n'drop in this case)
+          *
+          */
+        bool isRightButtonPressed;
+
 };

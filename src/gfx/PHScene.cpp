@@ -48,18 +48,6 @@ void PHScene::drawFromSkeleton(void){
 	}
 }
 
-// draw all the elements of the scene
-void PHScene::draw(void) {
-
-    clear();
-    for (auto &s : sorts)
-        addItem(s.second.get());
-    for (GActionPtr &a : actions){
-
-        addItem(a->getDisplayItem());
-    }
-}
-
 
 // retrieve GSort by its related Sort's name
 GSortPtr PHScene::getGSort (const string& s) {

@@ -24,6 +24,7 @@ GSort::GSort(SortPtr s, GVNode n, qreal width, qreal height) : QGraphicsRectItem
     color = makeColor();
     sizeRect = new QSize(width, height);
     vertical = true;
+    isRightButtonPressed = false;
 
     leftTopCorner = new QPoint(n.centerPos.x()-sizeRect->width()/2,n.centerPos.y()-sizeRect->height()/2);
 
@@ -156,8 +157,9 @@ void GSort::changeOrientation(){
 // mouse press event handler: start "drag"
 void GSort::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 
-    // ignore right click
+    // change orientation on right click
     if (event->button() == Qt::RightButton) {
+        isRightButtonPressed = true;
         changeOrientation();
         dynamic_cast<PHScene*>(scene())->updateActions();
         event->accept();
@@ -175,6 +177,11 @@ void GSort::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 
 // mouse move event handler: process "drag"
 void GSort::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
+
+    if (isRightButtonPressed) {
+        event->ignore();
+        return;
+    }
 
     // update item position
     setX(x() + event->scenePos().x() - eventPressPoint.x());
@@ -195,6 +202,10 @@ void GSort::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 }
 
 void GSort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+
+    if (event->button() == Qt::RightButton) {
+        isRightButtonPressed=false;
+    }
 
     setCursor(QCursor(Qt::OpenHandCursor));
 
