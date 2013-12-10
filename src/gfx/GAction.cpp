@@ -14,7 +14,7 @@ GAction::GAction(ActionPtr a, PHScene* sc) : scene(sc), action(a) {
     initContactPoints();
 
     boundArc = new QGraphicsPathItem(createBoundPath(),display);
-    boundArc->setPen(QPen(Qt::DotLine));
+    boundArc->setPen(QPen(Qt::DashDotLine));
     hitLine= new QGraphicsPathItem(createHitPath(),display);
 }
 
@@ -104,6 +104,9 @@ QPainterPath GAction::createHitPath(){
     GProcessPtr source = getSource();
     GProcessPtr target = getTarget();
     GProcessPtr result = getResult();
+    GSortPtr sourceSort = scene->getGSort(action->getSource()->getSort()->getName());
+    GSortPtr targetSort = scene->getGSort(action->getTarget()->getSort()->getName());
+
 
     qreal rectCornerX;
     qreal rectCornerY;
@@ -113,13 +116,64 @@ QPainterPath GAction::createHitPath(){
     qreal startAngle;
     int invertSweep;
     int invertStart;
+    int wCoef=1;
+    int hCoef=1;
 
+    QLineF* hitLineTemp;
+    QLineF* sourceSortBottomLine;
+    QLineF* sourceSortTopLine;
+    QPointF* controlPointSource;
+    QPointF* controlPointTarget;
+    QPointF* intersectionPoint;
+
+    QPointF sourceSortbottomLeft = sourceSort->getRect()->rect().bottomLeft();
+    QPointF sourceSortbottomRight = sourceSort->getRect()->rect().bottomRight();
+    QPointF sourceSortTopLeft = sourceSort->getRect()->rect().topLeft();
+    QPointF sourceSortTopRight = sourceSort->getRect()->rect().topRight();
+
+    hitLineTemp = new QLineF(*sourcePoint,*targetPoint);
+    sourceSortBottomLine = new QLineF(sourceSortbottomRight,sourceSortbottomLeft);
+    sourceSortTopLine= new QLineF(sourceSortTopLeft,sourceSortTopRight);
+    const QLineF & refToSourceSortBottomLine = *sourceSortBottomLine ;// built a reference to the QLinef* associate because of the function intersect() used after, which whants only reference and no pointer
+    const QLineF & refToSourceSortTopLine = *sourceSortTopLine ;// built a reference to the QLinef* associate because of the function intersect() used after, which whants only reference and no pointer
 
 
     QPainterPath hitPath(*sourcePoint);
 
     if(source!=target){
-       hitPath.lineTo(*targetPoint);
+        if(hitLineTemp->intersect(refToSourceSortBottomLine, intersectionPoint)==1 &&
+           source->getCenterPoint()->y() + GProcess::sizeDefault < sourceSort->getRect()->rect().bottomLeft().y()){
+            if(sourcePoint->x() >= targetPoint->x() ){
+                   wCoef=-1;
+            }else{
+                   wCoef=1;
+             }
+            if(sourcePoint->y() > targetPoint->y() ){
+                hCoef = 1;
+            }else{
+                hCoef = -1;
+            }
+            controlPointSource = new QPointF(sourcePoint->x() + wCoef*sourceSort->getSizeRect()->height(),sourcePoint->y());
+            controlPointTarget = new QPointF(targetPoint->x() + wCoef*targetSort->getSizeRect()->height(),targetPoint->y() + hCoef*targetSort->getSizeRect()->width());
+            hitPath.cubicTo(*controlPointSource,*controlPointTarget, *targetPoint);
+           }else if(hitLineTemp->intersect(refToSourceSortTopLine, intersectionPoint)==1 &&
+                    source->getCenterPoint()->y() - GProcess::sizeDefault > sourceSort->getRect()->rect().topLeft().y()){
+               if(sourcePoint->x() >= targetPoint->x() ){
+                   wCoef = -1;
+               }else{
+                   wCoef = 1;
+               }
+               if(sourcePoint->y() > targetPoint->y() ){
+                   hCoef = 1;
+               }else{
+                   hCoef = -1;
+               }
+               controlPointSource = new QPointF(sourcePoint->x() + wCoef*sourceSort->getSizeRect()->height(),sourcePoint->y());
+               controlPointTarget = new QPointF(targetPoint->x() + wCoef*targetSort->getSizeRect()->height(),targetPoint->y() + hCoef*targetSort->getSizeRect()->width());
+               hitPath.cubicTo(*controlPointSource,*controlPointTarget, *targetPoint);
+           }else{
+            hitPath.lineTo(*targetPoint);
+           }
     }else{
         if(targetPoint->y() > resultPoint->y()){
             rectCornerY = source->getCenterPoint()->y();
