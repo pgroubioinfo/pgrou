@@ -315,7 +315,8 @@ void Area::saveEdit(int del){
             emit makeTempXML();
         }
 
-//TODO understand why importXMLMetadata after rendering makes actions mad when updating text area... Bug in updating actions ?
+/*TODO understand why importXMLMetadata after rendering makes actions mad when updating text area... Bug in updating actions ?
+Is it useful to call that method here ? */
         this->mainWindow->importXMLMetadata(fileXML);
 
         // render graph
