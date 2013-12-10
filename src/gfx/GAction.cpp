@@ -83,13 +83,13 @@ void GAction::initContactPoints(){
 		resultPoint = new QPointF(-sizeTarget->width()*hitVector->x()/2.0 + result->getCenterPoint()->x(),sizeTarget->height()*hitVector->y()/2 + result->getCenterPoint()->y());
 	    }else{
 		sourcePoint = new QPointF(source->getCenterPoint()->x() + 0*(GProcess::sizeDefault)/2.0, source->getCenterPoint()->y() + qSin(qAcos(0))*(GProcess::sizeDefault)/2.0);
-		targetPoint = new QPointF(GProcess::sizeDefault/2 + source->getCenterPoint()->x(), source->getCenterPoint()->y());
-		resultPoint = new QPointF(GProcess::sizeDefault/2 + result->getCenterPoint()->x(),result->getCenterPoint()->y());
+		targetPoint = new QPointF(GProcess::sizeDefault/2.0 + source->getCenterPoint()->x(), source->getCenterPoint()->y());
+		resultPoint = new QPointF(GProcess::sizeDefault/2.0 + result->getCenterPoint()->x(),result->getCenterPoint()->y());
 	     }
     }else {
-	sourcePoint = new QPointF(sourceSort->getLeftTopCornerPoint()->x()+sourceSort->getSizeRect()->width()/2,sourceSort->getLeftTopCornerPoint()->y()+sourceSort->getSizeRect()->height()/2);	
-	targetPoint = new QPointF(targetSort->getLeftTopCornerPoint()->x()+targetSort->getSizeRect()->width()/2,targetSort->getLeftTopCornerPoint()->y()+targetSort->getSizeRect()->height()/2);
-	resultPoint = new QPointF(targetSort->getLeftTopCornerPoint()->x()+targetSort->getSizeRect()->width()/2,targetSort->getLeftTopCornerPoint()->y()+targetSort->getSizeRect()->height()/2);
+	sourcePoint = new QPointF(sourceSort->getLeftTopCornerPoint()->x()+sourceSort->getSizeRect()->width()/2,sourceSort->getLeftTopCornerPoint()->y()+sourceSort->getSizeRect()->height()/2.0);	
+	targetPoint = new QPointF(targetSort->getLeftTopCornerPoint()->x()+targetSort->getSizeRect()->width()/2,targetSort->getLeftTopCornerPoint()->y()+targetSort->getSizeRect()->height()/2.0);
+	resultPoint = new QPointF(targetSort->getLeftTopCornerPoint()->x()+targetSort->getSizeRect()->width()/2,targetSort->getLeftTopCornerPoint()->y()+targetSort->getSizeRect()->height()/2.0);
     }
 }
 
@@ -119,18 +119,18 @@ void GAction::updateContactPoints(){
 	    }else{
 		sourcePoint->setX(source->getCenterPoint()->x() + 0*(GProcess::sizeDefault)/2.0);
 		sourcePoint->setY(source->getCenterPoint()->y() + qSin(qAcos(0))*(GProcess::sizeDefault)/2.0);
-		targetPoint->setX(GProcess::sizeDefault/2 + source->getCenterPoint()->x());
+		targetPoint->setX(GProcess::sizeDefault/2.0 + source->getCenterPoint()->x());
 		targetPoint->setY(source->getCenterPoint()->y());
-		resultPoint->setX(GProcess::sizeDefault/2 + result->getCenterPoint()->x());
+		resultPoint->setX(GProcess::sizeDefault/2.0 + result->getCenterPoint()->x());
 		resultPoint->setY(result->getCenterPoint()->y());
 	     }
     }else{
-	sourcePoint->setX(sourceSort->getLeftTopCornerPoint()->x()+sourceSort->getSizeRect()->width()/2);
-	sourcePoint->setY(sourceSort->getLeftTopCornerPoint()->y()+sourceSort->getSizeRect()->height()/2);	
-	targetPoint->setX(targetSort->getLeftTopCornerPoint()->x()+targetSort->getSizeRect()->width()/2);
-        targetPoint->setY(targetSort->getLeftTopCornerPoint()->y()+targetSort->getSizeRect()->height()/2);
-	resultPoint->setX(targetSort->getLeftTopCornerPoint()->x()+targetSort->getSizeRect()->width()/2);
-	resultPoint->setY(targetSort->getLeftTopCornerPoint()->y()+targetSort->getSizeRect()->height()/2);
+	sourcePoint->setX(sourceSort->getLeftTopCornerPoint()->x()+sourceSort->getSizeRect()->width()/2.0);
+	sourcePoint->setY(sourceSort->getLeftTopCornerPoint()->y()+sourceSort->getSizeRect()->height()/2.0);	
+	targetPoint->setX(targetSort->getLeftTopCornerPoint()->x()+targetSort->getSizeRect()->width()/2.0);
+        targetPoint->setY(targetSort->getLeftTopCornerPoint()->y()+targetSort->getSizeRect()->height()/2.0);
+	resultPoint->setX(targetSort->getLeftTopCornerPoint()->x()+targetSort->getSizeRect()->width()/2.0);
+	resultPoint->setY(targetSort->getLeftTopCornerPoint()->y()+targetSort->getSizeRect()->height()/2.0);
     }
 }
 

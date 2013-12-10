@@ -176,16 +176,17 @@ void GSort::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 // mouse move event handler: process "drag"
 void GSort::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 
+    QPointF eventScenePos(event->scenePos());
     // update item position
-    setX(x() + event->scenePos().x() - eventPressPoint.x());
-    setY(y() + event->scenePos().y() - eventPressPoint.y());
-    leftTopCorner->setX(leftTopCorner->x() + event->scenePos().x() - eventPressPoint.x());
-    leftTopCorner->setY(leftTopCorner->y() + event->scenePos().y() - eventPressPoint.y());
+    setX(x() + eventScenePos.x() - eventPressPoint.x());
+    setY(y() + eventScenePos.y() - eventPressPoint.y());
+    leftTopCorner->setX(leftTopCorner->x() + eventScenePos.x() - eventPressPoint.x());
+    leftTopCorner->setY(leftTopCorner->y() + eventScenePos.y() - eventPressPoint.y());
     for(GProcessPtr &p: gProcesses){
 	    qreal prevPosX = p->getCenterPoint()->x();
 	    qreal prevPosY = p->getCenterPoint()->y();
-	    p->getCenterPoint()->setX(prevPosX + event->scenePos().x()- eventPressPoint.x());
-	    p->getCenterPoint()->setY(prevPosY + event->scenePos().y()- eventPressPoint.y());
+	    p->getCenterPoint()->setX(prevPosX + eventScenePos.x()- eventPressPoint.x());
+	    p->getCenterPoint()->setY(prevPosY + eventScenePos.y()- eventPressPoint.y());
     }
 
     dynamic_cast<PHScene*>(scene())->updateActions();
