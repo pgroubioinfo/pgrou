@@ -45,6 +45,7 @@ GProcess::GProcess(ProcessPtr p,double centerX, double centerY) : process(p){
     
     // text
     text = new QGraphicsTextItem (QString("%1").arg(process->getNumber()), ellipse);
+    text->setFont(QFont("TypeWriter",25));
     text->setDefaultTextColor(QColor(7,54,66));
     text->setPos(centerX, centerY);
 
