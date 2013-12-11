@@ -105,26 +105,27 @@ void GAction::updateContactPoints(){
     if(sourceSort->getSimpleDisplay()!=1||targetSort->getSimpleDisplay()!=1){
 
 	    if(source!=target){
-		QVector2D* hitVector = new QVector2D(*(target->getCenterPoint()) - *(source->getCenterPoint()));
-		hitVector->normalize();
+        QVector2D* hitVector = new QVector2D(*(target->getCenterPoint()) - *(source->getCenterPoint()));
+        hitVector->normalize();
 
-		QSizeF* sizeSource = source->getSizeEllipse();
-		QSizeF* sizeTarget = source->getSizeEllipse();
+        QSizeF* sizeSource = source->getSizeEllipse();
+        QSizeF* sizeTarget = target->getSizeEllipse();
 
-		sourcePoint->setX(sizeSource->width()*hitVector->x()/2.0 + source->getCenterPoint()->x());
-		sourcePoint->setY(sizeSource->height()*hitVector->y()/2.0 + source->getCenterPoint()->y());
-		targetPoint->setX(-sizeTarget->width()*hitVector->x()/2.0 + target->getCenterPoint()->x());
-		targetPoint->setY(-sizeTarget->height()*hitVector->y()/2.0 + target->getCenterPoint()->y());
-		resultPoint->setX(-sizeTarget->width()*hitVector->x()/2.0 + result->getCenterPoint()->x());
-		resultPoint->setY(sizeTarget->height()*hitVector->y()/2.0 + result->getCenterPoint()->y());
-	    }else{
-		sourcePoint->setX(source->getCenterPoint()->x() + 0*(GProcess::sizeDefault)/2.0);
-		sourcePoint->setY(source->getCenterPoint()->y() + qSin(qAcos(0))*(GProcess::sizeDefault)/2.0);
-		targetPoint->setX(GProcess::sizeDefault/2.0 + source->getCenterPoint()->x());
-		targetPoint->setY(source->getCenterPoint()->y());
-		resultPoint->setX(GProcess::sizeDefault/2.0 + result->getCenterPoint()->x());
-		resultPoint->setY(result->getCenterPoint()->y());
-	     }
+        sourcePoint->setX(sizeSource->width()*hitVector->x()/2.0 + source->getCenterPoint()->x());
+        sourcePoint->setY(sizeSource->height()*hitVector->y()/2.0 + source->getCenterPoint()->y());
+        targetPoint->setX(-sizeTarget->width()*hitVector->x()/2.0 + target->getCenterPoint()->x());
+        targetPoint->setY(-sizeTarget->height()*hitVector->y()/2.0 + target->getCenterPoint()->y());
+        resultPoint->setX(-sizeTarget->width()*hitVector->x()/2.0 + result->getCenterPoint()->x());
+        resultPoint->setY(-sizeTarget->height()*hitVector->y()/2.0 + result->getCenterPoint()->y());
+    }
+        else{
+        sourcePoint->setX(source->getCenterPoint()->x() + 0*(GProcess::sizeDefault)/2.0);
+        sourcePoint->setY(source->getCenterPoint()->y() + qSin(qAcos(0))*(GProcess::sizeDefault)/2.0);
+        targetPoint->setX(GProcess::sizeDefault/2 + source->getCenterPoint()->x());
+        targetPoint->setY(source->getCenterPoint()->y());
+        resultPoint->setX(GProcess::sizeDefault/2 + result->getCenterPoint()->x());
+        resultPoint->setY(result->getCenterPoint()->y());
+     }
     }else{
 	sourcePoint->setX(sourceSort->getLeftTopCornerPoint()->x()+sourceSort->getSizeRect()->width()/2.0);
 	sourcePoint->setY(sourceSort->getLeftTopCornerPoint()->y()+sourceSort->getSizeRect()->height()/2.0);	
@@ -170,43 +171,71 @@ QPainterPath GAction::createHitPath(){
 }
 // Bound Part
 QPainterPath GAction::createBoundPath(){
+    // Ma version
     QPainterPath boundPath(*targetPoint);
 
     if((targetPoint->x()!=resultPoint->x())||(targetPoint->y()!=resultPoint->y())){
-	    qreal rectCornerX;
-	    qreal rectCornerY;
-	    qreal widthRect;
-	    qreal heightRect;
-	    qreal sweepAngle;
-	    qreal startAngle;
-	    int invertSweep;
+	qreal rectCornerX;
+    	qreal rectCornerY;
+    	qreal widthRect;
+    	qreal heightRect;
+    	qreal sweepAngle;
+    	qreal startAngle;
+    	int invertSweep;
 
-	    if(targetPoint->y()<resultPoint->y()){
-	    rectCornerY = targetPoint->y();
-	    heightRect = resultPoint->y()-targetPoint->y();
-	    startAngle = 90;
-	    invertSweep = 1;
-	    } else{
-	    rectCornerY = resultPoint->y();
-	    heightRect = targetPoint->y()-resultPoint->y();
-	    startAngle = -90;
-	    invertSweep = -1;
-	    }
+    if(dynamic_cast<GSort*>(getTarget()->getDisplayItem()->parentItem())->isVertical()){
 
-	    if(resultPoint->x() < getResult()->getCenterPoint()->x()){
-	    sweepAngle = 180*invertSweep;
-	    }else{
-	    sweepAngle = -180*invertSweep;
-	    }
+    	if(targetPoint->y()<resultPoint->y()){
+    		rectCornerY = targetPoint->y();
+    		heightRect = resultPoint->y()-targetPoint->y();
+    		startAngle = 90;
+    		invertSweep = 1;
+    	} else{
+    		rectCornerY = resultPoint->y();
+    		heightRect = targetPoint->y()-resultPoint->y();
+    		startAngle = -90;
+    		invertSweep = -1;
+    	}
+
+    	if(resultPoint->x() < getResult()->getCenterPoint()->x()){
+    		sweepAngle = 180*invertSweep;
+    	}else{
+    		sweepAngle = -180*invertSweep;
+    	}
+
+    	rectCornerX = resultPoint->x()- (GProcess::sizeDefault)/2.0;
+    	widthRect = GProcess::sizeDefault;
+    }
+    else{
+        if(targetPoint->x()<resultPoint->x()){ //target point à gauche de resultpoint
+            rectCornerX = targetPoint->x();
+            widthRect = resultPoint->x() - targetPoint->x();
+            startAngle =180;
+            invertSweep = -1;
+        }
+        else{ //resultpoint à gauche de targetpoint
+            rectCornerX = resultPoint->x();
+            widthRect = targetPoint->x() - resultPoint->x();
+            startAngle =0;
+            invertSweep = 1;
+        }
+
+        if(resultPoint->y()<getResult()->getCenterPoint()->y()){ //resultpoint au-dessus du centre du process
+            sweepAngle = 180*invertSweep;
+            //startAngle = 0;
+        }else{ //resultpoint en-dessus du centre du process
+            sweepAngle = -180*invertSweep;
+            //startAngle = 180;
+        }
+        rectCornerY = resultPoint->y() - (GProcess::sizeDefault)/2.0 /*- GSort::marginDefault/2.0*/;
+        heightRect = GProcess::sizeDefault /*+  GSort::marginDefault/2.0*/;
+
+    }
 
 
-	    rectCornerX = resultPoint->x()- (GProcess::sizeDefault)/2.0;
-	    widthRect = GProcess::sizeDefault;
+    boundPath.arcTo(QRectF(rectCornerX,rectCornerY,widthRect,heightRect),startAngle,sweepAngle);
 
-
-	    boundPath.arcTo(QRectF(rectCornerX,rectCornerY,widthRect,heightRect),startAngle,sweepAngle);
-
-	    boundPath.addPolygon(makeArrowHead(boundPath));
+    boundPath.addPolygon(makeArrowHead(boundPath));
     }
 
     return boundPath;
