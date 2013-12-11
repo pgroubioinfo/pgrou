@@ -101,3 +101,10 @@ void PHScene::createActions() {
 
 }
 
+void PHScene::setSimpleDisplay(bool onOff){
+     for(auto &s : sorts){
+          s.second->setSimpleDisplay(onOff);
+     }
+     updateActions();
+}
+

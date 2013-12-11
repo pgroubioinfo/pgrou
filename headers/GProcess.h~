@@ -36,7 +36,7 @@ class GProcess {
           * @param double centerX position of the center of the ellipse in the x axis
           * @param double centerY position of the center of the ellipse in the y axis
           */
-	GProcess(ProcessPtr p,double centerX, double centerY);
+	GProcess(ProcessPtr p,GSort* s,double centerX, double centerY);
 
 		~GProcess();
 
@@ -94,6 +94,7 @@ class GProcess {
         ProcessPtr* getProcess();
 
 
+	QGraphicsTextItem* getText();
 	
 	protected:
 
@@ -131,7 +132,7 @@ class GProcess {
           * @brief the related Process
           *
           */
-		ProcessPtr process;
+	ProcessPtr process;
 
         /**
           * @brief the margin around this process, must exclude any other process' margin (cf. graphviz attribute "pos" in GVSubGraph)

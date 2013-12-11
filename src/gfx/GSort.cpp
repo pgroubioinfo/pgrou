@@ -26,6 +26,7 @@ GSort::GSort(SortPtr s, GVNode n, qreal width, qreal height) : QGraphicsRectItem
     vertical = true;
     isRightButtonPressed = false;
 
+    simpleDisplay = true;
     leftTopCorner = new QPoint(n.centerPos.x()-sizeRect->width()/2,n.centerPos.y()-sizeRect->height()/2);
 
     // rectangle
@@ -49,9 +50,10 @@ GSort::GSort(SortPtr s, GVNode n, qreal width, qreal height) : QGraphicsRectItem
     int currPosYProcess = marginDefault+GProcess::sizeDefault/2;
 
     for(ProcessPtr &p : processes){
-	gProcesses.push_back(make_shared<GProcess>(p, leftTopCorner->x() + GProcess::sizeDefault/2+ marginDefault, leftTopCorner->y()+ currPosYProcess));
+	gProcesses.push_back(make_shared<GProcess>(p,leftTopCorner->x() + GProcess::sizeDefault/2+ marginDefault, leftTopCorner->y()+ currPosYProcess));
 	currPosYProcess+= 2*marginDefault + GProcess::sizeDefault;
     }
+
     for(GProcessPtr &gp: gProcesses){
 	gp->getDisplayItem()->setParentItem(this);
 	ProcessPtr* p = gp->getProcess();
@@ -76,9 +78,7 @@ void GSort::changeOrientation(){
     qreal bottomRightX=0;
     qreal bottomRightY=0;
     _rect->rect().getCoords(&topLeftX,&topLeftY,&bottomRightX,&bottomRightY);
-    std::cout << "---before---" << std::endl;
-    std::cout << leftTopCorner->x() << "," << leftTopCorner->y() << "," << x() << "," << y() << std::endl;
-    std::cout << topLeftX << "," << topLeftY << std::endl;
+  
 
     //Swap Height and Width
     qreal oldWidth = sizeRect->width();
@@ -95,10 +95,7 @@ void GSort::changeOrientation(){
     setRect(_rect->rect());
 
     _rect->rect().getCoords(&topLeftX,&topLeftY,&bottomRightX,&bottomRightY);
-    std::cout << "---after---" << std::endl;
-    std::cout << leftTopCorner->x() << "," << leftTopCorner->y() << "," << x() << "," << y() << std::endl;
-    std::cout << topLeftX << "," << topLeftY << std::endl;
-    std::cout << "----------" << std::endl;
+
 
     text->setPos(topLeftX+sizeRect->width()/2, topLeftY);
     QSizeF textSize = text->document()->size();
@@ -178,21 +175,24 @@ void GSort::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 // mouse move event handler: process "drag"
 void GSort::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 
+
+    QPointF eventScenePos(event->scenePos());
+
     if (isRightButtonPressed) {
         event->ignore();
         return;
     }
 
     // update item position
-    setX(x() + event->scenePos().x() - eventPressPoint.x());
-    setY(y() + event->scenePos().y() - eventPressPoint.y());
-    leftTopCorner->setX(leftTopCorner->x() + event->scenePos().x() - eventPressPoint.x());
-    leftTopCorner->setY(leftTopCorner->y() + event->scenePos().y() - eventPressPoint.y());
+    setX(x() + eventScenePos.x() - eventPressPoint.x());
+    setY(y() + eventScenePos.y() - eventPressPoint.y());
+    leftTopCorner->setX(leftTopCorner->x() + eventScenePos.x() - eventPressPoint.x());
+    leftTopCorner->setY(leftTopCorner->y() + eventScenePos.y() - eventPressPoint.y());
     for(GProcessPtr &p: gProcesses){
 	    qreal prevPosX = p->getCenterPoint()->x();
 	    qreal prevPosY = p->getCenterPoint()->y();
-	    p->getCenterPoint()->setX(prevPosX + event->scenePos().x()- eventPressPoint.x());
-	    p->getCenterPoint()->setY(prevPosY + event->scenePos().y()- eventPressPoint.y());
+	    p->getCenterPoint()->setX(prevPosX + eventScenePos.x()- eventPressPoint.x());
+	    p->getCenterPoint()->setY(prevPosY + eventScenePos.y()- eventPressPoint.y());
     }
 
     dynamic_cast<PHScene*>(scene())->updateActions();
@@ -255,6 +255,17 @@ void GSort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
 
     event->accept();
 }
+
+void GSort::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event){
+    if(simpleDisplay){
+    	simpleDisplay = false;
+    }else{
+	simpleDisplay = true;
+    }
+    dynamic_cast<PHScene*>(scene())->updateActions();
+    event->accept();
+}
+
 // context menu event handler
 void GSort::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
 
@@ -316,6 +327,14 @@ void GSort::show() {
 
 bool GSort::isVisible() {
     return (this->opacity() == 1);
+}
+
+void GSort::setSimpleDisplay(bool isSimpleDisplay){
+	this->simpleDisplay = isSimpleDisplay;
+}
+
+bool GSort::getSimpleDisplay(){
+    return this->simpleDisplay;
 }
 
 bool GSort::isVertical(){

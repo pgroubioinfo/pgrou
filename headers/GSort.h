@@ -25,14 +25,14 @@ typedef boost::shared_ptr<GProcess> GProcessPtr;
   * @class GSort
   * @brief contains style and layout info to draw a Sort
   *
-  */
+ */
 class GSort : public QGraphicsRectItem {
 
 	public:
 
 	static const int marginDefault;
 
-    static const int defaultDistance;
+        static const int defaultDistance;
 
         /**
           * @brief constructor
@@ -86,6 +86,8 @@ class GSort : public QGraphicsRectItem {
           * @param QGraphicsSceneContextMenuEvent the event to be handled
           */
         void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
+
+        void mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event);
 
         /**
           * @brief gets the related Sort object
@@ -152,7 +154,11 @@ class GSort : public QGraphicsRectItem {
 
 	void changeOrientation();
 
-    bool isVertical();
+	void setSimpleDisplay(bool isSimpleDisplay);
+
+	bool getSimpleDisplay();
+
+    	bool isVertical();
 		
 	protected:
 
@@ -242,9 +248,13 @@ class GSort : public QGraphicsRectItem {
         bool vertical;
 
         /**
+          * @brief if action related to this sort has to be displayed following the simplified model
+          *
+          */
+        bool simpleDisplay;
+	/**
           @brief to know if the right button of the mouse is pressed (to prevent drag'n'drop in this case)
           *
           */
         bool isRightButtonPressed;
-
 };

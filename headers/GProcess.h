@@ -93,6 +93,7 @@ class GProcess {
 
         ProcessPtr* getProcess();
 
+
 	QGraphicsTextItem* getText();
 	
 	protected:
@@ -131,7 +132,7 @@ class GProcess {
           * @brief the related Process
           *
           */
-		ProcessPtr process;
+	ProcessPtr process;
 
         /**
           * @brief the margin around this process, must exclude any other process' margin (cf. graphviz attribute "pos" in GVSubGraph)
