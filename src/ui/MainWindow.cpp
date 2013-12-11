@@ -242,6 +242,10 @@ std::vector<QString> MainWindow::getAllPaths() {
 
 // open a new tab
 MyArea* MainWindow::openTab() {
+    // Initiates timerendering calculation
+    std::ofstream logFile("log_opening_time.txt",std::ios::app);
+    timespec depart, arrivee;
+    clock_gettime(CLOCK_REALTIME,&depart);
 
         // OpenFile dialog
         QFileDialog* filedialog = new QFileDialog(this);
@@ -289,7 +293,7 @@ MyArea* MainWindow::openTab() {
                 area->mainWindow = this;
 
                 try {
-                    std::ofstream logFile("log_rendering_time.txt",std::ios::app);
+            std::ofstream logFile("log_rendering_time.txt",std::ios::app);
             timespec depart, arrivee;
             clock_gettime(CLOCK_REALTIME,&depart);
                     // render graph
@@ -322,11 +326,11 @@ MyArea* MainWindow::openTab() {
 
                     mb->close();
                     this->setWindowState(Qt::WindowMaximized);
-                    // putting time needed to open ph file into a "log_rendering_time.txt" file
-                    clock_gettime(CLOCK_REALTIME,&arrivee);
-		    double timeRendering;
-            timeRendering = (arrivee.tv_nsec - depart.tv_nsec)/1000000.0+(arrivee.tv_sec - depart.tv_sec)*1000.0;
-            logFile << file.toStdString()+"-----"+"-----" << timeRendering;
+            // putting time needed to open ph file into a "log_opening_time.txt" file
+            clock_gettime(CLOCK_REALTIME,&arrivee);
+            double timeOpening;
+            timeOpening = (arrivee.tv_nsec - depart.tv_nsec)/1000000.0+(arrivee.tv_sec - depart.tv_sec)*1000.0;
+            logFile << file.toStdString()+"-----"+"-----" << timeOpening;
                     logFile << " ms\n";
                     logFile.close();
                     return area->myArea;

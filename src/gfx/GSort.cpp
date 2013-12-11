@@ -35,7 +35,7 @@ GSort::GSort(SortPtr s, GVNode n, qreal width, qreal height) : QGraphicsRectItem
 
     // label
     text = new QGraphicsTextItem (QString(), this);
-    text->setHtml(QString::fromStdString("<u><b><h2> " + sort->getName() + "</h2></b></u>"));
+    text->setHtml(QString::fromStdString("<u><b><h1> " + sort->getName() + "</h1></b></u>"));
     text->setDefaultTextColor(*color);
     text->setPos(leftTopCorner->x()+sizeRect->width()/2, leftTopCorner->y());
     QSizeF textSize = text->document()->size();
