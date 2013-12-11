@@ -24,6 +24,7 @@ GSort::GSort(SortPtr s, GVNode n, qreal width, qreal height) : QGraphicsRectItem
     color = makeColor();
     sizeRect = new QSize(width, height);
     vertical = true;
+    isRightButtonPressed = false;
 
     simpleDisplay = true;
     leftTopCorner = new QPoint(n.centerPos.x()-sizeRect->width()/2,n.centerPos.y()-sizeRect->height()/2);
@@ -35,7 +36,7 @@ GSort::GSort(SortPtr s, GVNode n, qreal width, qreal height) : QGraphicsRectItem
 
     // label
     text = new QGraphicsTextItem (QString(), this);
-    text->setHtml(QString::fromStdString("<u>sort " + sort->getName() + "</u>"));
+    text->setHtml(QString::fromStdString("<u><b><h2> " + sort->getName() + "</h2></b></u>"));
     text->setDefaultTextColor(*color);
     text->setPos(leftTopCorner->x()+sizeRect->width()/2, leftTopCorner->y());
     QSizeF textSize = text->document()->size();
@@ -106,17 +107,15 @@ void GSort::changeOrientation(){
 
         int currPosXProcess = marginDefault+GProcess::sizeDefault/2;
         int i = 0;
-	int currCenterX = 0;
+        int currCenterX = 0;
         int currCenterY = 0;
 
         for(GProcessPtr &p: gProcesses){
             p->getCenterPoint()->setX(leftTopCorner->x() + currPosXProcess);
             p->getCenterPoint()->setY(leftTopCorner->y()+ GProcess::sizeDefault/2+ marginDefault);
 
-	    currCenterX = topLeftX +  currPosXProcess;
+            currCenterX = topLeftX +  currPosXProcess;
             currCenterY = topLeftY + GProcess::sizeDefault/2 + marginDefault;
-
-            int margin(GSort::marginDefault);
 
             p->getMarginRect()->setPos(currCenterX -p->getSizeEllipse()->width()/2,currCenterY-p->getSizeEllipse()->height()/2);
 
@@ -141,7 +140,6 @@ void GSort::changeOrientation(){
 	    currCenterX = topLeftX + GProcess::sizeDefault/2 + marginDefault;
             currCenterY = topLeftY +  currPosYProcess;
 
-            int margin(GSort::marginDefault);
             p->getMarginRect()->setPos(currCenterX -p->getSizeEllipse()->width()/2,currCenterY-p->getSizeEllipse()->height()/2);
             p->getEllipseItem()->setRect(currCenterX -p->getSizeEllipse()->width()/2,currCenterY -p->getSizeEllipse()->height()/2, p->getSizeEllipse()->width(), p->getSizeEllipse()->height());
             textSize = p->getText()->document()->size();
@@ -156,8 +154,9 @@ void GSort::changeOrientation(){
 // mouse press event handler: start "drag"
 void GSort::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 
-    // ignore right click
+    // change orientation on right click
     if (event->button() == Qt::RightButton) {
+        isRightButtonPressed = true;
         changeOrientation();
         dynamic_cast<PHScene*>(scene())->updateActions();
         event->accept();
@@ -176,7 +175,14 @@ void GSort::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 // mouse move event handler: process "drag"
 void GSort::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 
+
     QPointF eventScenePos(event->scenePos());
+
+    if (isRightButtonPressed) {
+        event->ignore();
+        return;
+    }
+
     // update item position
     setX(x() + eventScenePos.x() - eventPressPoint.x());
     setY(y() + eventScenePos.y() - eventPressPoint.y());
@@ -196,6 +202,10 @@ void GSort::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
 }
 
 void GSort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+
+    if (event->button() == Qt::RightButton) {
+        isRightButtonPressed=false;
+    }
 
     setCursor(QCursor(Qt::OpenHandCursor));
 
@@ -325,4 +335,8 @@ void GSort::setSimpleDisplay(bool isSimpleDisplay){
 
 bool GSort::getSimpleDisplay(){
     return this->simpleDisplay;
+}
+
+bool GSort::isVertical(){
+    return vertical;
 }

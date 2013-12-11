@@ -121,11 +121,6 @@ class PHScene: public QGraphicsScene {
           */
 		PH* ph;
 
-        /**
-          * @brief clears the scene and adds the elements composing the representation of the process hitting
-          *
-          */
-		void draw(void);
 
         /**
           * @brief map of the Sorts drawn in the scene: the keys are the names of the Sorts

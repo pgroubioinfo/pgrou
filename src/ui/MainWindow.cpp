@@ -296,8 +296,8 @@ MyArea* MainWindow::openTab() {
 
                 try {
                     std::ofstream logFile("log_rendering_time.txt",std::ios::app);
-		    time_t depart, arrivee;
-		    time(&depart);
+            timespec depart, arrivee;
+            clock_gettime(CLOCK_REALTIME,&depart);
                     // render graph
                     PHPtr myPHPtr = PHIO::parseFile(path);
                     area->myArea->setPHPtr(myPHPtr);
@@ -328,11 +328,12 @@ MyArea* MainWindow::openTab() {
 
                     mb->close();
                     this->setWindowState(Qt::WindowMaximized);
-                    time(&arrivee);
+                    // putting time needed to open ph file into a "log_rendering_time.txt" file
+                    clock_gettime(CLOCK_REALTIME,&arrivee);
 		    double timeRendering;
-                    timeRendering = difftime(arrivee,depart);
+            timeRendering = (arrivee.tv_nsec - depart.tv_nsec)/1000000.0+(arrivee.tv_sec - depart.tv_sec)*1000.0;
             logFile << file.toStdString()+"-----"+"-----" << timeRendering;
-                    logFile << " s\n";
+                    logFile << " ms\n";
                     logFile.close();
                     return area->myArea;
 

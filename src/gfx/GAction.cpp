@@ -8,6 +8,7 @@
 #include "GAction.h"
 #include <QtCore/qmath.h>
 
+
 GAction::GAction(ActionPtr a, PHScene* sc) : scene(sc), action(a) {
     display = new QGraphicsItemGroup();
 
@@ -170,6 +171,7 @@ QPainterPath GAction::createHitPath(){
 // Bound Part
 QPainterPath GAction::createBoundPath(){
     QPainterPath boundPath(*targetPoint);
+
     if((targetPoint->x()!=resultPoint->x())||(targetPoint->y()!=resultPoint->y())){
 	    qreal rectCornerX;
 	    qreal rectCornerY;

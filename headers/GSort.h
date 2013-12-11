@@ -25,7 +25,7 @@ typedef boost::shared_ptr<GProcess> GProcessPtr;
   * @class GSort
   * @brief contains style and layout info to draw a Sort
   *
-  */
+ */
 class GSort : public QGraphicsRectItem {
 
 	public:
@@ -157,6 +157,9 @@ class GSort : public QGraphicsRectItem {
 	void setSimpleDisplay(bool isSimpleDisplay);
 
 	bool getSimpleDisplay();
+
+    	bool isVertical();
+		
 	protected:
 
         /**
@@ -249,5 +252,9 @@ class GSort : public QGraphicsRectItem {
           *
           */
         bool simpleDisplay;
-
+	/**
+          @brief to know if the right button of the mouse is pressed (to prevent drag'n'drop in this case)
+          *
+          */
+        bool isRightButtonPressed;
 };
