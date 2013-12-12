@@ -210,8 +210,8 @@ void GSort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     setCursor(QCursor(Qt::OpenHandCursor));
 
     //save new position of inital point
-    int centerX1=leftTopCorner->x();
-    int centerY1=leftTopCorner->y();
+    int centerX1=leftTopCorner->x() + sizeRect->width()/2;
+    int centerY1=leftTopCorner->y() + sizeRect->height()/2;
 
     int centerX2;
     int centerY2;
@@ -222,17 +222,13 @@ void GSort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
     bool resetPosition = false;
     for(auto &s : listGSorts){
 
-        centerX2=s.second.get()->getLeftTopCornerPoint()->x();
-        centerY2=s.second.get()->getLeftTopCornerPoint()->y();
-
-	
+        centerX2=s.second.get()->getLeftTopCornerPoint()->x() + s.second.get()->getSizeRect()->width()/2;
+        centerY2=s.second.get()->getLeftTopCornerPoint()->y() + s.second.get()->getSizeRect()->height()/2;
 
        if(s.second.get()->getSort()->getName()!=sort->getName()){
            distanceHeightMin=getSizeRect()->height()/2.0 + s.second.get()->getSizeRect()->height()/2.0 + defaultDistance;
-	   bool xCond = abs(centerX1-centerX2)<getSizeRect()->width()+defaultDistance;
-           bool yCondInf = (centerY1 > centerY2 - defaultDistance) && (centerY1 < centerY2 + s.second.get()->getSizeRect()->height()+defaultDistance);
-           bool yCondSup = (centerY2 > centerY1 - defaultDistance) && (centerY2 < centerY1 + getSizeRect()->height() + defaultDistance);
-           bool yCond = yCondInf || yCondSup;
+           bool xCond = abs(centerX1-centerX2)<(getSizeRect()->width()/2 + s.second.get()->getSizeRect()->width()/2 +defaultDistance);
+           bool yCond = abs(centerY1-centerY2)<(getSizeRect()->height()/2 + s.second.get()->getSizeRect()->height()/2 +defaultDistance);
            
 	   if(xCond && yCond ){
                resetPosition = true;
