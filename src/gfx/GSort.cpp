@@ -14,7 +14,6 @@
 #include <cmath>
 #include "GSort.h"
 
-using namespace std;
 
 const int GSort::marginDefault = 10;
 const int GSort::defaultDistance = 25;
