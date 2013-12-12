@@ -27,7 +27,7 @@ GSort::GSort(SortPtr s, GVNode n, qreal width, qreal height) : QGraphicsRectItem
     isRightButtonPressed = false;
 
     simpleDisplay = true;
-    leftTopCorner = new QPoint(n.centerPos.x()-sizeRect->width()/2,n.centerPos.y()-sizeRect->height()/2);
+    leftTopCorner = new QPointF(n.centerPos.x()-sizeRect->width()/2,n.centerPos.y()-sizeRect->height()/2);
 
     // rectangle
     _rect = new QGraphicsRectItem(QRectF(*leftTopCorner, *sizeRect),this);
@@ -308,7 +308,7 @@ QGraphicsTextItem* GSort::getText() { return this->text; }
 
 QPoint GSort::geteventPressPoint() { return this->eventPressPoint; }
 
-QPoint* GSort::getLeftTopCornerPoint() {return this->leftTopCorner;}
+QPointF* GSort::getLeftTopCornerPoint() {return this->leftTopCorner;}
 
 QSize* GSort::getSizeRect() { return this->sizeRect;}
 

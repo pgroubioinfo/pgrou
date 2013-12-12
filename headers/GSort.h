@@ -142,7 +142,7 @@ class GSort : public QGraphicsRectItem {
           * @return GPoint the center of the ellipse
           *
           */
-        QPoint* getLeftTopCornerPoint();
+        QPointF* getLeftTopCornerPoint();
 
         /**
           * @brief get the size of the ellipse representing the process
@@ -166,7 +166,7 @@ class GSort : public QGraphicsRectItem {
           * @brief position of the left top corner of the rectangle representing the sort
           *
           */
-	QPoint* leftTopCorner;
+	QPointF* leftTopCorner;
 
         /**
           * @brief size of the rectangle representing the sort
