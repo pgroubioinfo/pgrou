@@ -20,32 +20,57 @@ const int GSort::defaultDistance = 25;
 
 GSort::GSort(SortPtr s, GVNode n, qreal width, qreal height) : QGraphicsRectItem(n.centerPos.x()-width/2, n.centerPos.y()-height/2, width, height),sort(s), node(n) {
 
-    // graphic items set and Actions color
-    color = makeColor();
-    sizeRect = new QSize(width, height);
-    vertical = true;
-    isRightButtonPressed = false;
+	initInnerAttributes();
 
-    simpleDisplay = true;
-    leftTopCorner = new QPoint(n.centerPos.x()-sizeRect->width()/2,n.centerPos.y()-sizeRect->height()/2);
+	initGeometricAttributes(QSize(width, height));
 
-    // rectangle
-    _rect = new QGraphicsRectItem(QRectF(*leftTopCorner, *sizeRect),this);
-    _rect->setPen(QPen(QColor(0,0,0)));
-    _rect->setBrush(QBrush(QColor(255,255,255)));
+	initRectItem();
 
-    // label
-    text = new QGraphicsTextItem (QString(), this);
-    text->setHtml(QString::fromStdString("<u><b><h1> " + sort->getName() + "</h1></b></u>"));
-    text->setDefaultTextColor(*color);
-    text->setPos(leftTopCorner->x()+sizeRect->width()/2, leftTopCorner->y());
-    QSizeF textSize = text->document()->size();
-    text->setPos(text->x() - textSize.width()/2, text->y() - textSize.height());
+	initTextItem();
 
-    setCursor(QCursor(Qt::OpenHandCursor));
-    setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
+    	setCursor(QCursor(Qt::OpenHandCursor));
+    	setAcceptedMouseButtons(Qt::LeftButton | Qt::RightButton);
 
-    // set related GProcesses as children (so they move with this GSort)
+	initGProcessChildren();
+
+}
+
+GSort::~GSort() {
+	gProcesses.clear();
+	delete _rect;
+	delete leftTopCorner;
+	delete sizeRect;
+	delete text;   
+}
+
+void GSort::initInnerAttributes(){
+	color = makeColor();
+	vertical = true;
+	simpleDisplay = true;
+	isRightButtonPressed = false;
+}
+
+void GSort::initGeometricAttributes(QSize size){
+	sizeRect = new QSize(size.width(), size.height());
+	leftTopCorner = new QPointF(node.centerPos.x()-sizeRect->width()/2,node.centerPos.y()-sizeRect->height()/2);
+}
+
+void GSort::initRectItem(){
+	_rect = new QGraphicsRectItem(QRectF(*leftTopCorner, *sizeRect),this);
+	_rect->setPen(QPen(QColor(0,0,0)));
+	_rect->setBrush(QBrush(QColor(255,255,255)));
+}
+
+void GSort::initTextItem(){
+	text = new QGraphicsTextItem (QString(), this);
+	text->setHtml(QString::fromStdString("<u><b><h1> " + sort->getName() + "</h1></b></u>"));
+	text->setDefaultTextColor(*color);
+	text->setPos(leftTopCorner->x()+sizeRect->width()/2, leftTopCorner->y());
+	QSizeF textSize = text->document()->size();
+	text->setPos(text->x() - textSize.width()/2, text->y() - textSize.height());
+}
+
+void GSort::initGProcessChildren(){
     vector<ProcessPtr> processes = sort->getProcesses();
     int currPosYProcess = marginDefault+GProcess::sizeDefault/2;
 
@@ -59,20 +84,185 @@ GSort::GSort(SortPtr s, GVNode n, qreal width, qreal height) : QGraphicsRectItem
 	ProcessPtr* p = gp->getProcess();
 	(*p)->setGProcess(gp);
     }
-
 }
 
-GSort::~GSort() {
-    gProcesses.clear();
-    delete _rect;
-    delete leftTopCorner;
-    delete sizeRect;
-    delete text;   
+// mouse press event handler: start "drag"
+void GSort::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+
+    // change orientation on right click
+    if (event->button() == Qt::RightButton) {
+	/*
+        isRightButtonPressed = true;
+        changeOrientation();
+        dynamic_cast<PHScene*>(scene())->updateActions();
+        event->accept();
+	*/
+    }else if (event->button() == Qt::LeftButton) {
+	setCursor(QCursor(Qt::ClosedHandCursor));
+	// record coordinates for drawing item when mouse is moved/released
+    	initPosPoint.setX(pos().x());
+    	initPosPoint.setY(pos().y());
+    	eventPressPoint.setX(event->scenePos().x());
+    	eventPressPoint.setY(event->scenePos().y());
+    	event->accept();
+    }
 }
 
+
+// mouse move event handler: process "drag"
+void GSort::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
+
+    QPointF eventScenePos(event->scenePos());
+
+    if (isRightButtonPressed) {
+        event->ignore();
+        return;
+    }
+
+    // update item position
+    
+    QPointF shiftPoint = eventScenePos-eventPressPoint;
+    shiftPosition(shiftPoint);
+
+    eventPressPoint.setX(event->scenePos().x());
+    eventPressPoint.setY(event->scenePos().y());
+
+    event->accept();
+}
+
+void GSort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
+
+    if (event->button() == Qt::RightButton) {
+        isRightButtonPressed=false;
+    }
+
+    setCursor(QCursor(Qt::OpenHandCursor));
+
+    if(isOverAnotherGSort()){
+	cancelShift();
+    }
+
+    event->accept();
+}
+
+void GSort::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event){
+    changeDisplayState();
+    event->accept();
+}
+
+// context menu event handler
+void GSort::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
+
+    // if other mouse buttons are pressed, do nothing
+    if (QApplication::mouseButtons() == Qt::RightButton) {
+        QMenu menu;
+	QAction* switchOrientation = menu.addAction("switch horizontal/vertical");
+	QAction* switchDisplay = menu.addAction("switch to detailled/simple display");
+
+	QAction* selectedAction = menu.exec(QCursor::pos());
+
+	if(selectedAction != 0){
+		if(QString::compare(selectedAction->text(),switchOrientation->text())==0){
+			changeOrientation();
+		}else if(QString::compare(selectedAction->text(),switchDisplay->text())==0){
+			changeDisplayState();
+		}
+	}	
+    }
+}
+
+// getters
+
+QGraphicsRectItem* GSort::getRect() { return this->_rect; }
+
+SortPtr GSort::getSort() { return this->sort; }
+
+GVNode GSort::getNode() { return this->node; }
+
+QGraphicsTextItem* GSort::getText() { return this->text; }
+
+QPoint GSort::geteventPressPoint() { return this->eventPressPoint; }
+
+QPointF* GSort::getLeftTopCornerPoint() {return this->leftTopCorner;}
+
+QPointF GSort::getCenterPoint() {
+	return QPoint(leftTopCorner->x()+sizeRect->width()/2.0,leftTopCorner->y()+sizeRect->height()/2.0);
+}
+
+QSize* GSort::getSizeRect() { return this->sizeRect;}
+
+bool GSort::getSimpleDisplay(){ return this->simpleDisplay; }
+
+
+void GSort::setSimpleDisplay(bool isSimpleDisplay){
+	this->simpleDisplay = isSimpleDisplay;
+}
+
+void GSort::changeDisplayState(){
+    if(simpleDisplay){
+    	simpleDisplay = false;
+    }else{
+	simpleDisplay = true;
+    }
+    dynamic_cast<PHScene*>(scene())->updateActions();
+}
+
+void GSort::shiftPosition(QPointF shiftVector) {
+
+    for(GProcessPtr &p: gProcesses){
+	    qreal prevPosX = p->getCenterPoint()->x();
+	    qreal prevPosY = p->getCenterPoint()->y();
+	    p->getCenterPoint()->setX(prevPosX + shiftVector.x());
+	    p->getCenterPoint()->setY(prevPosY + shiftVector.y());
+    }
+
+    leftTopCorner->setX(leftTopCorner->x() + shiftVector.x());
+    leftTopCorner->setY(leftTopCorner->y() + shiftVector.y());
+
+    setPos(x() + shiftVector.x(), y() + shiftVector.y() );
+
+    dynamic_cast<PHScene*>(scene())->updateActions();
+}
+
+void GSort::cancelShift(){
+    shiftPosition(initPosPoint - pos());
+}
+
+bool GSort::isOverAnotherGSort(){
+    map<string, GSortPtr> listGSorts = dynamic_cast<PHScene*>(scene())->getGSorts();
+    bool resetPosition = false;
+
+    for(auto &s : listGSorts){
+       if(s.second.get()->getSort()->getName()!=sort->getName()){
+	   if(isOver(s.second.get())){
+		resetPosition = true;
+	   }
+        }
+    }
+
+    return resetPosition;
+}
+
+bool GSort::isOver(GSort* otherGSort){
+	QPointF centerSortMoving(getCenterPoint());
+	QPointF centerSortAround(otherGSort->getCenterPoint());
+	qreal distanceWidthMin = getSizeRect()->width()/2 + otherGSort->getSizeRect()->width()/2 +defaultDistance;
+	qreal distanceHeightMin = getSizeRect()->height()/2 + otherGSort->getSizeRect()->height()/2 +defaultDistance;
+
+	bool xCond = abs(centerSortMoving.x()-centerSortAround.x())<distanceWidthMin;
+	bool yCond = abs(centerSortMoving.y()-centerSortAround.y())<distanceHeightMin;
+
+	return xCond && yCond;
+}
 
 void GSort::changeOrientation(){
+	changeOrientationRect();
+	changeOrientationGProcess();
+	dynamic_cast<PHScene*>(scene())->updateActions();
 
+}
+
+void GSort::changeOrientationRect(){
     qreal topLeftX=0;
     qreal topLeftY=0;
     qreal bottomRightX=0;
@@ -81,15 +271,15 @@ void GSort::changeOrientation(){
   
 
     //Swap Height and Width
-    qreal oldWidth = sizeRect->width();
-    qreal oldHeight = sizeRect->height();
+
+    QSizeF oldSize(*sizeRect);
     sizeRect->transpose();
 
 
-    leftTopCorner->setX(leftTopCorner->x() + oldWidth/2.0 - sizeRect->width()/2.0);
-    leftTopCorner->setY(leftTopCorner->y() + oldHeight/2.0 - sizeRect->height()/2.0);
+    leftTopCorner->setX(leftTopCorner->x() + (oldSize.width() - sizeRect->width())/2.0);
+    leftTopCorner->setY(leftTopCorner->y() + (oldSize.height() - sizeRect->height())/2.0);
 
-    QPoint sceneLeftTopCorner(topLeftX + oldWidth/2.0 - sizeRect->width()/2.0,topLeftY + oldHeight/2.0 - sizeRect->height()/2.0);
+    QPoint sceneLeftTopCorner(topLeftX + (oldSize.width() - sizeRect->width())/2.0, topLeftY + (oldSize.height() - sizeRect->height())/2.0);
 
     _rect->setRect(QRectF(sceneLeftTopCorner, *sizeRect));
     setRect(_rect->rect());
@@ -101,12 +291,19 @@ void GSort::changeOrientation(){
     QSizeF textSize = text->document()->size();
     text->setPos(text->x() - textSize.width()/2, text->y() - textSize.height());
 
+}
+
+void GSort::changeOrientationGProcess(){
+    qreal topLeftX=0;
+    qreal topLeftY=0;
+    qreal bottomRightX=0;
+    qreal bottomRightY=0;
+    _rect->rect().getCoords(&topLeftX,&topLeftY,&bottomRightX,&bottomRightY);
 
     if(vertical){
         vertical = false;
 
         int currPosXProcess = marginDefault+GProcess::sizeDefault/2;
-        int i = 0;
         int currCenterX = 0;
         int currCenterY = 0;
 
@@ -120,7 +317,7 @@ void GSort::changeOrientation(){
             p->getMarginRect()->setPos(currCenterX -p->getSizeEllipse()->width()/2,currCenterY-p->getSizeEllipse()->height()/2);
 
             p->getEllipseItem()->setRect(currCenterX -p->getSizeEllipse()->width()/2,currCenterY -p->getSizeEllipse()->height()/2, p->getSizeEllipse()->width(), p->getSizeEllipse()->height());
-            textSize = p->getText()->document()->size();
+            QSizeF textSize = p->getText()->document()->size();
             p->getText()->setPos(currCenterX - textSize.width()/2,currCenterY- textSize.height()/2);
 
             currPosXProcess+= 2*marginDefault + GProcess::sizeDefault;
@@ -142,138 +339,27 @@ void GSort::changeOrientation(){
 
             p->getMarginRect()->setPos(currCenterX -p->getSizeEllipse()->width()/2,currCenterY-p->getSizeEllipse()->height()/2);
             p->getEllipseItem()->setRect(currCenterX -p->getSizeEllipse()->width()/2,currCenterY -p->getSizeEllipse()->height()/2, p->getSizeEllipse()->width(), p->getSizeEllipse()->height());
-            textSize = p->getText()->document()->size();
+            QSizeF textSize = p->getText()->document()->size();
             p->getText()->setPos(currCenterX - textSize.width()/2,currCenterY- textSize.height()/2);
             currPosYProcess+= 2*marginDefault + GProcess::sizeDefault;
         }
     }
-    dynamic_cast<PHScene*>(scene())->updateActions();
-
 }
 
-// mouse press event handler: start "drag"
-void GSort::mousePressEvent(QGraphicsSceneMouseEvent *event) {
-
-    // change orientation on right click
-    if (event->button() == Qt::RightButton) {
-        isRightButtonPressed = true;
-        changeOrientation();
-        dynamic_cast<PHScene*>(scene())->updateActions();
-        event->accept();
-    }else if (event->button() == Qt::LeftButton) {
-	setCursor(QCursor(Qt::ClosedHandCursor));
-	// record coordinates for drawing item when mouse is moved/released
-    	initPosPoint.setX(pos().x());
-    	initPosPoint.setY(pos().y());
-    	eventPressPoint.setX(event->scenePos().x());
-    	eventPressPoint.setY(event->scenePos().y());
-    	event->accept();
-    }
+void GSort::hide() {
+    this->setOpacity(0);
 }
 
-
-// mouse move event handler: process "drag"
-void GSort::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
-
-
-    QPointF eventScenePos(event->scenePos());
-
-    if (isRightButtonPressed) {
-        event->ignore();
-        return;
-    }
-
-    // update item position
-    setX(x() + eventScenePos.x() - eventPressPoint.x());
-    setY(y() + eventScenePos.y() - eventPressPoint.y());
-    leftTopCorner->setX(leftTopCorner->x() + eventScenePos.x() - eventPressPoint.x());
-    leftTopCorner->setY(leftTopCorner->y() + eventScenePos.y() - eventPressPoint.y());
-    for(GProcessPtr &p: gProcesses){
-	    qreal prevPosX = p->getCenterPoint()->x();
-	    qreal prevPosY = p->getCenterPoint()->y();
-	    p->getCenterPoint()->setX(prevPosX + eventScenePos.x()- eventPressPoint.x());
-	    p->getCenterPoint()->setY(prevPosY + eventScenePos.y()- eventPressPoint.y());
-    }
-
-    dynamic_cast<PHScene*>(scene())->updateActions();
-    eventPressPoint.setX(event->scenePos().x());
-    eventPressPoint.setY(event->scenePos().y());
-    event->accept();
+void GSort::show() {
+    this->setOpacity(1);
 }
 
-void GSort::mouseReleaseEvent(QGraphicsSceneMouseEvent *event) {
-
-    if (event->button() == Qt::RightButton) {
-        isRightButtonPressed=false;
-    }
-
-    setCursor(QCursor(Qt::OpenHandCursor));
-
-    //save new position of inital point
-    int centerX1=leftTopCorner->x();
-    int centerY1=leftTopCorner->y();
-
-    int centerX2;
-    int centerY2;
-    int distanceHeightMin=0;
-
-    map<string, GSortPtr> listGSorts = dynamic_cast<PHScene*>(scene())->getGSorts();
-
-    bool resetPosition = false;
-    for(auto &s : listGSorts){
-
-        centerX2=s.second.get()->getLeftTopCornerPoint()->x();
-        centerY2=s.second.get()->getLeftTopCornerPoint()->y();
-
-	
-
-       if(s.second.get()->getSort()->getName()!=sort->getName()){
-           distanceHeightMin=getSizeRect()->height()/2.0 + s.second.get()->getSizeRect()->height()/2.0 + defaultDistance;
-	   bool xCond = abs(centerX1-centerX2)<getSizeRect()->width()+defaultDistance;
-           bool yCondInf = (centerY1 > centerY2 - defaultDistance) && (centerY1 < centerY2 + s.second.get()->getSizeRect()->height()+defaultDistance);
-           bool yCondSup = (centerY2 > centerY1 - defaultDistance) && (centerY2 < centerY1 + getSizeRect()->height() + defaultDistance);
-           bool yCond = yCondInf || yCondSup;
-           
-	   if(xCond && yCond ){
-               resetPosition = true;
-           }
-        }
-    }
-
-        //coordinates have the initial value
-    if(resetPosition){
-	for(GProcessPtr &p: gProcesses){
-	    p->getCenterPoint()->setX(p->getCenterPoint()->x() + initPosPoint.x() - x());
-	    p->getCenterPoint()->setY(p->getCenterPoint()->y() + initPosPoint.y() - y());
-   	}
-        leftTopCorner->setX(leftTopCorner->x() + initPosPoint.x() - x());
-        leftTopCorner->setY(leftTopCorner->y() + initPosPoint.y() - y());
-        setX(initPosPoint.x());
-        setY(initPosPoint.y());
-	dynamic_cast<PHScene*>(scene())->updateActions();
-    }
-
-    event->accept();
+bool GSort::isVisible() {
+    return (this->opacity() == 1);
 }
 
-void GSort::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event){
-    if(simpleDisplay){
-    	simpleDisplay = false;
-    }else{
-	simpleDisplay = true;
-    }
-    dynamic_cast<PHScene*>(scene())->updateActions();
-    event->accept();
-}
-
-// context menu event handler
-void GSort::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
-
-    // if other mouse buttons are pressed, do nothing
-    if (QApplication::mouseButtons() != Qt::RightButton) {
-        event->ignore();
-        return;
-    }
+bool GSort::isVertical(){
+    return vertical;
 }
 
 // palette managementsizeRect
@@ -293,50 +379,4 @@ std::vector<QColor> GSort::palette = 	{	QColor(181,137,0)
 QColor* GSort::makeColor () {
 	paletteIndex = (paletteIndex + 1) % palette.size();
 	return &(palette[paletteIndex]);
-}
-
-
-// getters
-
-QGraphicsRectItem* GSort::getRect() { return this->_rect; }
-
-SortPtr GSort::getSort() { return this->sort; }
-
-GVNode GSort::getNode() { return this->node; }
-
-QGraphicsTextItem* GSort::getText() { return this->text; }
-
-QPoint GSort::geteventPressPoint() { return this->eventPressPoint; }
-
-QPoint* GSort::getLeftTopCornerPoint() {return this->leftTopCorner;}
-
-QSize* GSort::getSizeRect() { return this->sizeRect;}
-
-void GSort::updatePosition() {
-
-}
-
-
-void GSort::hide() {
-    this->setOpacity(0);
-}
-
-void GSort::show() {
-    this->setOpacity(1);
-}
-
-bool GSort::isVisible() {
-    return (this->opacity() == 1);
-}
-
-void GSort::setSimpleDisplay(bool isSimpleDisplay){
-	this->simpleDisplay = isSimpleDisplay;
-}
-
-bool GSort::getSimpleDisplay(){
-    return this->simpleDisplay;
-}
-
-bool GSort::isVertical(){
-    return vertical;
 }

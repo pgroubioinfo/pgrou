@@ -46,7 +46,6 @@ class GSort : public QGraphicsRectItem {
 
 		~GSort();
 
-
         /**
           * @brief get the rect item
           *
@@ -110,10 +109,51 @@ class GSort : public QGraphicsRectItem {
         QGraphicsTextItem* getText();
 
         /**
-          * @brief updates the position of this GSort after drag&drop
+          * @brief gets the point used to record mouse press event position
           *
           */
-        void updatePosition();
+        QPoint geteventPressPoint();
+
+        /**
+          * @brief get the left top corner of the GSort
+          *
+          * @return GPointF* a pointer to the leftTopCorner attribute
+          *
+          */
+        QPointF* getLeftTopCornerPoint();
+
+        /**
+          * @brief get the center of the GSort
+          *
+          * @return GPointF center of the GSort
+          *
+          */
+	QPointF getCenterPoint();
+
+        /**
+          * @brief get the size of the ellipse representing the process
+          *
+          * @return GSize the size of the ellipse
+          *
+          */
+        QSize* getSizeRect();
+
+        /**
+          * @brief get the simple display state
+          *
+          * @return bool value of the attribute simpleDisplay
+          *
+          */
+	bool getSimpleDisplay();
+
+	void changeDisplayState();
+
+	/**
+          * @brief setters for simpleDisplay attributes
+          *
+	  * @param bool value to set simpleDisplay to
+          */
+	void setSimpleDisplay(bool isSimpleDisplay);
 
         /**
           * @brief hides this GSort setting opacity to 0
@@ -131,34 +171,11 @@ class GSort : public QGraphicsRectItem {
         bool isVisible();
 
         /**
-          * @brief gets the point used to record mouse press event position
+          * @brief return the value of the vertical attribute
           *
+	  * @return bool value of the vertical attribute
           */
-        QPoint geteventPressPoint();
-
-        /**
-          * @brief get the center of the ellipse representing the process
-          *
-          * @return GPoint the center of the ellipse
-          *
-          */
-        QPoint* getLeftTopCornerPoint();
-
-        /**
-          * @brief get the size of the ellipse representing the process
-          *
-          * @return GSize the size of the ellipse
-          *
-          */
-        QSize* getSizeRect();
-
-	void changeOrientation();
-
-	void setSimpleDisplay(bool isSimpleDisplay);
-
-	bool getSimpleDisplay();
-
-    bool isVertical();
+    	bool isVertical();
 		
 	protected:
 
@@ -166,7 +183,7 @@ class GSort : public QGraphicsRectItem {
           * @brief position of the left top corner of the rectangle representing the sort
           *
           */
-	QPoint* leftTopCorner;
+	QPointF* leftTopCorner;
 
         /**
           * @brief size of the rectangle representing the sort
@@ -252,9 +269,91 @@ class GSort : public QGraphicsRectItem {
           *
           */
         bool simpleDisplay;
+
 	/**
-          @brief to know if the right button of the mouse is pressed (to prevent drag'n'drop in this case)
+          * @brief to know if the right button of the mouse is pressed (to prevent drag'n'drop in this case)
           *
           */
         bool isRightButtonPressed;
+
+	/**
+          * @brief initialize inner attributes of the GSort
+          *
+          */
+	void initInnerAttributes();
+
+	/**
+          * @brief initialize geometrics attributes of the GSort
+          *
+	  * @param QSize size of the GSort
+          */
+	void initGeometricAttributes(QSize size);
+
+	/**
+          * @brief initialize the _rect item of the GSort
+          *
+          */
+	void initRectItem();
+
+	/**
+          * @brief initialize the label of the GSort
+          *
+          */
+	void initTextItem();
+
+	/**
+          * @brief initialize GProcess related to the GSort
+          *
+          */
+	void initGProcessChildren();
+
+        /**
+          * @brief shifts the GSort according to the coordinates of a shiftVector
+          *
+	  * @param QPointF the shifting vector
+          */
+        void shiftPosition(QPointF shiftVector);
+
+        /**
+          * @brief check if the GSort is over another
+          *
+	  * @return bool the result of the checking
+          */
+	bool isOverAnotherGSort();
+
+        /**
+          * @brief check if the GSort is over a specified GSort
+          *
+	  * @return bool the result of the checking
+          */
+	bool isOver(GSort* otherGSort);
+
+        /**
+          * @brief set the position of the GSort at the state before it has moved
+          *
+          */
+	void cancelShift();
+
+        /**
+          * @brief change the orientation of the GSort
+          *
+          */
+	void changeOrientation();
+
+        /**
+          * @brief change the orientation of the GSort rectangle
+          *
+          */
+	void changeOrientationRect();
+
+        /**
+          * @brief change the orientation of the GProcess children
+          *
+          */
+	void changeOrientationGProcess();
+
+signals:
+
+public slots:
+
 };

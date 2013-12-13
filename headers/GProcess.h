@@ -38,7 +38,13 @@ class GProcess {
           */
 	GProcess(ProcessPtr p,double centerX, double centerY);
 
-		~GProcess();
+	~GProcess();
+
+        /**
+          * @brief gets the related Process
+          *
+          */
+        ProcessPtr* getProcess();
 
         /**
           * @brief gets the display
@@ -59,17 +65,6 @@ class GProcess {
           */
         QGraphicsRectItem* getMarginRect();
 
-
-        /**
-          * @brief updates the related center's coordinates with a point
-          *
-          * @param int x the horizontal coordinate of the node
-          * @param int y the vertical coordinate of the node
-          *
-          */
-        void setCoordsForImport(int x, int y);
-
-
         /**
           * @brief get the center of the ellipse representing the process
           *
@@ -87,52 +82,57 @@ class GProcess {
 	QSizeF* getSizeEllipse();
 
         /**
-          * @brief gets the related Process
+          * @brief gets the text item
           *
           */
-
-        ProcessPtr* getProcess();
-
-
 	QGraphicsTextItem* getText();
+
+        /**
+          * @brief updates the related center's coordinates with a point
+          *
+          * @param int x the horizontal coordinate of the node
+          * @param int y the vertical coordinate of the node
+          *
+          */
+        void setCoordsForImport(int x, int y);
 	
 	protected:
-
-        /**
-          * @brief the graphical item representing the Process
-          *
-          */
-		QGraphicsItem* display;
-
-       /**
-          * @brief position of the center of the ellipse representing the process
-          *
-          */
-	QPointF* center;
-
-       /**
-          * @brief size of the ellipse representing the process
-          *
-          */
-	QSizeF* size;
-
-        /**
-          * @brief the graphical item representing the ellipse of the Process
-          *
-          */
-		QGraphicsEllipseItem* ellipse;
-
-        /**
-          * @brief the graphical item representing the text of the Process
-          *
-          */
-        QGraphicsTextItem* text;
 
         /**
           * @brief the related Process
           *
           */
 	ProcessPtr process;
+
+        /**
+          * @brief position of the center of the ellipse representing the process
+          *
+          */
+	QPointF* center;
+
+        /**
+          * @brief size of the ellipse representing the process
+          *
+          */
+	QSizeF* size;
+
+        /**
+          * @brief the graphical item representing the Process
+          *
+          */
+	QGraphicsItem* display;
+
+        /**
+          * @brief the graphical item representing the ellipse of the Process
+          *
+          */
+	QGraphicsEllipseItem* ellipse;
+
+        /**
+          * @brief the graphical item representing the text of the Process
+          *
+          */
+        QGraphicsTextItem* text;
 
         /**
           * @brief the margin around this process, must exclude any other process' margin (cf. graphviz attribute "pos" in GVSubGraph)
@@ -151,5 +151,28 @@ class GProcess {
           *
           */
         static const int sortName;
+
+	/**
+	  * @brief init geometrics characteristics of the GProcess
+	  *
+	  * @param QPointF center point to set the GProcess
+	  * @param double diameter of the GProcess
+	  */
+	void initGeometricsValues(QPointF centerPoint, double diameter);
+
+	/**
+	  * @brief init the ellipse item
+	  */
+	void initEllipseItem();
+
+	/**
+	  * @brief init the marginRect item
+	  */
+	void initMarginRectItem();
+
+	/**
+	  * @brief init the text item
+	  */
+	void initTextItem();
 
 };

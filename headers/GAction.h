@@ -185,15 +185,16 @@ class GAction {
 	/**
           * @brief build the line corresponding to the first part of the action
 	  *
-      * @return QPainterPath the line representing the first part of the action
+	  * @return QPainterPath the line representing the first part of the action
           */
-    QPainterPath createHitPath();
-    /**
+    	QPainterPath createHitPath();
+
+    	/**
           * @brief build the arc corresponding to the second part of the action
-      *
-      * @return QPainterPath the arc representing the second part of the action
+      	  *
+      	  * @return QPainterPath the arc representing the second part of the action
           */
-    QPainterPath createBoundPath();
+    	QPainterPath createBoundPath();
 
 
         /**
@@ -205,6 +206,59 @@ class GAction {
           * @return QGraphicsPolygonItem* the graphical item representing the head of the arrow
           *
           */
-	QPolygonF makeArrowHead(QPainterPath path);		
-	
+	QPolygonF makeArrowHead(QPainterPath path);
+
+	/**
+	  * @brief init contact points to display the GAction in simple model
+	  *
+	  */
+	void initPointsInSimpleModele();
+
+	/**
+	  * @brief init contact points to display the GAction in detailled model
+	  *
+	  */
+	void initPointsInDetailledModel();
+
+	/**
+	  * @brief update contact points to display the GAction in simple model
+	  *
+	  */
+	void updatePointsInSimpleModel();	
+
+	/**
+	  * @brief update contact points to display the GAction in detailled model
+	  *
+	  */
+	void updatePointsInDetailledModel();
+
+	/**
+	  * @brief check if the source and the target process are the same
+	  *
+	  */
+	bool isAutoHit();
+
+	/**
+	  * @brief init contact points in the case of normal hit
+	  *
+	  */
+	void initPointsNormalHit();
+
+	/**
+	  * @brief update contact points in the case of normal hit
+	  *
+	  */
+	void updatePointsNormalHit();
+
+	/**
+	  * @brief init contact points in the case of an auto hit
+	  *
+	  */
+	void initPointsAutoHit();
+
+	/**
+	  * @brief init contact points in the case of an auto hit
+	  *
+	  */
+	void updatePointsAutoHit();
 };
