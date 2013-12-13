@@ -15,42 +15,15 @@ const int GProcess::sizeDefault = 100;
 
 GProcess::GProcess(ProcessPtr p,double centerX, double centerY) : process(p){
 
-    display = new QGraphicsItemGroup();
+	display = new QGraphicsItemGroup();
 
-    // init size of the ellipse and the position of the center
-    size = new QSizeF(sizeDefault,sizeDefault);
-    center = new QPointF(centerX,centerY);
+	initGeometricsValues(QPointF(centerX,centerY), sizeDefault);
 
-    // ellipse
-    ellipse = new QGraphicsEllipseItem (center->x()-sizeDefault/2, center->y()-sizeDefault/2,
-                                        size->width(), size->height(), display);
-	ellipse->setPen(QPen(QColor(0,0,0)));
-	ellipse->setBrush(QBrush(QColor(255,255,255)));
+	initEllipseItem();
 
-
-    int margin(GSort::marginDefault);
-
-    marginRect = new QGraphicsRectItem(
-                centerX - margin/2,
-                centerY - margin/2,
-                2*margin,
-                2*margin,
-                display);
-                
-    marginRect->setBrush(Qt::NoBrush);
-    marginRect->setPen(Qt::NoPen);
-    marginRect->setData(marginZone, true);
-    marginRect->setData(sortName, process->getSort()->getName().c_str());
+	initMarginRectItem();
     
-    // text
-    text = new QGraphicsTextItem (QString("%1").arg(process->getNumber()), ellipse);
-    text->setFont(QFont("TypeWriter",25));
-    text->setDefaultTextColor(QColor(7,54,66));
-    text->setPos(centerX, centerY);
-
-    // position the text
-	QSizeF textSize = text->document()->size();
-	text->setPos(text->x() - textSize.width()/2, text->y() - textSize.height()/2);
+	initTextItem();
 }
 
 
@@ -63,7 +36,49 @@ GProcess::~GProcess() {
 }
 
 
-// getters
+// Init methods
+
+void GProcess::initGeometricsValues(QPointF centerPoint, double diameter){
+	center = new QPointF(centerPoint);	
+	size = new QSizeF(diameter,diameter);
+}
+
+void GProcess::initEllipseItem(){
+    	ellipse = new QGraphicsEllipseItem (center->x()-sizeDefault/2, center->y()-sizeDefault/2,
+                                        size->width(), size->height(), display);
+	ellipse->setPen(QPen(QColor(0,0,0)));
+	ellipse->setBrush(QBrush(QColor(255,255,255)));
+}
+
+void GProcess::initMarginRectItem(){
+	int margin(GSort::marginDefault);
+
+	marginRect = new QGraphicsRectItem(
+                center->x() - margin/2,
+                center->y() - margin/2,
+                2*margin,
+                2*margin,
+                display);
+                
+	marginRect->setBrush(Qt::NoBrush);
+	marginRect->setPen(Qt::NoPen);
+	marginRect->setData(marginZone, true);
+	marginRect->setData(sortName, process->getSort()->getName().c_str());
+}
+
+void GProcess::initTextItem(){
+	text = new QGraphicsTextItem (QString("%1").arg(process->getNumber()), ellipse);
+	text->setFont(QFont("TypeWriter",25));
+	text->setDefaultTextColor(QColor(7,54,66));
+	text->setPos(center->x(), center->y());
+
+	QSizeF textSize = text->document()->size();
+	text->setPos(text->x() - textSize.width()/2, text->y() - textSize.height()/2);
+}
+
+// Getters
+
+ProcessPtr* GProcess::getProcess() { return &(this->process); }
 
 QGraphicsItem* GProcess::getDisplayItem (void) { return display; }
 
@@ -75,12 +90,11 @@ QPointF* GProcess::getCenterPoint() {return this->center;}
 
 QSizeF* GProcess::getSizeEllipse() {return this->size;}
 
-
 QGraphicsTextItem* GProcess::getText() {return this->text;}
+
+// Setters
 
 void GProcess::setCoordsForImport(int x, int y) {
     center->setX(x);
     center->setY(y);
 }
-
-ProcessPtr* GProcess::getProcess() { return &(this->process); }

@@ -27,6 +27,18 @@ typedef boost::shared_ptr<GVSkeletonGraph> GVSkeletonGraphPtr;
 class GVSkeletonGraph {
 
 	public:
+
+		/**
+		 * @brief GVSkeletonGraph constructor
+		 * @param QString name the name given to the skeleton graph
+		 * @param QFont font
+		 */
+		GVSkeletonGraph(QString name, QFont font =QFont());
+
+		virtual ~GVSkeletonGraph();
+
+		// Constants for GraphViz constraints
+
 		/**
 		 * @brief Default DPI value used by dot (which uses points instead of pixels for coordinates)
 		 *
@@ -45,19 +57,10 @@ class GVSkeletonGraph {
 		 */
         	static const qreal sepValue;
 
-		/**
-		 * @brief GVSkeletonGraph constructor
-		 * @param QString name the name given to the skeleton graph
-		 * @param QFont font
-		 */
-		GVSkeletonGraph(QString name, QFont font =QFont());
-
-		virtual ~GVSkeletonGraph();
-
 		// Graph management
 
 		/**
-         * @brief Set the graph dpi and sepValue to their default values
+         	 * @brief Set the graph dpi and sepValue to their default values
 		 *
 		 */
 		void  setGraphAttributes();
@@ -85,16 +88,14 @@ class GVSkeletonGraph {
 		void  applyLayout();
 
 		/**
-
 		 * @brief export the graph into the file out.png (for test purpose)
-
 		 */
 		void exportToPng();
 
 		// Node management
 		
 		/**
-         * @brief tranforms the _nodes attribute into a liste of GVNode
+         	 * @brief tranforms the _nodes attribute into a liste of GVNode
 		 *
 		 * @return a list QList<GVNode> containing nodes of the graph
 		 */
@@ -118,18 +119,18 @@ class GVSkeletonGraph {
 		 */	
 		bool hasNode(const QString& name);
 
-        /**
-         * @brief setter for the nodeSize attribute
-         * @param object : the node to modify
-         * @param width : new width of the node
-         * @param height : new height of the node
-         */
+        	/**
+         	 * @brief setter for the nodeSize attribute
+         	 * @param object : the node to modify
+         	 * @param width : new width of the node
+         	 * @param height : new height of the node
+         	 */
 		void setNodeSize(void* object, qreal width, qreal height);
 
 		/**
 		 * @brief gets a node by its name
 		 * @param QString name the name of the node to get
-         * @return Agnode_t* a pointer to the retrieved node
+         	 * @return Agnode_t* a pointer to the retrieved node
 		 */	
 		Agnode_t* getNode(const QString& name);
 
@@ -161,7 +162,7 @@ class GVSkeletonGraph {
 		void removeEdge(const QPair<QString, QString>& key);
 
 		/**
-         * @brief check if an edge exists between two nodes in the graph
+         	 * @brief check if an edge exists between two nodes in the graph
 		 * @param QString source the name first node related to the edge
 		 * @param QString target the name second node related to the edge
 		 * @return bool true if the connection exists, false if it doesn't
@@ -182,7 +183,7 @@ class GVSkeletonGraph {
 		 */		
 		Agraph_t*  graph();
 		
-		protected:
+	protected:
 		
 		QFont _font;
 		GVC_t *_context;

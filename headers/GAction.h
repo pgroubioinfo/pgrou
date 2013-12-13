@@ -185,15 +185,16 @@ class GAction {
 	/**
           * @brief build the line corresponding to the first part of the action
 	  *
-      * @return QPainterPath the line representing the first part of the action
+	  * @return QPainterPath the line representing the first part of the action
           */
-    QPainterPath createHitPath();
-    /**
+    	QPainterPath createHitPath();
+
+    	/**
           * @brief build the arc corresponding to the second part of the action
-      *
-      * @return QPainterPath the arc representing the second part of the action
+      	  *
+      	  * @return QPainterPath the arc representing the second part of the action
           */
-    QPainterPath createBoundPath();
+    	QPainterPath createBoundPath();
 
 
         /**
@@ -205,6 +206,24 @@ class GAction {
           * @return QGraphicsPolygonItem* the graphical item representing the head of the arrow
           *
           */
-	QPolygonF makeArrowHead(QPainterPath path);		
+	QPolygonF makeArrowHead(QPainterPath path);
+
+
+	void initPointsInSimpleModele();
+
+	void initPointsInDetailledModel();
+
+	void updatePointsInSimpleModel();	
 	
+	void updatePointsInDetailledModel();
+
+	bool isAutoHit();
+
+	void initPointsNormalHit();
+
+	void updatePointsNormalHit();
+
+	void initPointsAutoHit();
+
+	void updatePointsAutoHit();
 };
