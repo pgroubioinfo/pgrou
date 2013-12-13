@@ -91,10 +91,12 @@ void GSort::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 
     // change orientation on right click
     if (event->button() == Qt::RightButton) {
+	/*
         isRightButtonPressed = true;
         changeOrientation();
         dynamic_cast<PHScene*>(scene())->updateActions();
         event->accept();
+	*/
     }else if (event->button() == Qt::LeftButton) {
 	setCursor(QCursor(Qt::ClosedHandCursor));
 	// record coordinates for drawing item when mouse is moved/released
@@ -152,9 +154,20 @@ void GSort::mouseDoubleClickEvent(QGraphicsSceneMouseEvent *event){
 void GSort::contextMenuEvent(QGraphicsSceneContextMenuEvent *event) {
 
     // if other mouse buttons are pressed, do nothing
-    if (QApplication::mouseButtons() != Qt::RightButton) {
-        event->ignore();
-        return;
+    if (QApplication::mouseButtons() == Qt::RightButton) {
+        QMenu menu;
+	QAction* switchOrientation = menu.addAction("switch horizontal/vertical");
+	QAction* switchDisplay = menu.addAction("switch to detailled/simple display");
+
+	QAction* selectedAction = menu.exec(QCursor::pos());
+
+	if(selectedAction != 0){
+		if(QString::compare(selectedAction->text(),switchOrientation->text())==0){
+			changeOrientation();
+		}else if(QString::compare(selectedAction->text(),switchDisplay->text())==0){
+			changeDisplayState();
+		}
+	}	
     }
 }
 

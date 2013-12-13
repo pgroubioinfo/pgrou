@@ -220,7 +220,6 @@ QPainterPath GAction::createHitPath(){
 }
 // Bound Part
 QPainterPath GAction::createBoundPath(){
-    // Ma version
     QPainterPath boundPath(*targetPoint);
 
     if((targetPoint->x()!=resultPoint->x())||(targetPoint->y()!=resultPoint->y())){

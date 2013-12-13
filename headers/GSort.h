@@ -171,12 +171,6 @@ class GSort : public QGraphicsRectItem {
         bool isVisible();
 
         /**
-          * @brief change the orientation of the GSort
-          *
-          */
-	void changeOrientation();
-
-        /**
           * @brief return the value of the vertical attribute
           *
 	  * @return bool value of the vertical attribute
@@ -339,6 +333,12 @@ class GSort : public QGraphicsRectItem {
           *
           */
 	void cancelShift();
+
+        /**
+          * @brief change the orientation of the GSort
+          *
+          */
+	void changeOrientation();
 
         /**
           * @brief change the orientation of the GSort rectangle

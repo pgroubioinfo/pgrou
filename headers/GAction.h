@@ -208,22 +208,57 @@ class GAction {
           */
 	QPolygonF makeArrowHead(QPainterPath path);
 
-
+	/**
+	  * @brief init contact points to display the GAction in simple model
+	  *
+	  */
 	void initPointsInSimpleModele();
 
+	/**
+	  * @brief init contact points to display the GAction in detailled model
+	  *
+	  */
 	void initPointsInDetailledModel();
 
+	/**
+	  * @brief update contact points to display the GAction in simple model
+	  *
+	  */
 	void updatePointsInSimpleModel();	
-	
+
+	/**
+	  * @brief update contact points to display the GAction in detailled model
+	  *
+	  */
 	void updatePointsInDetailledModel();
 
+	/**
+	  * @brief check if the source and the target process are the same
+	  *
+	  */
 	bool isAutoHit();
 
+	/**
+	  * @brief init contact points in the case of normal hit
+	  *
+	  */
 	void initPointsNormalHit();
 
+	/**
+	  * @brief update contact points in the case of normal hit
+	  *
+	  */
 	void updatePointsNormalHit();
 
+	/**
+	  * @brief init contact points in the case of an auto hit
+	  *
+	  */
 	void initPointsAutoHit();
 
+	/**
+	  * @brief init contact points in the case of an auto hit
+	  *
+	  */
 	void updatePointsAutoHit();
 };
