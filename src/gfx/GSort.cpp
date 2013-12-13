@@ -57,7 +57,7 @@ void GSort::initGeometricAttributes(QSize size){
 
 void GSort::initRectItem(){
 	_rect = new QGraphicsRectItem(QRectF(*leftTopCorner, *sizeRect),this);
-	_rect->setPen(QPen(QColor(0,0,0)));
+    _rect->setPen(QPen(QColor(255,0,0)));
 	_rect->setBrush(QBrush(QColor(255,255,255)));
 }
 
@@ -201,8 +201,10 @@ void GSort::setSimpleDisplay(bool isSimpleDisplay){
 void GSort::changeDisplayState(){
     if(simpleDisplay){
     	simpleDisplay = false;
+        _rect->setPen(QPen(QColor(0,0,0)));
     }else{
 	simpleDisplay = true;
+    _rect->setPen(QPen(QColor(255,0,0)));
     }
     dynamic_cast<PHScene*>(scene())->updateActions();
 }
