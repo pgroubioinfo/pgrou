@@ -165,9 +165,15 @@ void GAction::initPointsAutoHit(){
 	GProcessPtr source = getSource();
 	GProcessPtr target = getTarget();
 	GProcessPtr result = getResult();
+    int position=1;
+    if(source->getCenterPoint()->y() > result->getCenterPoint()->y()){
+        position=1;
+    }else{
+        position=-1;
+    }
+    sourcePoint = new QPointF(source->getCenterPoint()->x(), source->getCenterPoint()->y() + position*(GProcess::sizeDefault)/2.0);
 
-	sourcePoint = new QPointF(source->getCenterPoint()->x(), source->getCenterPoint()->y() +(GProcess::sizeDefault)/2.0);
-	targetPoint = new QPointF(GProcess::sizeDefault/2.0 + source->getCenterPoint()->x(), source->getCenterPoint()->y());
+    targetPoint = new QPointF(GProcess::sizeDefault/2.0 + source->getCenterPoint()->x(), source->getCenterPoint()->y());
 	resultPoint = new QPointF(GProcess::sizeDefault/2.0 + result->getCenterPoint()->x(),result->getCenterPoint()->y());
 
 }
@@ -176,9 +182,14 @@ void GAction::updatePointsAutoHit(){
 	GProcessPtr source = getSource();
 	GProcessPtr target = getTarget();
 	GProcessPtr result = getResult();
-
-        sourcePoint->setX(source->getCenterPoint()->x() + (GProcess::sizeDefault)/2.0);
-        sourcePoint->setY(source->getCenterPoint()->y() + (GProcess::sizeDefault)/2.0);
+    int position=1;
+    if(source->getCenterPoint()->y() > result->getCenterPoint()->y()){
+        position=1;
+    }else{
+        position=-1;
+    }
+        sourcePoint->setX(source->getCenterPoint()->x());
+        sourcePoint->setY(source->getCenterPoint()->y() + position*(GProcess::sizeDefault)/2.0);
         targetPoint->setX(GProcess::sizeDefault/2 + source->getCenterPoint()->x());
         targetPoint->setY(source->getCenterPoint()->y());
         resultPoint->setX(GProcess::sizeDefault/2 + result->getCenterPoint()->x());
