@@ -195,6 +195,49 @@ void GAction::updatePointsAutoHit(){
         resultPoint->setX(GProcess::sizeDefault/2 + result->getCenterPoint()->x());
         resultPoint->setY(result->getCenterPoint()->y());
 }
+bool GAction::isCurvedHit(GSortPtr sourceSort, GSortPtr targetSort, GProcessPtr source, GProcessPtr target){
+
+    QLineF* hitLineTemp;
+
+    QLineF* sourceSortBottomLine;
+    QLineF* sourceSortTopLine;
+    QPointF* intersectionPoint;
+    QPointF sourceSortBottomLeft = sourceSort->getRect()->rect().bottomLeft();
+    QPointF sourceSortBottomRight = sourceSort->getRect()->rect().bottomRight();
+    QPointF sourceSortTopLeft = sourceSort->getRect()->rect().topLeft();
+    QPointF sourceSortTopRight = sourceSort->getRect()->rect().topRight();
+
+    QLineF* targetSortBottomLine;
+    QLineF* targetSortTopLine;
+    QPointF targetSortBottomLeft = targetSort->getRect()->rect().bottomLeft();
+    QPointF targetSortBottomRight = targetSort->getRect()->rect().bottomRight();
+    QPointF targetSortTopLeft = targetSort->getRect()->rect().topLeft();
+    QPointF targetSortTopRight = targetSort->getRect()->rect().topRight();
+
+    hitLineTemp = new QLineF(*sourcePoint,*targetPoint);
+    sourceSortBottomLine = new QLineF(sourceSortBottomRight,sourceSortBottomLeft);
+    sourceSortTopLine= new QLineF(sourceSortTopLeft,sourceSortTopRight);
+    const QLineF & refToSourceSortBottomLine = *sourceSortBottomLine ;// built a reference to the QLinef* associate because of the function intersect() used after, which whants only reference and no pointer
+    const QLineF & refToSourceSortTopLine = *sourceSortTopLine ;// built a reference to the QLinef* associate because of the function intersect() used after, which whants only reference and no pointer
+
+    targetSortBottomLine = new QLineF(targetSortBottomRight,targetSortBottomLeft);
+    targetSortTopLine = new QLineF(targetSortTopLeft,targetSortTopRight);
+    const QLineF & refToTargetSortBottomLine = *targetSortBottomLine ;// built a reference to the QLinef* associate because of the function intersect() used after, which whants only reference and no pointer
+    const QLineF & refToTargetSortTopLine = *targetSortTopLine ;// built a reference to the QLinef* associate because of the function intersect() used after, which whants only reference and no pointer
+
+    if((hitLineTemp->intersect(refToSourceSortBottomLine, intersectionPoint)==1 &&
+       source->getCenterPoint()->y() + GProcess::sizeDefault < sourceSort->getRect()->rect().bottomLeft().y()) ||
+            (hitLineTemp->intersect(refToSourceSortTopLine, intersectionPoint)==1 &&
+             source->getCenterPoint()->y() - GProcess::sizeDefault > sourceSort->getRect()->rect().topLeft().y())||
+            (hitLineTemp->intersect(refToTargetSortBottomLine, intersectionPoint)==1 &&
+                   target->getCenterPoint()->y() + GProcess::sizeDefault < targetSort->getRect()->rect().bottomLeft().y()) ||
+                        (hitLineTemp->intersect(refToTargetSortTopLine, intersectionPoint)==1 &&
+                         target->getCenterPoint()->y() - GProcess::sizeDefault > targetSort->getRect()->rect().topLeft().y())){
+        return true;
+    }else{
+        return false;
+    }
+}
 
 // Create actions paths
 //Hit Part
@@ -217,61 +260,30 @@ QPainterPath GAction::createHitPath(){
     int wCoef=1;
     int hCoef=1;
 
-    QLineF* hitLineTemp;
-    QLineF* sourceSortBottomLine;
-    QLineF* sourceSortTopLine;
     QPointF* controlPointSource;
     QPointF* controlPointTarget;
-    QPointF* intersectionPoint;
-
-    QPointF sourceSortbottomLeft = sourceSort->getRect()->rect().bottomLeft();
-    QPointF sourceSortbottomRight = sourceSort->getRect()->rect().bottomRight();
-    QPointF sourceSortTopLeft = sourceSort->getRect()->rect().topLeft();
-    QPointF sourceSortTopRight = sourceSort->getRect()->rect().topRight();
-
-    hitLineTemp = new QLineF(*sourcePoint,*targetPoint);
-    sourceSortBottomLine = new QLineF(sourceSortbottomRight,sourceSortbottomLeft);
-    sourceSortTopLine= new QLineF(sourceSortTopLeft,sourceSortTopRight);
-    const QLineF & refToSourceSortBottomLine = *sourceSortBottomLine ;// built a reference to the QLinef* associate because of the function intersect() used after, which whants only reference and no pointer
-    const QLineF & refToSourceSortTopLine = *sourceSortTopLine ;// built a reference to the QLinef* associate because of the function intersect() used after, which whants only reference and no pointer
-
 
     QPainterPath hitPath(*sourcePoint);
 
-    if(source!=target){
-        if(hitLineTemp->intersect(refToSourceSortBottomLine, intersectionPoint)==1 &&
-           source->getCenterPoint()->y() + GProcess::sizeDefault < sourceSort->getRect()->rect().bottomLeft().y()){
-            if(sourcePoint->x() >= targetPoint->x() ){
-                   wCoef=-1;
-            }else{
+    if(!isAutoHit()){
+        if(isCurvedHit(sourceSort, targetSort, source, target)){
+            if(sourcePoint->x() >= targetPoint->x()){
                    wCoef=1;
+            }else{
+                   wCoef=-1;
              }
-            if(sourcePoint->y() > targetPoint->y() ){
+            if(sourcePoint->y() >= targetPoint->y()){
                 hCoef = 1;
             }else{
                 hCoef = -1;
             }
             controlPointSource = new QPointF(sourcePoint->x() + wCoef*sourceSort->getSizeRect()->height(),sourcePoint->y());
             controlPointTarget = new QPointF(targetPoint->x() + wCoef*targetSort->getSizeRect()->height(),targetPoint->y() + hCoef*targetSort->getSizeRect()->width());
+
             hitPath.cubicTo(*controlPointSource,*controlPointTarget, *targetPoint);
-           }else if(hitLineTemp->intersect(refToSourceSortTopLine, intersectionPoint)==1 &&
-                    source->getCenterPoint()->y() - GProcess::sizeDefault > sourceSort->getRect()->rect().topLeft().y()){
-               if(sourcePoint->x() >= targetPoint->x() ){
-                   wCoef = -1;
-               }else{
-                   wCoef = 1;
-               }
-               if(sourcePoint->y() > targetPoint->y() ){
-                   hCoef = 1;
-               }else{
-                   hCoef = -1;
-               }
-               controlPointSource = new QPointF(sourcePoint->x() + wCoef*sourceSort->getSizeRect()->height(),sourcePoint->y());
-               controlPointTarget = new QPointF(targetPoint->x() + wCoef*targetSort->getSizeRect()->height(),targetPoint->y() + hCoef*targetSort->getSizeRect()->width());
-               hitPath.cubicTo(*controlPointSource,*controlPointTarget, *targetPoint);
-           }else{
+        }else{
             hitPath.lineTo(*targetPoint);
-           }
+        }
     }else{
         if(targetPoint->y() > resultPoint->y()){
             rectCornerY = source->getCenterPoint()->y();
