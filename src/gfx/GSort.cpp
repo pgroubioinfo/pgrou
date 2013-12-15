@@ -196,6 +196,11 @@ bool GSort::getSimpleDisplay(){ return this->simpleDisplay; }
 
 void GSort::setSimpleDisplay(bool isSimpleDisplay){
 	this->simpleDisplay = isSimpleDisplay;
+    if(isSimpleDisplay){
+        _rect->setPen(QPen(QColor(255,0,0)));
+    }else{
+        _rect->setPen(QPen(QColor(0,0,0)));
+    }
 }
 
 void GSort::changeDisplayState(){
