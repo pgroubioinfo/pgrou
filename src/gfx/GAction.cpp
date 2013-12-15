@@ -8,14 +8,28 @@
 #include "GAction.h"
 #include <QtCore/qmath.h>
 
+
 GAction::GAction(ActionPtr a, PHScene* sc) : scene(sc), action(a) {
     display = new QGraphicsItemGroup();
 
     initContactPoints();
 
-    boundArc = new QGraphicsPathItem(createBoundPath(),display);
-    boundArc->setPen(QPen(Qt::DashDotLine));
     hitLine= new QGraphicsPathItem(createHitPath(),display);
+    if((targetPoint->x()==resultPoint->x())&&(targetPoint->y()==resultPoint->y())) {
+	QPen pen;
+        pen.setWidth(2);
+        pen.setBrush(Qt::red);
+	hitLine->setPen(pen);
+    }else{
+        QPen pen;
+        pen.setWidth(1);
+	pen.setBrush(Qt::black);
+	hitLine->setPen(pen);
+    }
+
+    boundArc = new QGraphicsPathItem(createBoundPath(),display);
+    boundArc->setPen(QPen(Qt::DashLine));
+    
 }
 
 void GAction::update() {
@@ -24,6 +38,17 @@ void GAction::update() {
 
     boundArc->setPath(createBoundPath());
     hitLine->setPath(createHitPath());
+    if((targetPoint->x()==resultPoint->x())&&(targetPoint->y()==resultPoint->y())) {
+	QPen pen;
+        pen.setWidth(2);
+        pen.setBrush(Qt::red);
+	hitLine->setPen(pen);
+    }else{
+        QPen pen;
+        pen.setWidth(1);
+        pen.setBrush(Qt::black);
+	hitLine->setPen(pen);
+    }
 
 }
 
@@ -36,66 +61,128 @@ GAction::~GAction() {
 }
 
 void GAction::initContactPoints(){
-    GProcessPtr source = getSource();
-    GProcessPtr target = getTarget();
-    GProcessPtr result = getResult();
+    GSortPtr sourceSort = scene->getGSort(action->getSource()->getSort()->getName());
+    GSortPtr targetSort = scene->getGSort(action->getTarget()->getSort()->getName());
 
-    if(source!=target){
-        QVector2D* hitVector = new QVector2D(*(target->getCenterPoint()) - *(source->getCenterPoint()));
-        hitVector->normalize();
-
-        QSizeF* sizeSource = source->getSizeEllipse();
-        QSizeF* sizeTarget = source->getSizeEllipse();
-
-
-        sourcePoint = new QPointF(sizeSource->width()*hitVector->x()/2.0 + source->getCenterPoint()->x(),sizeSource->height()*hitVector->y()/2 + source->getCenterPoint()->y());
-
-        targetPoint = new QPointF(-sizeTarget->width()*hitVector->x()/2.0 + target->getCenterPoint()->x(),-sizeTarget->height()*hitVector->y()/2 + target->getCenterPoint()->y());
-
-        resultPoint = new QPointF(-sizeTarget->width()*hitVector->x()/2.0 + result->getCenterPoint()->x(),sizeTarget->height()*hitVector->y()/2 + result->getCenterPoint()->y());
-    }else{
-        targetPoint = new QPointF(GProcess::sizeDefault/2 + source->getCenterPoint()->x(), source->getCenterPoint()->y());
-        resultPoint = new QPointF(GProcess::sizeDefault/2 + result->getCenterPoint()->x(),result->getCenterPoint()->y());
-
-        if(targetPoint->y() > resultPoint->y()){
-            sourcePoint = new QPointF(source->getCenterPoint()->x() + 0*(GProcess::sizeDefault)/2.0, source->getCenterPoint()->y() + qSin(qAcos(0))*(GProcess::sizeDefault)/2.0);
-        }else{
-            sourcePoint = new QPointF(source->getCenterPoint()->x() + 0*(GProcess::sizeDefault)/2.0, source->getCenterPoint()->y() - qSin(qAcos(0))*(GProcess::sizeDefault)/2.0);
-        }
-     }
+    if(sourceSort->getSimpleDisplay()!=1||targetSort->getSimpleDisplay()!=1){
+	initPointsInDetailledModel();
+    }else {
+	initPointsInSimpleModele();
+    }
 }
 
 void GAction::updateContactPoints(){
-    GProcessPtr source = getSource();
-    GProcessPtr target = getTarget();
-    GProcessPtr result = getResult();
 
-    if(source!=target){
+    GSortPtr sourceSort = scene->getGSort(action->getSource()->getSort()->getName());
+    GSortPtr targetSort = scene->getGSort(action->getTarget()->getSort()->getName());
+
+    if(sourceSort->getSimpleDisplay()!=1||targetSort->getSimpleDisplay()!=1){
+	updatePointsInDetailledModel();
+    }else{
+	updatePointsInSimpleModel();
+    }
+}
+
+void GAction::initPointsInSimpleModele(){
+    	GSortPtr sourceSort = scene->getGSort(action->getSource()->getSort()->getName());
+    	GSortPtr targetSort = scene->getGSort(action->getTarget()->getSort()->getName());
+
+	sourcePoint = new QPointF(sourceSort->getCenterPoint());	
+	targetPoint = new QPointF(targetSort->getCenterPoint());
+	resultPoint = new QPointF(targetSort->getCenterPoint());
+
+}
+
+void GAction::initPointsInDetailledModel(){
+	isAutoHit() ? initPointsAutoHit() : initPointsNormalHit();
+}
+
+void GAction::updatePointsInSimpleModel(){
+
+    	GSortPtr sourceSort = scene->getGSort(action->getSource()->getSort()->getName());
+    	GSortPtr targetSort = scene->getGSort(action->getTarget()->getSort()->getName());
+
+	sourcePoint->setX(sourceSort->getCenterPoint().x());
+	sourcePoint->setY(sourceSort->getCenterPoint().y());	
+	targetPoint->setX(targetSort->getCenterPoint().x());
+	targetPoint->setY(targetSort->getCenterPoint().y());
+	resultPoint->setX(targetSort->getCenterPoint().x());
+	resultPoint->setY(targetSort->getCenterPoint().y());
+
+}
+
+void GAction::updatePointsInDetailledModel(){
+	isAutoHit() ? updatePointsAutoHit() : updatePointsNormalHit();
+}
+
+bool GAction::isAutoHit(){
+	GProcessPtr source = getSource();
+	GProcessPtr target = getTarget();
+
+	return source==target;
+}
+
+void GAction::initPointsNormalHit(){
+	GProcessPtr source = getSource();
+	GProcessPtr target = getTarget();
+	GProcessPtr result = getResult();
+
+	QVector2D* hitVector = new QVector2D(*(target->getCenterPoint()) - *(source->getCenterPoint()));
+	hitVector->normalize();
+
+	QSizeF* sizeSource = source->getSizeEllipse();
+	QSizeF* sizeTarget = source->getSizeEllipse();
+
+
+	sourcePoint = new QPointF(sizeSource->width()*hitVector->x()/2.0 + source->getCenterPoint()->x(),sizeSource->height()*hitVector->y()/2 + source->getCenterPoint()->y());
+
+	targetPoint = new QPointF(-sizeTarget->width()*hitVector->x()/2.0 + target->getCenterPoint()->x(),-sizeTarget->height()*hitVector->y()/2 + target->getCenterPoint()->y());
+
+	resultPoint = new QPointF(-sizeTarget->width()*hitVector->x()/2.0 + result->getCenterPoint()->x(),sizeTarget->height()*hitVector->y()/2 + result->getCenterPoint()->y());
+
+}
+
+void GAction::updatePointsNormalHit(){
+	GProcessPtr source = getSource();
+	GProcessPtr target = getTarget();
+	GProcessPtr result = getResult();
+
         QVector2D* hitVector = new QVector2D(*(target->getCenterPoint()) - *(source->getCenterPoint()));
         hitVector->normalize();
 
         QSizeF* sizeSource = source->getSizeEllipse();
-        QSizeF* sizeTarget = source->getSizeEllipse();
+        QSizeF* sizeTarget = target->getSizeEllipse();
 
         sourcePoint->setX(sizeSource->width()*hitVector->x()/2.0 + source->getCenterPoint()->x());
         sourcePoint->setY(sizeSource->height()*hitVector->y()/2.0 + source->getCenterPoint()->y());
         targetPoint->setX(-sizeTarget->width()*hitVector->x()/2.0 + target->getCenterPoint()->x());
         targetPoint->setY(-sizeTarget->height()*hitVector->y()/2.0 + target->getCenterPoint()->y());
         resultPoint->setX(-sizeTarget->width()*hitVector->x()/2.0 + result->getCenterPoint()->x());
-        resultPoint->setY(sizeTarget->height()*hitVector->y()/2.0 + result->getCenterPoint()->y());
-    }else{
-        if(targetPoint->y() > resultPoint->y()){
-            sourcePoint->setX(source->getCenterPoint()->x() + 0*(GProcess::sizeDefault)/2.0);
-            sourcePoint->setY(source->getCenterPoint()->y() + qSin(qAcos(0))*(GProcess::sizeDefault)/2.0);
-        }else{
-            sourcePoint->setX(source->getCenterPoint()->x() + 0*(GProcess::sizeDefault)/2.0);
-            sourcePoint->setY(source->getCenterPoint()->y() - qSin(qAcos(0))*(GProcess::sizeDefault)/2.0);
-        }
+        resultPoint->setY(-sizeTarget->height()*hitVector->y()/2.0 + result->getCenterPoint()->y());
+}
+
+void GAction::initPointsAutoHit(){
+	GProcessPtr source = getSource();
+	GProcessPtr target = getTarget();
+	GProcessPtr result = getResult();
+
+	sourcePoint = new QPointF(source->getCenterPoint()->x(), source->getCenterPoint()->y() +(GProcess::sizeDefault)/2.0);
+	targetPoint = new QPointF(GProcess::sizeDefault/2.0 + source->getCenterPoint()->x(), source->getCenterPoint()->y());
+	resultPoint = new QPointF(GProcess::sizeDefault/2.0 + result->getCenterPoint()->x(),result->getCenterPoint()->y());
+
+}
+
+void GAction::updatePointsAutoHit(){
+	GProcessPtr source = getSource();
+	GProcessPtr target = getTarget();
+	GProcessPtr result = getResult();
+
+        sourcePoint->setX(source->getCenterPoint()->x() + (GProcess::sizeDefault)/2.0);
+        sourcePoint->setY(source->getCenterPoint()->y() + (GProcess::sizeDefault)/2.0);
         targetPoint->setX(GProcess::sizeDefault/2 + source->getCenterPoint()->x());
         targetPoint->setY(source->getCenterPoint()->y());
         resultPoint->setX(GProcess::sizeDefault/2 + result->getCenterPoint()->x());
         resultPoint->setY(result->getCenterPoint()->y());
-     }
 }
 
 // Create actions paths
@@ -198,8 +285,10 @@ QPainterPath GAction::createHitPath(){
         sweepAngle = invertSweep*270;
         hitPath.arcTo(QRectF(rectCornerX,rectCornerY,widthRect,heightRect),startAngle,sweepAngle);
     }
+    	
+    //if((targetPoint->x()!=resultPoint->x())||(targetPoint->y()!=resultPoint->y())) 
+	hitPath.addPolygon(makeArrowHead(hitPath));
 
-    hitPath.addPolygon(makeArrowHead(hitPath));
 
     return hitPath;
 }
@@ -207,40 +296,68 @@ QPainterPath GAction::createHitPath(){
 QPainterPath GAction::createBoundPath(){
     QPainterPath boundPath(*targetPoint);
 
-    qreal rectCornerX;
-    qreal rectCornerY;
-    qreal widthRect;
-    qreal heightRect;
-    qreal sweepAngle;
-    qreal startAngle;
-    int invertSweep;
+    if((targetPoint->x()!=resultPoint->x())||(targetPoint->y()!=resultPoint->y())){
+	qreal rectCornerX;
+	qreal rectCornerY;
+	qreal widthRect;
+	qreal heightRect;
+	qreal sweepAngle;
+	qreal startAngle;
+	int invertSweep;
 
-    if(targetPoint->y()<resultPoint->y()){
-    rectCornerY = targetPoint->y();
-    heightRect = resultPoint->y()-targetPoint->y();
-    startAngle = 90;
-    invertSweep = 1;
-    } else{
-    rectCornerY = resultPoint->y();
-    heightRect = targetPoint->y()-resultPoint->y();
-    startAngle = -90;
-    invertSweep = -1;
+	if(dynamic_cast<GSort*>(getTarget()->getDisplayItem()->parentItem())->isVertical()){
+
+		if(targetPoint->y()<resultPoint->y()){
+			rectCornerY = targetPoint->y();
+			heightRect = resultPoint->y()-targetPoint->y();
+			startAngle = 90;
+			invertSweep = 1;
+		} else{
+			rectCornerY = resultPoint->y();
+			heightRect = targetPoint->y()-resultPoint->y();
+			startAngle = -90;
+			invertSweep = -1;
+		}
+
+		if(resultPoint->x() < getResult()->getCenterPoint()->x()){
+			sweepAngle = 180*invertSweep;
+		}else{
+			sweepAngle = -180*invertSweep;
+		}
+
+		rectCornerX = resultPoint->x()- (GProcess::sizeDefault)/2.0;
+		widthRect = GProcess::sizeDefault;
+	}
+	else{
+		if(targetPoint->x()<resultPoint->x()){ //target point à gauche de resultpoint
+		    rectCornerX = targetPoint->x();
+		    widthRect = resultPoint->x() - targetPoint->x();
+		    startAngle =180;
+		    invertSweep = -1;
+		}
+		else{ //resultpoint à gauche de targetpoint
+		    rectCornerX = resultPoint->x();
+		    widthRect = targetPoint->x() - resultPoint->x();
+		    startAngle =0;
+		    invertSweep = 1;
+		}
+
+		if(resultPoint->y()<getResult()->getCenterPoint()->y()){ //resultpoint au-dessus du centre du process
+		    sweepAngle = 180*invertSweep;
+		    //startAngle = 0;
+		}else{ //resultpoint en-dessus du centre du process
+		    sweepAngle = -180*invertSweep;
+		    //startAngle = 180;
+		}
+		rectCornerY = resultPoint->y() - (GProcess::sizeDefault)/2.0;
+		heightRect = GProcess::sizeDefault;
+	}
+
+
+	boundPath.arcTo(QRectF(rectCornerX,rectCornerY,widthRect,heightRect),startAngle,sweepAngle);
+
+	boundPath.addPolygon(makeArrowHead(boundPath));
     }
-
-    if(resultPoint->x() < getResult()->getCenterPoint()->x()){
-    sweepAngle = 180*invertSweep;
-    }else{
-    sweepAngle = -180*invertSweep;
-    }
-
-
-    rectCornerX = resultPoint->x()- (GProcess::sizeDefault)/2.0;
-    widthRect = GProcess::sizeDefault;
-
-
-    boundPath.arcTo(QRectF(rectCornerX,rectCornerY,widthRect,heightRect),startAngle,sweepAngle);
-
-    boundPath.addPolygon(makeArrowHead(boundPath));
 
     return boundPath;
 }

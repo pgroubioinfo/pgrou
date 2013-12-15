@@ -112,6 +112,8 @@ protected:
     QAction *actionRedo;
 
     // actions for the menu View
+    QAction *actionSimplifiedModel;
+    QAction *actionDetailledModel;
     QAction *actionAdjust;
     QAction *actionZoomIn;
     QAction *actionZoomOut;
@@ -222,6 +224,18 @@ public slots:
       *
       */
     void zoomOut();
+
+    /**
+      * @brief set all sorts of the scene into simplified model
+      *
+      */
+    void switchToSimplifiedModel();
+
+    /**
+      * @brief set all sorts of the scene into detailled model
+      *
+      */
+    void switchToDetailledModel();
 
     /**
       * @brief let the user set the background color

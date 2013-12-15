@@ -97,7 +97,8 @@ MainWindow::MainWindow()
     actionAdjust = menuView->addAction("Adjust View");
     actionZoomIn = menuView->addAction("Zoom In");
     actionZoomOut = menuView->addAction("Zoom Out");
-
+    actionSimplifiedModel = menuView->addAction("Switch to simplified model");
+    actionDetailledModel = menuView->addAction("Switch to detailled model");
     actionShowInit = menuView->addAction("Show initial state");
     actionHighlight = menuView->addAction("Highlight possible actions");
     actionHide = menuView->addAction("Hide actions");
@@ -110,7 +111,8 @@ MainWindow::MainWindow()
     QObject::connect(actionAdjust,    SIGNAL(triggered()), this, SLOT(adjust()));
     QObject::connect(actionZoomIn, SIGNAL(triggered()), this, SLOT(zoomIn()));
     QObject::connect(actionZoomOut, SIGNAL(triggered()), this, SLOT(zoomOut()));
-
+    QObject::connect(actionSimplifiedModel, SIGNAL(triggered()), this, SLOT(switchToSimplifiedModel()));
+    QObject::connect(actionDetailledModel, SIGNAL(triggered()), this, SLOT(switchToDetailledModel()));
     // shortcuts for the menu View
     actionAdjust->setShortcut(  QKeySequence(Qt::CTRL + Qt::Key_L));
     actionZoomIn->setShortcut(  QKeySequence(Qt::CTRL + Qt::Key_Plus));
@@ -200,6 +202,10 @@ MainWindow::MainWindow()
         this->actionAdjust->setEnabled(false);
         this->actionZoomOut->setEnabled(false);
         this->actionZoomIn->setEnabled(false);
+	this->actionSimplifiedModel->setEnabled(false);
+	this->actionDetailledModel->setEnabled(false);
+	this->actionSimplifiedModel->setEnabled(false);
+	this->actionDetailledModel->setEnabled(false);
         this->actionBackgroundColor->setEnabled(false);
         this->actionSortColor->setEnabled(false);
         this->actionNaturalStyle->setEnabled(false);
@@ -242,6 +248,10 @@ std::vector<QString> MainWindow::getAllPaths() {
 
 // open a new tab
 MyArea* MainWindow::openTab() {
+    // Initiates timerendering calculation
+    std::ofstream logFile("log_opening_time.txt",std::ios::app);
+    timespec depart, arrivee;
+    clock_gettime(CLOCK_REALTIME,&depart);
 
         // OpenFile dialog
         QFileDialog* filedialog = new QFileDialog(this);
@@ -289,9 +299,9 @@ MyArea* MainWindow::openTab() {
                 area->mainWindow = this;
 
                 try {
-                    std::ofstream logFile("log_rendering_time.txt",std::ios::app);
-		    time_t depart, arrivee;
-		    time(&depart);
+            std::ofstream logFile("log_rendering_time.txt",std::ios::app);
+            timespec depart, arrivee;
+            clock_gettime(CLOCK_REALTIME,&depart);
                     // render graph
                     PHPtr myPHPtr = PHIO::parseFile(path);
                     area->myArea->setPHPtr(myPHPtr);
@@ -322,11 +332,12 @@ MyArea* MainWindow::openTab() {
 
                     mb->close();
                     this->setWindowState(Qt::WindowMaximized);
-                    time(&arrivee);
-		    double timeRendering;
-                    timeRendering = difftime(arrivee,depart);
-            logFile << file.toStdString()+"-----"+"-----" << timeRendering;
-                    logFile << " s\n";
+            // putting time needed to open ph file into a "log_opening_time.txt" file
+            clock_gettime(CLOCK_REALTIME,&arrivee);
+            double timeOpening;
+            timeOpening = (arrivee.tv_nsec - depart.tv_nsec)/1000000.0+(arrivee.tv_sec - depart.tv_sec)*1000.0;
+            logFile << file.toStdString()+"-----"+"-----" << timeOpening;
+                    logFile << " ms\n";
                     logFile.close();
                     return area->myArea;
 
@@ -899,6 +910,26 @@ void MainWindow::zoomOut()
     view->myArea->zoomOut();
 }
 
+void MainWindow::switchToSimplifiedModel()
+{
+     if(!this->getCentraleArea()->subWindowList().isEmpty()){
+        // get the current subwindow
+        QMdiSubWindow *subWindow = this->getCentraleArea()->currentSubWindow();
+
+        ((Area*) subWindow->widget())->myArea->getPHPtr()->getGraphicsScene()->setSimpleDisplay(true);
+     }
+}
+
+void MainWindow::switchToDetailledModel()
+{
+     if(!this->getCentraleArea()->subWindowList().isEmpty()){
+        // get the current subwindow
+        QMdiSubWindow *subWindow = this->getCentraleArea()->currentSubWindow();
+
+        ((Area*) subWindow->widget())->myArea->getPHPtr()->getGraphicsScene()->setSimpleDisplay(false);
+     }
+}
+
 void MainWindow::searchSort()
 {
     // get the widget in the centrale area
@@ -1280,6 +1311,8 @@ void MainWindow::disableMenu(QMdiSubWindow* subwindow){
         this->actionAdjust->setEnabled(false);
         this->actionZoomIn->setEnabled(false);
         this->actionZoomOut->setEnabled(false);
+	this->actionSimplifiedModel->setEnabled(false);
+	this->actionDetailledModel->setEnabled(false);
         this->actionBackgroundColor->setEnabled(false);
         this->actionSortColor->setEnabled(false);
         this->actionNaturalStyle->setEnabled(false);
@@ -1309,6 +1342,8 @@ void MainWindow::enableMenu(){
         this->actionAdjust->setEnabled(true);
         this->actionZoomIn->setEnabled(true);
         this->actionZoomOut->setEnabled(true);
+	this->actionSimplifiedModel->setEnabled(true);
+	this->actionDetailledModel->setEnabled(true);
         this->actionBackgroundColor->setEnabled(true);
         this->actionSortColor->setEnabled(true);
         this->actionNaturalStyle->setEnabled(true);

@@ -11,7 +11,6 @@
 
 #include <iostream>
 #include "IO.h"
-#include "GVGraph.h"
 #include "PHIO.h"
 
 int main(int argc, char *argv[]) {

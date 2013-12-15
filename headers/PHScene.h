@@ -44,15 +44,10 @@ class PHScene: public QGraphicsScene {
 	public:
         /**
           * @brief constructor
+          * @param PH* the PH graph to use
           *
           */
         PHScene(PH* _ph);
-
-        /**
-          * @brief forces the re-calculation of the layout of the scene
-          *
-          */
-        void doRender(void);
 
         /**
           * @brief create a GVSkeletonGraph from the PH object, then draw the PHSCene from it
@@ -86,17 +81,6 @@ class PHScene: public QGraphicsScene {
           */
         std::vector<GActionPtr> getActions();
 
-        /**
-          * @brief hides all action arrows
-          *
-          */
-        void hideActions();
-
-        /**
-          * @brief shows all the action arrows which are NOT related to hidden sorts
-          *
-          */
-        void showActions();
 
         /**
           * @brief update the position of actions
@@ -104,11 +88,12 @@ class PHScene: public QGraphicsScene {
           */
         void updateActions();
 
+
         /**
-          * @brief recalculates the graph, functions of customized GSort items positions
-          *
+          * @brief switch the display mode between detailled/simplified
+          * @param bool activate or not the simplified model
           */
-        void updateForImport();
+        void setSimpleDisplay(bool onOff);
 
 	protected:
 
@@ -118,11 +103,6 @@ class PHScene: public QGraphicsScene {
           */
 		PH* ph;
 
-        /**
-          * @brief clears the scene and adds the elements composing the representation of the process hitting
-          *
-          */
-		void draw(void);
 
         /**
           * @brief map of the Sorts drawn in the scene: the keys are the names of the Sorts

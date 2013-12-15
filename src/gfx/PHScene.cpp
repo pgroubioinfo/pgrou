@@ -8,18 +8,13 @@
 #include "PH.h"
 #include "PHScene.h"
 #include <map>
+#include <QDebug>
 
 PHScene::PHScene(PH* _ph) : ph(_ph) {
     // set background color
     setBackgroundBrush(QBrush(QColor(255, 255, 255)));
 }
 
-
-// render the scene from the related PH graph
-#include <QDebug>
-void PHScene::doRender(void) {
-
-}
 
 void PHScene::drawFromSkeleton(void){
 	GVSkeletonGraphPtr gSkeleton = ph->createSkeletonGraph();
@@ -37,27 +32,15 @@ void PHScene::drawFromSkeleton(void){
 	}
 	// Clear the scene and add sorts item (containing also processes) to the scene
 	clear();
-    	for (auto &s : sorts){
-        	addItem(s.second.get());
+    for (auto &s : sorts){
+        addItem(s.second.get());
 	}
 
-        createActions();
+    createActions();
 
 	for (auto &a : actions){
 		addItem(a->getDisplayItem());
 	}
-}
-
-// draw all the elements of the scene
-void PHScene::draw(void) {
-
-    clear();
-    for (auto &s : sorts)
-        addItem(s.second.get());
-    for (GActionPtr &a : actions){
-
-        addItem(a->getDisplayItem());
-    }
 }
 
 
@@ -82,34 +65,23 @@ std::vector<GActionPtr> PHScene::getActions(){
     return actions;
 }
 
-
-void PHScene::hideActions() {
-    for (GActionPtr &action : actions) {
-        action->getDisplayItem()->hide();
-    }
-}
-
 void PHScene::updateActions(){
     for(auto &a: actions){
         a->update();
     }
 }
 
-
-void PHScene::showActions() {
-
-}
-
-void PHScene::updateForImport() {
-
-}
-
-
 void PHScene::createActions() {
     // create GAction items
     for (ActionPtr &a : ph->getActions()) {
     	actions.push_back(make_shared<GAction>(a,this));
     }
+}
 
+void PHScene::setSimpleDisplay(bool onOff){
+     for(auto &s : sorts){
+          s.second->setSimpleDisplay(onOff);
+     }
+     updateActions();
 }
 
