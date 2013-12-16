@@ -195,7 +195,9 @@ bool GSort::getSimpleDisplay(){ return this->simpleDisplay; }
 
 
 void GSort::setSimpleDisplay(bool isSimpleDisplay){
-	this->simpleDisplay = isSimpleDisplay;
+    if(this->simpleDisplay != isSimpleDisplay){
+        this->changeDisplayState();
+    }
 }
 
 void GSort::changeDisplayState(){
@@ -204,7 +206,7 @@ void GSort::changeDisplayState(){
         _rect->setBrush(QBrush(QColor(255,255,255)));
     }else{
 	simpleDisplay = true;
-    _rect->setBrush(QBrush(QColor(255,225,225)));
+    _rect->setBrush(QBrush(QColor(255,190,190)));
     }
     dynamic_cast<PHScene*>(scene())->updateActions();
 }
