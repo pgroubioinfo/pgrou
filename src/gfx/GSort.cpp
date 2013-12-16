@@ -46,7 +46,7 @@ GSort::~GSort() {
 void GSort::initInnerAttributes(){
 	color = makeColor();
 	vertical = true;
-	simpleDisplay = true;
+    simpleDisplay = false;
 	isRightButtonPressed = false;
 }
 
