@@ -270,7 +270,7 @@ QPainterPath GAction::createHitPath(){
     QPainterPath hitPath(*sourcePoint);
 
     if(!isAutoHit()){
-        if(isCurvedHit(sourceSort, targetSort, source, target)){
+        if(isCurvedHit(sourceSort, targetSort, source, target) && (sourceSort->getSimpleDisplay()!=1 || targetSort->getSimpleDisplay()!=1)){
             if(sourcePoint->x() >= targetPoint->x()){
                    wCoef= -1;
             }else{
@@ -281,8 +281,8 @@ QPainterPath GAction::createHitPath(){
             }else{
                 hCoef = -1;
             }
-            controlPointSource = new QPointF(sourcePoint->x() + wCoef*hitLineTemp->length()/5.0/**sourceSort->getSizeRect()->height()*/,sourcePoint->y()-hCoef*hitLineTemp->length()/5.0);
-            controlPointTarget = new QPointF(targetPoint->x() + wCoef*hitLineTemp->length()/5.0/**targetSort->getSizeRect()->height()*/,targetPoint->y() + hCoef*hitLineTemp->length()/5.0/**targetSort->getSizeRect()->width()*/);
+            controlPointSource = new QPointF(sourcePoint->x() + wCoef*hitLineTemp->length()/2.0,sourcePoint->y()-hCoef*hitLineTemp->length()/3.0);
+            controlPointTarget = new QPointF(targetPoint->x() + wCoef*hitLineTemp->length()/2.0,targetPoint->y() + hCoef*hitLineTemp->length()/3.0);
 
             hitPath.cubicTo(*controlPointSource,*controlPointTarget, *targetPoint);
         }else{
