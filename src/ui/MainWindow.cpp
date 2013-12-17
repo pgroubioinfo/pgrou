@@ -248,10 +248,6 @@ std::vector<QString> MainWindow::getAllPaths() {
 
 // open a new tab
 MyArea* MainWindow::openTab() {
-    // Initiates timerendering calculation
-    std::ofstream logFile("log_opening_time.txt",std::ios::app);
-    timespec depart, arrivee;
-    clock_gettime(CLOCK_REALTIME,&depart);
 
         // OpenFile dialog
         QFileDialog* filedialog = new QFileDialog(this);
@@ -264,7 +260,10 @@ MyArea* MainWindow::openTab() {
 
         // TODO refactor using early returns
         if(file!=NULL) {
-
+     // Initiates timeopening calculation
+     std::ofstream logFile("log_opening_time.txt",std::ios::app);
+     timespec depart, arrivee;
+     clock_gettime(CLOCK_REALTIME,&depart);
             QFileInfo pathInfo(file);
             std::vector<QString> allPath = this->getAllPaths();
             int size = allPath.size();
@@ -299,9 +298,6 @@ MyArea* MainWindow::openTab() {
                 area->mainWindow = this;
 
                 try {
-            std::ofstream logFile("log_rendering_time.txt",std::ios::app);
-            timespec depart, arrivee;
-            clock_gettime(CLOCK_REALTIME,&depart);
                     // render graph
                     PHPtr myPHPtr = PHIO::parseFile(path);
                     area->myArea->setPHPtr(myPHPtr);
