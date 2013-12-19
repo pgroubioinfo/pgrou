@@ -138,7 +138,7 @@ void GAction::initPointsNormalHit(){
 
 	targetPoint = new QPointF(-sizeTarget->width()*hitVector->x()/2.0 + target->getCenterPoint()->x(),-sizeTarget->height()*hitVector->y()/2 + target->getCenterPoint()->y());
 
-	resultPoint = new QPointF(-sizeTarget->width()*hitVector->x()/2.0 + result->getCenterPoint()->x(),sizeTarget->height()*hitVector->y()/2 + result->getCenterPoint()->y());
+    resultPoint = new QPointF(-sizeTarget->width()*hitVector->x()/2.0 + result->getCenterPoint()->x(),-sizeTarget->height()*hitVector->y()/2 + result->getCenterPoint()->y());
 
 }
 
