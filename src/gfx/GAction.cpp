@@ -90,6 +90,7 @@ void GAction::initPointsInSimpleModele(){
 	sourcePoint = new QPointF(sourceSort->getCenterPoint());	
 	targetPoint = new QPointF(targetSort->getCenterPoint());
 	resultPoint = new QPointF(targetSort->getCenterPoint());
+
 }
 
 void GAction::initPointsInDetailledModel(){
@@ -164,9 +165,15 @@ void GAction::initPointsAutoHit(){
 	GProcessPtr source = getSource();
 	GProcessPtr target = getTarget();
 	GProcessPtr result = getResult();
+    int position=1;
+    if(source->getCenterPoint()->y() > result->getCenterPoint()->y()){
+        position=1;
+    }else{
+        position=-1;
+    }
+    sourcePoint = new QPointF(source->getCenterPoint()->x(), source->getCenterPoint()->y() + position*(GProcess::sizeDefault)/2.0);
 
-	sourcePoint = new QPointF(source->getCenterPoint()->x(), source->getCenterPoint()->y() +(GProcess::sizeDefault)/2.0);
-	targetPoint = new QPointF(GProcess::sizeDefault/2.0 + source->getCenterPoint()->x(), source->getCenterPoint()->y());
+    targetPoint = new QPointF(GProcess::sizeDefault/2.0 + source->getCenterPoint()->x(), source->getCenterPoint()->y());
 	resultPoint = new QPointF(GProcess::sizeDefault/2.0 + result->getCenterPoint()->x(),result->getCenterPoint()->y());
 
 }
@@ -175,13 +182,62 @@ void GAction::updatePointsAutoHit(){
 	GProcessPtr source = getSource();
 	GProcessPtr target = getTarget();
 	GProcessPtr result = getResult();
-
-        sourcePoint->setX(source->getCenterPoint()->x() + 0*(GProcess::sizeDefault)/2.0);
-        sourcePoint->setY(source->getCenterPoint()->y() + qSin(qAcos(0))*(GProcess::sizeDefault)/2.0);
+    int position=1;
+    if(source->getCenterPoint()->y() > result->getCenterPoint()->y()){
+        position=1;
+    }else{
+        position=-1;
+    }
+        sourcePoint->setX(source->getCenterPoint()->x());
+        sourcePoint->setY(source->getCenterPoint()->y() + position*(GProcess::sizeDefault)/2.0);
         targetPoint->setX(GProcess::sizeDefault/2 + source->getCenterPoint()->x());
         targetPoint->setY(source->getCenterPoint()->y());
         resultPoint->setX(GProcess::sizeDefault/2 + result->getCenterPoint()->x());
         resultPoint->setY(result->getCenterPoint()->y());
+}
+bool GAction::isCurvedHit(GSortPtr sourceSort, GSortPtr targetSort, GProcessPtr source, GProcessPtr target){
+
+    QLineF* hitLineTemp;
+
+    QLineF* sourceSortBottomLine;
+    QLineF* sourceSortTopLine;
+    QPointF* intersectionPoint;
+    QPointF sourceSortBottomLeft = sourceSort->getRect()->rect().bottomLeft();
+    QPointF sourceSortBottomRight = sourceSort->getRect()->rect().bottomRight();
+    QPointF sourceSortTopLeft = sourceSort->getRect()->rect().topLeft();
+    QPointF sourceSortTopRight = sourceSort->getRect()->rect().topRight();
+
+    QLineF* targetSortBottomLine;
+    QLineF* targetSortTopLine;
+    QPointF targetSortBottomLeft = targetSort->getRect()->rect().bottomLeft();
+    QPointF targetSortBottomRight = targetSort->getRect()->rect().bottomRight();
+    QPointF targetSortTopLeft = targetSort->getRect()->rect().topLeft();
+    QPointF targetSortTopRight = targetSort->getRect()->rect().topRight();
+
+    hitLineTemp = new QLineF(*sourcePoint,*targetPoint);
+    sourceSortBottomLine = new QLineF(sourceSortBottomLeft,sourceSortBottomRight);
+    sourceSortTopLine= new QLineF(sourceSortTopLeft,sourceSortTopRight);
+    const QLineF & refToSourceSortBottomLine = *sourceSortBottomLine ;// built a reference to the QLinef* associate because of the function intersect() used after, which whants only reference and no pointer
+    const QLineF & refToSourceSortTopLine = *sourceSortTopLine ;// built a reference to the QLinef* associate because of the function intersect() used after, which whants only reference and no pointer
+
+    targetSortBottomLine = new QLineF(targetSortBottomLeft,targetSortBottomRight);
+    targetSortTopLine = new QLineF(targetSortTopLeft,targetSortTopRight);
+    const QLineF & refToTargetSortBottomLine = *targetSortBottomLine ;// built a reference to the QLinef* associate because of the function intersect() used after, which whants only reference and no pointer
+    const QLineF & refToTargetSortTopLine = *targetSortTopLine ;// built a reference to the QLinef* associate because of the function intersect() used after, which whants only reference and no pointer
+
+    if((hitLineTemp->intersect(refToSourceSortBottomLine, intersectionPoint)==1 &&
+       source->getCenterPoint()->y() + GProcess::sizeDefault < sourceSort->getRect()->rect().bottomLeft().y()) ||
+            (hitLineTemp->intersect(refToSourceSortTopLine, intersectionPoint)==1 &&
+             source->getCenterPoint()->y() - GProcess::sizeDefault > sourceSort->getRect()->rect().topLeft().y())){
+        return true;
+    }else if((hitLineTemp->intersect(refToTargetSortBottomLine, intersectionPoint)==1 &&
+              target->getCenterPoint()->y() + GProcess::sizeDefault < targetSort->getRect()->rect().bottomLeft().y()) ||
+                 (hitLineTemp->intersect(refToTargetSortTopLine, intersectionPoint)==1 &&
+                  target->getCenterPoint()->y() - GProcess::sizeDefault > targetSort->getRect()->rect().topLeft().y())){
+        return true;
+    }else{
+        return false;
+    }
 }
 
 // Create actions paths
@@ -190,6 +246,9 @@ QPainterPath GAction::createHitPath(){
     GProcessPtr source = getSource();
     GProcessPtr target = getTarget();
     GProcessPtr result = getResult();
+    GSortPtr sourceSort = scene->getGSort(action->getSource()->getSort()->getName());
+    GSortPtr targetSort = scene->getGSort(action->getTarget()->getSort()->getName());
+
 
     qreal rectCornerX;
     qreal rectCornerY;
@@ -197,18 +256,60 @@ QPainterPath GAction::createHitPath(){
     qreal heightRect;
     qreal sweepAngle;
     qreal startAngle;
+    int invertSweep;
+    int invertStart;
+    int wCoef=1;
+    int hCoef=1;
+
+    QPointF* controlPointSource;
+    QPointF* controlPointTarget;
+
+    QLineF* hitLineTemp;
+    hitLineTemp = new QLineF(*sourcePoint,*targetPoint);
 
     QPainterPath hitPath(*sourcePoint);
 
-    if(source!=target){
-       hitPath.lineTo(*targetPoint);
+    if(!isAutoHit()){
+        if(isCurvedHit(sourceSort, targetSort, source, target) && (sourceSort->getSimpleDisplay()!=1 || targetSort->getSimpleDisplay()!=1)){
+            if(sourcePoint->x() >= targetPoint->x()){
+                   wCoef= -1;
+            }else{
+                   wCoef= 1;
+             }
+            if(sourcePoint->y() >= targetPoint->y()){
+                hCoef = 1;
+            }else{
+                hCoef = -1;
+            }
+            controlPointSource = new QPointF(sourcePoint->x() + wCoef*hitLineTemp->length()/2.0,sourcePoint->y()-hCoef*hitLineTemp->length()/3.0);
+            controlPointTarget = new QPointF(targetPoint->x() + wCoef*hitLineTemp->length()/2.0,targetPoint->y() + hCoef*hitLineTemp->length()/3.0);
+
+            hitPath.cubicTo(*controlPointSource,*controlPointTarget, *targetPoint);
+        }else{
+            hitPath.lineTo(*targetPoint);
+        }
     }else{
-        rectCornerY = source->getCenterPoint()->y();
-        rectCornerX = sourcePoint->x();
-        heightRect = (sourcePoint->y() - targetPoint->y())*2;
-        startAngle = 180 ;
-        sweepAngle = 270;
-        widthRect = (targetPoint->x() - sourcePoint->x())*2;
+        if(targetPoint->y() > resultPoint->y()){
+            rectCornerY = source->getCenterPoint()->y();
+            heightRect = (sourcePoint->y() - targetPoint->y())*2;
+
+            invertSweep=1;
+        }else{
+            heightRect = (targetPoint->y() - sourcePoint->y())*2;
+            rectCornerY = source->getCenterPoint()->y() - heightRect;
+            invertSweep=-1;
+        }
+        if(resultPoint->x() < getResult()->getCenterPoint()->x()){
+            widthRect = (sourcePoint->x() - targetPoint->x())*2;
+            rectCornerX = sourcePoint->x() - widthRect;
+            invertStart=-1;
+        }else{
+            rectCornerX = sourcePoint->x();
+            widthRect = (targetPoint->x() - sourcePoint->x())*2;
+            invertStart=1;
+        }
+        startAngle = invertStart*180 ;
+        sweepAngle = invertSweep*270;
         hitPath.arcTo(QRectF(rectCornerX,rectCornerY,widthRect,heightRect),startAngle,sweepAngle);
     }
     	

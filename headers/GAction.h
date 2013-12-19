@@ -142,11 +142,6 @@ class GAction {
           */
         QPointF* resultPoint;
 
-        /*/**
-          * @brief the line between targetPoint and resultPoint
-          *
-          */
-       /*QLineF* targetToResult;**/
 
         /**
           * @brief the related Action
@@ -261,4 +256,10 @@ class GAction {
 	  *
 	  */
 	void updatePointsAutoHit();
+
+    /**
+      * @brief check if the hit needs to be curved
+      *
+      */
+    bool isCurvedHit(GSortPtr sourceSort,GSortPtr targetSort,  GProcessPtr source,  GProcessPtr target);
 };
