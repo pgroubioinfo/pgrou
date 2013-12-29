@@ -171,16 +171,16 @@ void GAction::initPointsAutoHit(){
 	GProcessPtr source = getSource();
 	GProcessPtr target = getTarget();
 	GProcessPtr result = getResult();
-    int position=1;
-    if(source->getCenterPoint()->y() > result->getCenterPoint()->y()){
-        position=1;
-    }else{
-        position=-1;
-    }
-    sourcePoint = new QPointF(source->getCenterPoint()->x(), source->getCenterPoint()->y() + position*(GProcess::sizeDefault)/2.0);
 
-    targetPoint = new QPointF(GProcess::sizeDefault/2.0 + source->getCenterPoint()->x(), source->getCenterPoint()->y());
-	resultPoint = new QPointF(GProcess::sizeDefault/2.0 + result->getCenterPoint()->x(),result->getCenterPoint()->y());
+    if (dynamic_cast<GSort*>(getTarget()->getDisplayItem()->parentItem())->isVertical()){
+        sourcePoint = new QPointF(source->getCenterPoint()->x(), source->getCenterPoint()->y() + (GProcess::sizeDefault)/2.0);
+        targetPoint = new QPointF(GProcess::sizeDefault/2.0 + source->getCenterPoint()->x(), source->getCenterPoint()->y());
+        resultPoint = new QPointF(GProcess::sizeDefault/2.0 + result->getCenterPoint()->x(),result->getCenterPoint()->y());
+    }else{
+        sourcePoint = new QPointF(source->getCenterPoint()->x() + (GProcess::sizeDefault)/2.0, source->getCenterPoint()->y());
+        targetPoint = new QPointF(source->getCenterPoint()->x(),GProcess::sizeDefault/2.0 + source->getCenterPoint()->y());
+        resultPoint = new QPointF(result->getCenterPoint()->x(),GProcess::sizeDefault/2.0 + result->getCenterPoint()->y());
+    }
 
 }
 
@@ -188,18 +188,22 @@ void GAction::updatePointsAutoHit(){
 	GProcessPtr source = getSource();
 	GProcessPtr target = getTarget();
 	GProcessPtr result = getResult();
-    int position=1;
-    if(source->getCenterPoint()->y() > result->getCenterPoint()->y()){
-        position=1;
-    }else{
-        position=-1;
-    }
+
+    if(dynamic_cast<GSort*>(getTarget()->getDisplayItem()->parentItem())->isVertical()){
         sourcePoint->setX(source->getCenterPoint()->x());
-        sourcePoint->setY(source->getCenterPoint()->y() + position*(GProcess::sizeDefault)/2.0);
+        sourcePoint->setY(source->getCenterPoint()->y() + (GProcess::sizeDefault)/2.0);
         targetPoint->setX(GProcess::sizeDefault/2 + source->getCenterPoint()->x());
         targetPoint->setY(source->getCenterPoint()->y());
         resultPoint->setX(GProcess::sizeDefault/2 + result->getCenterPoint()->x());
         resultPoint->setY(result->getCenterPoint()->y());
+    }else{
+        sourcePoint->setX(source->getCenterPoint()->x() + (GProcess::sizeDefault)/2.0);
+        sourcePoint->setY(source->getCenterPoint()->y());
+        targetPoint->setX(source->getCenterPoint()->x());
+        targetPoint->setY(source->getCenterPoint()->y() + GProcess::sizeDefault/2);
+        resultPoint->setX(result->getCenterPoint()->x());
+        resultPoint->setY(result->getCenterPoint()->y() + GProcess::sizeDefault/2);
+    }
 }
 bool GAction::isCurvedHit(GSortPtr sourceSort, GSortPtr targetSort, GProcessPtr source, GProcessPtr target){
 
@@ -295,27 +299,45 @@ QPainterPath GAction::createHitPath(){
             hitPath.lineTo(*targetPoint);
         }
     }else{
-        if(targetPoint->y() > resultPoint->y()){
+        if(dynamic_cast<GSort*>(getTarget()->getDisplayItem()->parentItem())->isVertical() && targetPoint->y() > resultPoint->y()){
             rectCornerY = source->getCenterPoint()->y();
             heightRect = (sourcePoint->y() - targetPoint->y())*2;
-
             invertSweep=1;
-        }else{
+        }else if (dynamic_cast<GSort*>(getTarget()->getDisplayItem()->parentItem())->isVertical() && targetPoint->y() < resultPoint->y()){
             heightRect = (targetPoint->y() - sourcePoint->y())*2;
             rectCornerY = source->getCenterPoint()->y() - heightRect;
             invertSweep=-1;
+        }else if (!(dynamic_cast<GSort*>(getTarget()->getDisplayItem()->parentItem())->isVertical())){
+            heightRect = (targetPoint->y() - sourcePoint->y())*2;
+            rectCornerY = source->getCenterPoint()->y();
+            invertSweep= -1;
         }
-        if(resultPoint->x() < getResult()->getCenterPoint()->x()){
+        if(dynamic_cast<GSort*>(getTarget()->getDisplayItem()->parentItem())->isVertical() && resultPoint->x() < getResult()->getCenterPoint()->x()){
             widthRect = (sourcePoint->x() - targetPoint->x())*2;
             rectCornerX = sourcePoint->x() - widthRect;
             invertStart=-1;
-        }else{
+        }else if (dynamic_cast<GSort*>(getTarget()->getDisplayItem()->parentItem())->isVertical() && resultPoint->x() > getResult()->getCenterPoint()->x()){
             rectCornerX = sourcePoint->x();
             widthRect = (targetPoint->x() - sourcePoint->x())*2;
             invertStart=1;
+        }else if(!(dynamic_cast<GSort*>(getTarget()->getDisplayItem()->parentItem())->isVertical()) && resultPoint->x() < targetPoint->x()){
+            rectCornerX = source->getCenterPoint()->x();
+            widthRect = (sourcePoint->x() - targetPoint->x())*2;
+            invertStart=-1;
+        }else if (!(dynamic_cast<GSort*>(getTarget()->getDisplayItem()->parentItem())->isVertical()) && resultPoint->x() > targetPoint->x()){
+            widthRect = (targetPoint->x() - sourcePoint->x())*2;
+            rectCornerX = sourcePoint->x() - widthRect;
+            invertStart=1;
         }
-        startAngle = invertStart*180 ;
-        sweepAngle = invertSweep*270;
+
+        if (dynamic_cast<GSort*>(getTarget()->getDisplayItem()->parentItem())->isVertical()){
+            startAngle = invertStart*180 ;
+            sweepAngle = invertSweep*270;
+        }else{
+            startAngle = /**invertStart**/90 ;
+            sweepAngle = invertSweep*270 ;
+        }
+
         hitPath.arcTo(QRectF(rectCornerX,rectCornerY,widthRect,heightRect),startAngle,sweepAngle);
     }
     	
