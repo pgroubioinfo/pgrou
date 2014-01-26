@@ -298,7 +298,7 @@ QPainterPath GAction::createHitPath(){
         }else{
             hitPath.lineTo(*targetPoint);
         }
-    }else{
+    }else if (isAutoHit() && sourceSort->getSimpleDisplay()!=1||targetSort->getSimpleDisplay()!=1){
         if(dynamic_cast<GSort*>(getTarget()->getDisplayItem()->parentItem())->isVertical() && targetPoint->y() > resultPoint->y()){
             rectCornerY = source->getCenterPoint()->y();
             heightRect = (sourcePoint->y() - targetPoint->y())*2;
@@ -329,7 +329,6 @@ QPainterPath GAction::createHitPath(){
             rectCornerX = sourcePoint->x() - widthRect;
             invertStart=1;
         }
-
         if (dynamic_cast<GSort*>(getTarget()->getDisplayItem()->parentItem())->isVertical()){
             startAngle = invertStart*180 ;
             sweepAngle = invertSweep*270;
